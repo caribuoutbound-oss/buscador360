@@ -1,4 +1,4 @@
-// vite.config.mjs
+// vite.config.js (con "type": "module" en package.json)
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
