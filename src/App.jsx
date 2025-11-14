@@ -1,9 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import debounce from "lodash.debounce";
-
-// ⚠️ IMPORTANTE: Asegúrate de tener este archivo y que exporte una instancia válida de Supabase
-// Si no lo tienes, reemplaza esto con un mock para pruebas
-import { supabase } from "./supabase"; // ← Verifica que este archivo exista y funcione
+import { supabase } from "./supabase";
 
 // Iconos SVG inline
 const SearchIcon = () => (
@@ -36,16 +33,6 @@ export default function App() {
   const [resultados, setResultados] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [isSupabaseReady, setIsSupabaseReady] = useState(false);
-
-  // ✅ Validación inicial de Supabase
-  useEffect(() => {
-    if (!supabase) {
-      setError("Supabase no está configurado correctamente.");
-      return;
-    }
-    setIsSupabaseReady(true);
-  }, []);
 
   const buscarTiempoReal = useCallback(
     debounce(async (texto) => {
@@ -67,8 +54,7 @@ export default function App() {
         if (error) throw error;
         setResultados(data || []);
       } catch (err) {
-        console.error("Error en búsqueda:", err);
-        setError(err.message || "Error al buscar equipos");
+        setError(err.message);
         setResultados([]);
       }
 
@@ -78,10 +64,9 @@ export default function App() {
   );
 
   useEffect(() => {
-    if (!isSupabaseReady) return;
     buscarTiempoReal(modelo);
     return () => buscarTiempoReal.cancel();
-  }, [modelo, isSupabaseReady]);
+  }, [modelo]);
 
   const limpiarBusqueda = () => {
     setModelo("");
@@ -103,30 +88,6 @@ export default function App() {
     if (stock <= 5) return 'text-yellow-600 font-medium';
     return 'text-green-600 font-medium';
   };
-
-  // 💡 Renderizado condicional si hay error crítico
-  if (error && !modelo && !loading) {
-    return (
-      <div className="min-h-screen bg-gray-50 p-6">
-        <div className="max-w-6xl mx-auto">
-          <div className="bg-white rounded-xl shadow-sm border border-red-200 p-6">
-            <div className="flex items-center gap-3 mb-4">
-              <svg className="h-6 w-6 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01M12 17h.01M12 12h.01M12 12v.01M12 12H9M12 12h3" />
-              </svg>
-              <h1 className="text-xl font-semibold text-red-800">Error de Configuración</h1>
-            </div>
-            <p className="text-gray-700 mb-4">{error}</p>
-            <div className="bg-red-50 p-3 rounded-lg">
-              <p className="text-sm text-red-700">
-                Por favor verifica que el archivo <code>./supabase.js</code> exista y exporte una instancia válida de Supabase.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 md:p-6">
@@ -189,8 +150,8 @@ export default function App() {
           )}
         </div>
 
-        {/* Error general */}
-        {error && modelo && (
+        {/* Error */}
+        {error && (
           <div className="bg-red-50 border-l-4 border-red-400 p-4 mb-6 rounded-lg">
             <div className="flex items-center">
               <div className="flex-shrink-0">
@@ -205,7 +166,7 @@ export default function App() {
           </div>
         )}
 
-        {/* Results Table */}
+        {/* Tabla */}
         {resultados.length > 0 ? (
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
             <div className="overflow-x-auto">
@@ -223,7 +184,7 @@ export default function App() {
                   {resultados.map((r, index) => (
                     <tr 
                       key={r.id}
-                      className={`hover:bg-blue-50 transition-colors duration-150 ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}
+                      className={`hover:bg-blue-50 transition-colors duration-150 ${index % 2 === 0 ? 'bg-white' : 'bg-gray-25'}`}
                     >
                       <td className="px-4 py-3 whitespace-nowrap text-sm font-mono text-gray-900 bg-gray-50 rounded-lg mx-2">
                         {r.codigo_sap}
@@ -249,7 +210,8 @@ export default function App() {
             </div>
           </div>
         ) : (
-          !loading && modelo && (
+          !loading &&
+          modelo && (
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center">
               <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6-4h6m2 5.291A7.962 7.962 0 0112 15c-2.34 0-4.467-.881-6.08-2.33M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
