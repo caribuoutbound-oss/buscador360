@@ -12,7 +12,7 @@
     "react-dom": "^18.2.0",
     "@supabase/supabase-js": "^2.45.0",
     "react-router-dom": "^6.20.0",
-    "lodash.debounce": "^4.0.8" // <-- Esta línea es crucial
+    "lodash.debounce": "^4.0.8" // <-- Coma aquí porque hay más propiedades después (devDependencies)
   },
   "devDependencies": {
     "vite": "^5.0.0",
