@@ -42,10 +42,11 @@ export default function App() {
 
   // Estadísticas
   const totalStock = resultados.reduce((sum, r) => sum + (r.stock_final || 0), 0);
-  const itemsActivos = resultados.filter(r =>
-    r.status_equipo &&
-    (r.status_equipo.toLowerCase().includes("activo") ||
-      r.status_equipo.toLowerCase().includes("disponible"))
+  const itemsActivos = resultados.filter(
+    (r) =>
+      r.status_equipo &&
+      (r.status_equipo.toLowerCase().includes("activo") ||
+        r.status_equipo.toLowerCase().includes("disponible"))
   ).length;
 
   return (
@@ -134,7 +135,7 @@ export default function App() {
           </div>
         )}
 
-        {/* Tabla profesional con colores y tooltips */}
+        {/* Tabla con colores condicionales y tooltips */}
         {resultados.length > 0 ? (
           <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-slate-200">
             <div className="overflow-x-auto">
@@ -150,7 +151,7 @@ export default function App() {
                 </thead>
                 <tbody className="bg-white divide-y divide-slate-100">
                   {resultados.map((r) => (
-                    <tr key={r.id} className="hover:bg-blue-50 transition-colors duration-150">
+                    <tr key={r.id} className="hover:bg-blue-50 transition-colors duration-150 cursor-pointer">
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className="text-sm font-mono text-slate-900 bg-slate-100 px-2 py-1 rounded">{r.codigo_sap}</span>
                       </td>
@@ -195,7 +196,8 @@ export default function App() {
             </div>
           </div>
         ) : (
-          !loading && modelo && (
+          !loading &&
+          modelo && (
             <div className="bg-white rounded-xl shadow-lg p-12 text-center border border-slate-200">
               <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Search className="w-8 h-8 text-slate-400" />
