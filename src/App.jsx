@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import debounce from "lodash.debounce";
 import { supabase } from "./supabase";
-import { Search, Package, TrendingUp, AlertCircle } from "lucide-react";
 
 export default function App() {
   const [modelo, setModelo] = useState("");
@@ -9,7 +8,6 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // --- Búsqueda en tiempo real ---
   const buscarTiempoReal = useCallback(
     debounce(async (texto) => {
       if (!texto.trim()) {
@@ -18,21 +16,18 @@ export default function App() {
       }
       setLoading(true);
       setError(null);
-
       try {
         const { data, error } = await supabase
           .from("equipos")
           .select("id, hoja, codigo_sap, modelo, stock_final, status_equipo")
           .ilike("modelo", `%${texto}%`)
           .limit(50);
-
         if (error) throw error;
         setResultados(data || []);
       } catch (err) {
         setError(err.message);
         setResultados([]);
       }
-
       setLoading(false);
     }, 300),
     []
@@ -43,38 +38,23 @@ export default function App() {
     return () => buscarTiempoReal.cancel();
   }, [modelo]);
 
-  // --- Helpers ---
-  const getStatusColor = (status) => {
-    if (!status) return "bg-slate-100 text-slate-600 border-slate-200";
-    const s = status.toLowerCase();
-    if (s.includes("activo") || s.includes("disponible") || s.includes("life")) 
-      return "bg-emerald-50 text-emerald-700 border-emerald-200";
-    if (s.includes("inactivo") || s.includes("baja")) 
-      return "bg-red-50 text-red-700 border-red-200";
-    if (s.includes("mantenimiento") || s.includes("reposo") || s.includes("phase")) 
-      return "bg-amber-50 text-amber-700 border-amber-200";
-    return "bg-blue-50 text-blue-700 border-blue-200";
-  };
-
-  const getStockColor = (stock) => {
-    if (stock === null || stock === undefined) return "text-slate-400";
-    if (stock <= 0) return "text-red-600 font-semibold";
-    if (stock <= 5) return "text-amber-600 font-semibold";
-    return "text-emerald-600 font-semibold";
-  };
-
+  // Calculamos estadísticas
   const totalStock = resultados.reduce((sum, r) => sum + (r.stock_final || 0), 0);
   const itemsActivos = resultados.filter(r => 
-    r.status_equipo && r.status_equipo.toLowerCase().includes("life")
+    r.status_equipo && (r.status_equipo.toLowerCase().includes("activo") || 
+                        r.status_equipo.toLowerCase().includes("disponible") ||
+                        r.status_equipo.toLowerCase().includes("life"))
   ).length;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
-      {/* Header con gradiente */}
+      {/* Header Corporativo */}
       <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg">
         <div className="max-w-7xl mx-auto px-6 py-8">
           <div className="flex items-center gap-3 mb-2">
-            <Package className="w-8 h-8" />
+            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+            </svg>
             <h1 className="text-3xl font-bold">Sistema de Inventario</h1>
           </div>
           <p className="text-blue-100 text-sm">
@@ -84,10 +64,12 @@ export default function App() {
       </div>
 
       <div className="max-w-7xl mx-auto px-6 py-8">
-        {/* Barra de búsqueda mejorada */}
+        {/* Barra de búsqueda profesional */}
         <div className="bg-white rounded-xl shadow-lg p-6 mb-6 border border-slate-200">
           <div className="relative">
-            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
+            <svg className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
             <input
               type="text"
               placeholder="Buscar por modelo del equipo..."
@@ -115,7 +97,9 @@ export default function App() {
                   <p className="text-3xl font-bold text-slate-800">{resultados.length}</p>
                 </div>
                 <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                  <Search className="w-6 h-6 text-blue-600" />
+                  <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
                 </div>
               </div>
             </div>
@@ -127,7 +111,9 @@ export default function App() {
                   <p className="text-3xl font-bold text-slate-800">{totalStock.toLocaleString()}</p>
                 </div>
                 <div className="w-12 h-12 bg-emerald-100 rounded-lg flex items-center justify-center">
-                  <Package className="w-6 h-6 text-emerald-600" />
+                  <svg className="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                  </svg>
                 </div>
               </div>
             </div>
@@ -139,7 +125,9 @@ export default function App() {
                   <p className="text-3xl font-bold text-slate-800">{itemsActivos}</p>
                 </div>
                 <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                  <TrendingUp className="w-6 h-6 text-green-600" />
+                  <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                  </svg>
                 </div>
               </div>
             </div>
@@ -149,7 +137,9 @@ export default function App() {
         {/* Error */}
         {error && (
           <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-6 rounded-lg flex items-start gap-3">
-            <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+            <svg className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
             <div>
               <p className="font-semibold text-red-800">Error de conexión</p>
               <p className="text-red-700 text-sm">{error}</p>
@@ -193,24 +183,45 @@ export default function App() {
                         </span>
                       </td>
                       <td className="px-6 py-4">
-                        <div className="text-sm text-slate-900 font-medium max-w-md">
+                        <div className="text-sm text-slate-900 font-medium max-w-md" title={r.modelo}>
                           {r.modelo}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`text-sm font-bold ${getStockColor(r.stock_final)}`}>
-                          {r.stock_final !== null && r.stock_final !== undefined 
-                            ? r.stock_final.toLocaleString() 
-                            : "-"}
+                        <span
+                          className={`text-sm font-bold ${
+                            r.stock_final === null || r.stock_final === undefined
+                              ? "text-slate-400"
+                              : r.stock_final === 0
+                              ? "text-red-600"
+                              : r.stock_final <= 5
+                              ? "text-amber-600"
+                              : "text-emerald-600"
+                          }`}
+                        >
+                          {r.stock_final ?? "-"}
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span
-                          className={`inline-flex items-center px-3 py-1 text-xs font-medium rounded-full border ${getStatusColor(
-                            r.status_equipo
-                          )}`}
+                          className={`inline-flex items-center px-3 py-1 text-xs font-medium rounded-full border ${
+                            !r.status_equipo
+                              ? "bg-slate-100 text-slate-600 border-slate-200"
+                              : r.status_equipo.toLowerCase().includes("activo") ||
+                                r.status_equipo.toLowerCase().includes("disponible") ||
+                                r.status_equipo.toLowerCase().includes("life")
+                              ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                              : r.status_equipo.toLowerCase().includes("inactivo") ||
+                                r.status_equipo.toLowerCase().includes("baja")
+                              ? "bg-red-50 text-red-700 border-red-200"
+                              : r.status_equipo.toLowerCase().includes("mantenimiento") ||
+                                r.status_equipo.toLowerCase().includes("reposo") ||
+                                r.status_equipo.toLowerCase().includes("phase")
+                              ? "bg-amber-50 text-amber-700 border-amber-200"
+                              : "bg-blue-50 text-blue-700 border-blue-200"
+                          }`}
                         >
-                          {r.status_equipo || "Sin estado"}
+                          {r.status_equipo || "-"}
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
@@ -228,10 +239,12 @@ export default function App() {
           !loading && modelo && (
             <div className="bg-white rounded-xl shadow-lg p-12 text-center border border-slate-200">
               <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Search className="w-8 h-8 text-slate-400" />
+                <svg className="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
               </div>
               <p className="text-slate-600 text-lg">
-                No se encontraron resultados para <span className="font-semibold text-slate-800">"{modelo}"</span>
+                Sin resultados para <span className="font-semibold text-slate-800">"{modelo}"</span>
               </p>
               <p className="text-slate-500 text-sm mt-2">
                 Intenta con otro término de búsqueda
@@ -243,13 +256,15 @@ export default function App() {
         {!modelo && !loading && (
           <div className="bg-white rounded-xl shadow-lg p-12 text-center border border-slate-200">
             <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Package className="w-8 h-8 text-blue-600" />
+              <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+              </svg>
             </div>
             <p className="text-slate-800 text-lg font-medium mb-2">
-              Sistema de Inventario Activo
+              Comienza a escribir para buscar
             </p>
             <p className="text-slate-600">
-              Ingresa el modelo de un equipo en el campo de búsqueda para comenzar
+              Ingresa el modelo de un equipo en el campo de búsqueda
             </p>
           </div>
         )}
