@@ -126,7 +126,7 @@ export default function App() {
             </ul>
           )}
           {modelo && loadingBusqueda && (
-            <div style={styles.loadingSuggestions}>Buscando...</div>
+            <div style={styles.loadingSuggestions}>Buscando....</div>
           )}
         </div>
         <button
