@@ -1,18 +1,18 @@
 {
-  "name": "equipos-buscador-vite",
-  "version": "1.0.0",
+  "name": "mi-app",
   "private": true,
+  "version": "0.0.0",
+  "type": "module", // <-- Esta línea es crucial
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview"
   },
   "dependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "@supabase/supabase-js": "^2.34.0"
+    // Tus dependencias aquí
   },
   "devDependencies": {
-    "vite": "^5.0.0"
+    "@vitejs/plugin-react": "^4.x", // Asegúrate de tenerlo
+    "vite": "^5.x"
   }
 }
