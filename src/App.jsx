@@ -34,55 +34,64 @@ export default function App() {
       }
 
       setLoading(false);
-    }, 300), // 300 ms = óptimo para Vercel/Supabase
+    }, 300),
     []
   );
 
-  // Ejecutar búsqueda al escribir
   useEffect(() => {
     buscarTiempoReal(modelo);
     return () => buscarTiempoReal.cancel();
   }, [modelo]);
 
   return (
-    <div style={styles.container}>
-      <h1 style={styles.title}>Buscador de Equipos</h1>
+    <div className="max-w-6xl mx-auto p-6 font-sans">
+      <h1 className="text-3xl font-bold text-center mb-8 text-gray-800">
+        Buscador de Equipos
+      </h1>
 
       {/* Input */}
-      <div style={styles.searchContainer}>
+      <div className="flex justify-center items-center gap-3 mb-6">
         <input
-          style={styles.searchInput}
+          type="text"
           placeholder="Buscar modelo..."
           value={modelo}
           onChange={(e) => setModelo(e.target.value)}
+          className="w-96 px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
         />
-        {loading && <span style={styles.loading}>Buscando...</span>}
+        {loading && <span className="text-gray-500">Buscando...</span>}
       </div>
 
       {/* Error */}
-      {error && <p style={styles.error}>{error}</p>}
+      {error && (
+        <div className="bg-red-100 border border-red-300 text-red-700 p-3 rounded-lg mb-4 text-center">
+          {error}
+        </div>
+      )}
 
       {/* Tabla */}
       {resultados.length > 0 ? (
-        <div style={styles.tableContainer}>
-          <table style={styles.table}>
-            <thead>
+        <div className="overflow-x-auto rounded-lg shadow-lg">
+          <table className="min-w-full bg-white">
+            <thead className="bg-gray-100">
               <tr>
-                <th style={styles.th}>Código SAP</th>
-                <th style={styles.th}>Modelo</th>
-                <th style={styles.th}>Stock Final</th>
-                <th style={styles.th}>Status</th>
-                <th style={styles.th}>Sede</th>
+                <th className="text-left px-4 py-3 font-semibold text-gray-700 border-b">Código SAP</th>
+                <th className="text-left px-4 py-3 font-semibold text-gray-700 border-b">Modelo</th>
+                <th className="text-left px-4 py-3 font-semibold text-gray-700 border-b">Stock Final</th>
+                <th className="text-left px-4 py-3 font-semibold text-gray-700 border-b">Status</th>
+                <th className="text-left px-4 py-3 font-semibold text-gray-700 border-b">Sede</th>
               </tr>
             </thead>
             <tbody>
               {resultados.map((r) => (
-                <tr key={r.id}>
-                  <td style={styles.td}>{r.codigo_sap}</td>
-                  <td style={styles.td}>{r.modelo}</td>
-                  <td style={styles.td}>{r.stock_final}</td>
-                  <td style={styles.td}>{r.status_equipo || "-"}</td>
-                  <td style={styles.td}>{r.hoja}</td>
+                <tr
+                  key={r.id}
+                  className="hover:bg-gray-50 transition cursor-pointer"
+                >
+                  <td className="px-4 py-3 border-b">{r.codigo_sap}</td>
+                  <td className="px-4 py-3 border-b">{r.modelo}</td>
+                  <td className="px-4 py-3 border-b">{r.stock_final}</td>
+                  <td className="px-4 py-3 border-b">{r.status_equipo || "-"}</td>
+                  <td className="px-4 py-3 border-b">{r.hoja}</td>
                 </tr>
               ))}
             </tbody>
@@ -90,71 +99,18 @@ export default function App() {
         </div>
       ) : (
         !loading &&
-        modelo && <p style={styles.noResults}>Sin resultados…</p>
+        modelo && (
+          <p className="text-center mt-6 text-gray-500 italic">
+            Sin resultados…
+          </p>
+        )
       )}
 
-      {!modelo && <p style={styles.noResults}>Empieza a escribir…</p>}
+      {!modelo && (
+        <p className="text-center mt-6 text-gray-400 italic">
+          Empieza a escribir…
+        </p>
+      )}
     </div>
   );
 }
-
-/* ESTILOS */
-const styles = {
-  container: {
-    maxWidth: "1100px",
-    margin: "0 auto",
-    padding: "20px",
-    fontFamily: "Segoe UI, sans-serif",
-  },
-  title: {
-    textAlign: "center",
-    marginBottom: "20px",
-  },
-  searchContainer: {
-    display: "flex",
-    justifyContent: "center",
-    gap: "10px",
-    alignItems: "center",
-    marginBottom: "15px",
-  },
-  searchInput: {
-    padding: "12px",
-    width: "360px",
-    borderRadius: "8px",
-    border: "1px solid #ccc",
-    fontSize: "1rem",
-  },
-  loading: {
-    color: "#555",
-    fontSize: "0.9rem",
-  },
-  error: {
-    background: "#ffe5e5",
-    color: "#d00",
-    padding: "10px",
-    borderRadius: "6px",
-    textAlign: "center",
-  },
-  tableContainer: {
-    overflowX: "auto",
-  },
-  table: {
-    width: "100%",
-    borderCollapse: "collapse",
-  },
-  th: {
-    background: "#f3f3f3",
-    padding: "10px",
-    textAlign: "left",
-  },
-  td: {
-    padding: "10px",
-    borderBottom: "1px solid #e5e5e5",
-  },
-  noResults: {
-    marginTop: "20px",
-    textAlign: "center",
-    opacity: 0.6,
-    fontStyle: "italic",
-  },
-};
