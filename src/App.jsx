@@ -9,6 +9,7 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  // --- Búsqueda en tiempo real ---
   const buscarTiempoReal = useCallback(
     debounce(async (texto) => {
       if (!texto.trim()) {
@@ -17,18 +18,21 @@ export default function App() {
       }
       setLoading(true);
       setError(null);
+
       try {
         const { data, error } = await supabase
           .from("equipos")
           .select("id, hoja, codigo_sap, modelo, stock_final, status_equipo")
           .ilike("modelo", `%${texto}%`)
           .limit(50);
+
         if (error) throw error;
         setResultados(data || []);
       } catch (err) {
         setError(err.message);
         setResultados([]);
       }
+
       setLoading(false);
     }, 300),
     []
@@ -39,30 +43,48 @@ export default function App() {
     return () => buscarTiempoReal.cancel();
   }, [modelo]);
 
-  // Calculamos estadísticas
+  // --- Helpers ---
+  const getStatusColor = (status) => {
+    if (!status) return "bg-slate-100 text-slate-600 border-slate-200";
+    const s = status.toLowerCase();
+    if (s.includes("activo") || s.includes("disponible") || s.includes("life")) 
+      return "bg-emerald-50 text-emerald-700 border-emerald-200";
+    if (s.includes("inactivo") || s.includes("baja")) 
+      return "bg-red-50 text-red-700 border-red-200";
+    if (s.includes("mantenimiento") || s.includes("reposo") || s.includes("phase")) 
+      return "bg-amber-50 text-amber-700 border-amber-200";
+    return "bg-blue-50 text-blue-700 border-blue-200";
+  };
+
+  const getStockColor = (stock) => {
+    if (stock === null || stock === undefined) return "text-slate-400";
+    if (stock <= 0) return "text-red-600 font-semibold";
+    if (stock <= 5) return "text-amber-600 font-semibold";
+    return "text-emerald-600 font-semibold";
+  };
+
   const totalStock = resultados.reduce((sum, r) => sum + (r.stock_final || 0), 0);
   const itemsActivos = resultados.filter(r => 
-    r.status_equipo && (r.status_equipo.toLowerCase().includes("activo") || 
-                        r.status_equipo.toLowerCase().includes("disponible"))
+    r.status_equipo && r.status_equipo.toLowerCase().includes("life")
   ).length;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
-      {/* Header Corporativo */}
+      {/* Header con gradiente */}
       <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg">
         <div className="max-w-7xl mx-auto px-6 py-8">
           <div className="flex items-center gap-3 mb-2">
             <Package className="w-8 h-8" />
-            <h1 className="text-3xl font-bold">Buscador de Equipos</h1>
+            <h1 className="text-3xl font-bold">Sistema de Inventario</h1>
           </div>
           <p className="text-blue-100 text-sm">
-            Sistema de consulta en tiempo real
+            Gestión y consulta de equipos en tiempo real
           </p>
         </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-6 py-8">
-        {/* Barra de búsqueda profesional */}
+        {/* Barra de búsqueda mejorada */}
         <div className="bg-white rounded-xl shadow-lg p-6 mb-6 border border-slate-200">
           <div className="relative">
             <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
@@ -152,7 +174,7 @@ export default function App() {
                       Stock
                     </th>
                     <th className="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
-                      Status
+                      Estado
                     </th>
                     <th className="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
                       Sede
@@ -171,43 +193,24 @@ export default function App() {
                         </span>
                       </td>
                       <td className="px-6 py-4">
-                        <div className="text-sm text-slate-900 font-medium max-w-md" title={r.modelo}>
+                        <div className="text-sm text-slate-900 font-medium max-w-md">
                           {r.modelo}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span
-                          className={`text-sm font-bold ${
-                            r.stock_final === null || r.stock_final === undefined
-                              ? "text-slate-400"
-                              : r.stock_final === 0
-                              ? "text-red-600"
-                              : r.stock_final <= 5
-                              ? "text-amber-600"
-                              : "text-emerald-600"
-                          }`}
-                        >
-                          {r.stock_final ?? "-"}
+                        <span className={`text-sm font-bold ${getStockColor(r.stock_final)}`}>
+                          {r.stock_final !== null && r.stock_final !== undefined 
+                            ? r.stock_final.toLocaleString() 
+                            : "-"}
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span
-                          className={`inline-flex items-center px-3 py-1 text-xs font-medium rounded-full border ${
-                            !r.status_equipo
-                              ? "bg-slate-100 text-slate-600 border-slate-200"
-                              : r.status_equipo.toLowerCase().includes("activo") ||
-                                r.status_equipo.toLowerCase().includes("disponible")
-                              ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-                              : r.status_equipo.toLowerCase().includes("inactivo") ||
-                                r.status_equipo.toLowerCase().includes("baja")
-                              ? "bg-red-50 text-red-700 border-red-200"
-                              : r.status_equipo.toLowerCase().includes("mantenimiento") ||
-                                r.status_equipo.toLowerCase().includes("reposo")
-                              ? "bg-amber-50 text-amber-700 border-amber-200"
-                              : "bg-blue-50 text-blue-700 border-blue-200"
-                          }`}
+                          className={`inline-flex items-center px-3 py-1 text-xs font-medium rounded-full border ${getStatusColor(
+                            r.status_equipo
+                          )}`}
                         >
-                          {r.status_equipo || "-"}
+                          {r.status_equipo || "Sin estado"}
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
@@ -228,7 +231,7 @@ export default function App() {
                 <Search className="w-8 h-8 text-slate-400" />
               </div>
               <p className="text-slate-600 text-lg">
-                Sin resultados para <span className="font-semibold text-slate-800">"{modelo}"</span>
+                No se encontraron resultados para <span className="font-semibold text-slate-800">"{modelo}"</span>
               </p>
               <p className="text-slate-500 text-sm mt-2">
                 Intenta con otro término de búsqueda
@@ -243,10 +246,10 @@ export default function App() {
               <Package className="w-8 h-8 text-blue-600" />
             </div>
             <p className="text-slate-800 text-lg font-medium mb-2">
-              Empieza a escribir para buscar
+              Sistema de Inventario Activo
             </p>
             <p className="text-slate-600">
-              Ingresa el modelo de un equipo en el campo de búsqueda
+              Ingresa el modelo de un equipo en el campo de búsqueda para comenzar
             </p>
           </div>
         )}
