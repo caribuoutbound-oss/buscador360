@@ -9,6 +9,7 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  // Búsqueda con debounce
   const buscarTiempoReal = useCallback(
     debounce(async (texto) => {
       if (!texto.trim()) {
@@ -21,7 +22,7 @@ export default function App() {
         const { data, error } = await supabase
           .from("equipos")
           .select("id, hoja, codigo_sap, modelo, stock_final, status_equipo")
-          .ilike("modelo", `%${texto}%`) // Corregido el template literal
+          .ilike("modelo", `%${texto}%`)
           .limit(50);
         if (error) throw error;
         setResultados(data || []);
@@ -39,28 +40,29 @@ export default function App() {
     return () => buscarTiempoReal.cancel();
   }, [modelo]);
 
-  // Calculamos estadísticas
+  // Estadísticas
   const totalStock = resultados.reduce((sum, r) => sum + (r.stock_final || 0), 0);
   const itemsActivos = resultados.filter(r =>
     r.status_equipo &&
-    (r.status_equipo.toLowerCase().includes("activo") || r.status_equipo.toLowerCase().includes("disponible"))
+    (r.status_equipo.toLowerCase().includes("activo") ||
+      r.status_equipo.toLowerCase().includes("disponible"))
   ).length;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
-      {/* Header Corporativo */}
+      {/* Header */}
       <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg">
         <div className="max-w-7xl mx-auto px-6 py-8">
           <div className="flex items-center gap-3 mb-2">
             <Package className="w-8 h-8" />
             <h1 className="text-3xl font-bold">Buscador de Equipos</h1>
           </div>
-          <p className="text-blue-100 text-sm"> Sistema de consulta en tiempo real </p>
+          <p className="text-blue-100 text-sm">Sistema de consulta en tiempo real</p>
         </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-6 py-8">
-        {/* Barra de búsqueda profesional */}
+        {/* Barra de búsqueda */}
         <div className="bg-white rounded-xl shadow-lg p-6 mb-6 border border-slate-200">
           <div className="relative">
             <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
@@ -94,6 +96,7 @@ export default function App() {
                 </div>
               </div>
             </div>
+
             <div className="bg-white rounded-xl shadow-md p-6 border border-slate-200 hover:shadow-lg transition-shadow">
               <div className="flex items-center justify-between">
                 <div>
@@ -105,6 +108,7 @@ export default function App() {
                 </div>
               </div>
             </div>
+
             <div className="bg-white rounded-xl shadow-md p-6 border border-slate-200 hover:shadow-lg transition-shadow">
               <div className="flex items-center justify-between">
                 <div>
@@ -130,75 +134,54 @@ export default function App() {
           </div>
         )}
 
-        {/* Tabla profesional */}
+        {/* Tabla profesional con colores y tooltips */}
         {resultados.length > 0 ? (
           <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-slate-200">
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-slate-200">
                 <thead className="bg-slate-50">
                   <tr>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
-                      Código SAP
-                    </th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
-                      Modelo
-                    </th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
-                      Stock
-                    </th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
-                      Status
-                    </th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
-                      Sede
-                    </th>
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">Código SAP</th>
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">Modelo</th>
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">Stock</th>
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">Status</th>
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">Sede</th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-slate-100">
                   {resultados.map((r) => (
                     <tr key={r.id} className="hover:bg-blue-50 transition-colors duration-150">
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className="text-sm font-mono text-slate-900 bg-slate-100 px-2 py-1 rounded">
-                          {r.codigo_sap}
-                        </span>
+                        <span className="text-sm font-mono text-slate-900 bg-slate-100 px-2 py-1 rounded">{r.codigo_sap}</span>
                       </td>
-                      <td className="px-6 py-4">
-                        <div className="text-sm text-slate-900 font-medium max-w-md" title={r.modelo}>
-                          {r.modelo}
-                        </div>
+                      <td className="px-6 py-4 max-w-md truncate" title={r.modelo}>
+                        <span className="text-sm text-slate-900 font-medium">{r.modelo}</span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span
-                          className={`text-sm font-bold ${
-                            r.stock_final === null || r.stock_final === undefined
-                              ? "text-slate-400"
-                              : r.stock_final === 0
-                              ? "text-red-600"
-                              : r.stock_final <= 5
-                              ? "text-amber-600"
-                              : "text-emerald-600"
-                          }`}
-                        >
+                        <span className={`text-sm font-bold ${
+                          r.stock_final === null || r.stock_final === undefined
+                            ? "text-slate-400"
+                            : r.stock_final === 0
+                            ? "text-red-600"
+                            : r.stock_final <= 5
+                            ? "text-amber-600"
+                            : "text-emerald-600"
+                        }`}>
                           {r.stock_final ?? "-"}
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span
-                          className={`inline-flex items-center px-3 py-1 text-xs font-medium rounded-full border ${
-                            !r.status_equipo
-                              ? "bg-slate-100 text-slate-600 border-slate-200"
-                              : r.status_equipo.toLowerCase().includes("activo") ||
-                                r.status_equipo.toLowerCase().includes("disponible")
-                              ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-                              : r.status_equipo.toLowerCase().includes("inactivo") ||
-                                r.status_equipo.toLowerCase().includes("baja")
-                              ? "bg-red-50 text-red-700 border-red-200"
-                              : r.status_equipo.toLowerCase().includes("mantenimiento") ||
-                                r.status_equipo.toLowerCase().includes("reposo")
-                              ? "bg-amber-50 text-amber-700 border-amber-200"
-                              : "bg-blue-50 text-blue-700 border-blue-200"
-                          }`}
-                        >
+                        <span className={`inline-flex items-center px-3 py-1 text-xs font-medium rounded-full border ${
+                          !r.status_equipo
+                            ? "bg-slate-100 text-slate-600 border-slate-200"
+                            : r.status_equipo.toLowerCase().includes("activo") || r.status_equipo.toLowerCase().includes("disponible")
+                            ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                            : r.status_equipo.toLowerCase().includes("inactivo") || r.status_equipo.toLowerCase().includes("baja")
+                            ? "bg-red-50 text-red-700 border-red-200"
+                            : r.status_equipo.toLowerCase().includes("mantenimiento") || r.status_equipo.toLowerCase().includes("reposo")
+                            ? "bg-amber-50 text-amber-700 border-amber-200"
+                            : "bg-blue-50 text-blue-700 border-blue-200"
+                        }`}>
                           {r.status_equipo || "-"}
                         </span>
                       </td>
@@ -212,8 +195,7 @@ export default function App() {
             </div>
           </div>
         ) : (
-          !loading &&
-          modelo && (
+          !loading && modelo && (
             <div className="bg-white rounded-xl shadow-lg p-12 text-center border border-slate-200">
               <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Search className="w-8 h-8 text-slate-400" />
@@ -221,7 +203,7 @@ export default function App() {
               <p className="text-slate-600 text-lg">
                 Sin resultados para <span className="font-semibold text-slate-800">"{modelo}"</span>
               </p>
-              <p className="text-slate-500 text-sm mt-2"> Intenta con otro término de búsqueda </p>
+              <p className="text-slate-500 text-sm mt-2">Intenta con otro término de búsqueda</p>
             </div>
           )
         )}
@@ -231,8 +213,8 @@ export default function App() {
             <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <Package className="w-8 h-8 text-blue-600" />
             </div>
-            <p className="text-slate-800 text-lg font-medium mb-2"> Empieza a escribir para buscar </p>
-            <p className="text-slate-600"> Ingresa el modelo de un equipo en el campo de búsqueda </p>
+            <p className="text-slate-800 text-lg font-medium mb-2">Empieza a escribir para buscar</p>
+            <p className="text-slate-600">Ingresa el modelo de un equipo en el campo de búsqueda</p>
           </div>
         )}
       </div>
