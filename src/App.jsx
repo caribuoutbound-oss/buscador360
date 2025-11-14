@@ -1,18 +1,41 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import debounce from "lodash.debounce";
 import { supabase } from "./supabase";
-import { Search, Package, TrendingUp, AlertCircle } from "lucide-react";
+import { Search, Package, TrendingUp, AlertCircle, Wifi, WifiOff } from "lucide-react";
 
 export default function App() {
   const [modelo, setModelo] = useState("");
   const [resultados, setResultados] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [conexion, setConexion] = useState(null); // null = verificando, true = ok, false = error
+
+  // --- Verificar conexión al montar el componente ---
+  useEffect(() => {
+    const verificarConexion = async () => {
+      try {
+        const { error } = await supabase.from("equipos").select("id").limit(1);
+        if (error) throw error;
+        setConexion(true);
+      } catch (err) {
+        console.error("Error de conexión:", err);
+        setConexion(false);
+        setError("No se puede conectar a la base de datos. Verifica tu configuración de Supabase.");
+      }
+    };
+
+    if (supabase) {
+      verificarConexion();
+    } else {
+      setConexion(false);
+      setError("Supabase no está correctamente importado. Verifica el archivo ./supabase.js");
+    }
+  }, []);
 
   // --- Búsqueda en tiempo real ---
   const buscarTiempoReal = useCallback(
     debounce(async (texto) => {
-      if (!texto.trim()) {
+      if (!texto.trim() || conexion !== true) {
         setResultados([]);
         return;
       }
@@ -29,19 +52,22 @@ export default function App() {
         if (error) throw error;
         setResultados(data || []);
       } catch (err) {
-        setError(err.message);
+        console.error("Error en búsqueda:", err);
+        setError(err.message || "Error al buscar equipos");
         setResultados([]);
       }
 
       setLoading(false);
     }, 300),
-    []
+    [conexion]
   );
 
   useEffect(() => {
-    buscarTiempoReal(modelo);
+    if (conexion === true) {
+      buscarTiempoReal(modelo);
+    }
     return () => buscarTiempoReal.cancel();
-  }, [modelo]);
+  }, [modelo, conexion]);
 
   // --- Helpers ---
   const getStatusColor = (status) => {
@@ -63,10 +89,49 @@ export default function App() {
     return "text-emerald-600 font-semibold";
   };
 
-  const totalStock = resultados.reduce((sum, r) => sum + (r.stock_final || 0), 0);
-  const itemsActivos = resultados.filter(r => 
-    r.status_equipo && r.status_equipo.toLowerCase().includes("life")
-  ).length;
+  const totalStock = useMemo(() => 
+    resultados.reduce((sum, r) => sum + (r.stock_final || 0), 0), 
+    [resultados]
+  );
+
+  const itemsActivos = useMemo(() => 
+    resultados.filter(r => 
+      r.status_equipo && r.status_equipo.toLowerCase().includes("life")
+    ).length, 
+    [resultados]
+  );
+
+  // --- Renderizado condicional si hay error de conexión ---
+  if (conexion === false) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center p-6">
+        <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-8 border border-slate-200">
+          <div className="text-center">
+            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <WifiOff className="w-8 h-8 text-red-600" />
+            </div>
+            <h2 className="text-xl font-bold text-slate-800 mb-2">Sin Conexión</h2>
+            <p className="text-slate-600 mb-4">
+              No se puede acceder a la base de datos de inventario.
+            </p>
+            <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
+              <p className="text-sm text-red-700 font-medium">Error:</p>
+              <p className="text-sm text-red-600 mt-1">{error}</p>
+            </div>
+            <div className="bg-slate-50 rounded-lg p-4 text-left">
+              <p className="text-xs text-slate-600 font-medium mb-2">Pasos a seguir:</p>
+              <ul className="text-xs text-slate-600 space-y-1">
+                <li>• Verifica tu conexión a internet</li>
+                <li>• Revisa el archivo <code className="bg-slate-200 px-1 rounded">./supabase.js</code></li>
+                <li>• Asegúrate que las variables de entorno estén definidas</li>
+                <li>• Confirma que la tabla <code className="bg-slate-200 px-1 rounded">equipos</code> exista</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
@@ -77,8 +142,17 @@ export default function App() {
             <Package className="w-8 h-8" />
             <h1 className="text-3xl font-bold">Sistema de Inventario</h1>
           </div>
-          <p className="text-blue-100 text-sm">
-            Gestión y consulta de equipos en tiempo real
+          <p className="text-blue-100 text-sm flex items-center gap-2">
+            {conexion === true ? (
+              <>
+                <Wifi className="w-4 h-4 text-green-300" /> Gestión y consulta de equipos en tiempo real
+              </>
+            ) : (
+              <>
+                <div className="w-2 h-2 bg-blue-300 rounded-full animate-pulse mr-1"></div>
+                Conectando...
+              </>
+            )}
           </p>
         </div>
       </div>
@@ -146,12 +220,12 @@ export default function App() {
           </div>
         )}
 
-        {/* Error */}
-        {error && (
+        {/* Error general */}
+        {error && modelo && (
           <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-6 rounded-lg flex items-start gap-3">
             <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
             <div>
-              <p className="font-semibold text-red-800">Error de conexión</p>
+              <p className="font-semibold text-red-800">Error en la búsqueda</p>
               <p className="text-red-700 text-sm">{error}</p>
             </div>
           </div>
@@ -193,7 +267,7 @@ export default function App() {
                         </span>
                       </td>
                       <td className="px-6 py-4">
-                        <div className="text-sm text-slate-900 font-medium max-w-md">
+                        <div className="text-sm text-slate-900 font-medium max-w-md truncate" title={r.modelo}>
                           {r.modelo}
                         </div>
                       </td>
