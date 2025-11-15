@@ -8,26 +8,34 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  // ================================
+  // 🔍 BÚSQUEDA POR MODELO *O* CÓDIGO SAP
+  // ================================
   const buscarTiempoReal = useCallback(
     debounce(async (texto) => {
       if (!texto.trim()) {
         setResultados([]);
         return;
       }
+
       setLoading(true);
       setError(null);
+
       try {
         const { data, error } = await supabase
           .from("equipos")
           .select("id, hoja, codigo_sap, modelo, stock_final, status_equipo")
-          .ilike("modelo", `%${texto}%`)
+          .or(`modelo.ilike.%${texto}%,codigo_sap.ilike.%${texto}%`)
           .limit(50);
+
         if (error) throw error;
+
         setResultados(data || []);
       } catch (err) {
         setError(err.message);
         setResultados([]);
       }
+
       setLoading(false);
     }, 300),
     []
@@ -38,14 +46,24 @@ export default function App() {
     return () => buscarTiempoReal.cancel();
   }, [modelo]);
 
-  // Calculamos estadísticas
-  const totalStock = resultados.reduce((sum, r) => sum + (r.stock_final || 0), 0);
-  const itemsActivos = resultados.filter(r => 
-    r.status_equipo && (r.status_equipo.toLowerCase().includes("activo") || 
-                        r.status_equipo.toLowerCase().includes("disponible") ||
-                        r.status_equipo.toLowerCase().includes("life"))
+  // ================================
+  // 📊 CÁLCULOS
+  // ================================
+  const totalStock = resultados.reduce(
+    (sum, r) => sum + (r.stock_final || 0),
+    0
+  );
+
+  const itemsActivos = resultados.filter((r) =>
+    r.status_equipo &&
+    (r.status_equipo.toLowerCase().includes("activo") ||
+      r.status_equipo.toLowerCase().includes("disponible") ||
+      r.status_equipo.toLowerCase().includes("life"))
   ).length;
 
+  // ================================
+  // UI COMPLETA
+  // ================================
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
       {/* Header Fijo */}
@@ -54,13 +72,25 @@ export default function App() {
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-3">
               <div className="w-9 h-9 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center shadow-lg">
-                <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                <svg
+                  className="w-5 h-5 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+                  />
                 </svg>
               </div>
               <div>
                 <h1 className="text-xl font-bold">Inventario Pro</h1>
-                <p className="text-slate-300 text-xs -mt-0.5 hidden sm:block">Gestión de equipos</p>
+                <p className="text-slate-300 text-xs -mt-0.5 hidden sm:block">
+                  Gestión de equipos
+                </p>
               </div>
             </div>
             <p className="text-slate-300 text-sm hidden sm:block">
@@ -70,23 +100,33 @@ export default function App() {
         </div>
       </header>
 
-      <div className="pt-16"> {/* Espacio para header fijo */}
+      <div className="pt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          {/* Barra de búsqueda moderna */}
+          {/* Buscador */}
           <div className="bg-white rounded-xl shadow-lg border border-slate-200 p-4 mb-6 hover:shadow-xl transition-shadow duration-300">
             <div className="relative">
-              <svg className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              <svg
+                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
               </svg>
               <input
                 type="text"
-                placeholder="Buscar por modelo..."
+                placeholder="Buscar por modelo o código SAP..."
                 value={modelo}
                 onChange={(e) => setModelo(e.target.value)}
                 className="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm transition-all duration-200"
               />
             </div>
-            
+
             {loading && (
               <div className="mt-2 flex items-center gap-2 text-xs text-slate-500">
                 <div className="w-3 h-3 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
@@ -95,62 +135,123 @@ export default function App() {
             )}
           </div>
 
-          {/* Tarjetas de estadísticas con hover */}
+          {/* Estadísticas */}
           {modelo && resultados.length > 0 && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+              {/* Resultados */}
               <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl shadow-sm border border-blue-200 p-4 hover:shadow-lg hover:scale-105 transition-all duration-200 cursor-pointer">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-xs font-medium text-blue-600 mb-1">Resultados</p>
-                    <p className="text-xl font-bold text-slate-800">{resultados.length}</p>
+                    <p className="text-xs font-medium text-blue-600 mb-1">
+                      Resultados
+                    </p>
+                    <p className="text-xl font-bold text-slate-800">
+                      {resultados.length}
+                    </p>
                   </div>
                   <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center shadow-md">
-                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    <svg
+                      className="w-5 h-5 text-white"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                      />
                     </svg>
                   </div>
                 </div>
               </div>
 
+              {/* Stock total */}
               <div className="bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-xl shadow-sm border border-emerald-200 p-4 hover:shadow-lg hover:scale-105 transition-all duration-200 cursor-pointer">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-xs font-medium text-emerald-600 mb-1">Stock Total</p>
-                    <p className="text-xl font-bold text-slate-800">{totalStock.toLocaleString()}</p>
+                    <p className="text-xs font-medium text-emerald-600 mb-1">
+                      Stock Total
+                    </p>
+                    <p className="text-xl font-bold text-slate-800">
+                      {totalStock.toLocaleString()}
+                    </p>
                   </div>
                   <div className="w-10 h-10 bg-emerald-500 rounded-lg flex items-center justify-center shadow-md">
-                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                    <svg
+                      className="w-5 h-5 text-white"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+                      />
                     </svg>
                   </div>
                 </div>
               </div>
 
+              {/* Activos */}
               <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl shadow-sm border border-green-200 p-4 hover:shadow-lg hover:scale-105 transition-all duration-200 cursor-pointer">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-xs font-medium text-green-600 mb-1">Activos</p>
-                    <p className="text-xl font-bold text-slate-800">{itemsActivos}</p>
+                    <p className="text-xs font-medium text-green-600 mb-1">
+                      Activos
+                    </p>
+                    <p className="text-xl font-bold text-slate-800">
+                      {itemsActivos}
+                    </p>
                   </div>
                   <div className="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center shadow-md">
-                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                    <svg
+                      className="w-5 h-5 text-white"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+                      />
                     </svg>
                   </div>
                 </div>
               </div>
 
+              {/* Tasa activos */}
               <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl shadow-sm border border-purple-200 p-4 hover:shadow-lg hover:scale-105 transition-all duration-200 cursor-pointer">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-xs font-medium text-purple-600 mb-1">Tasa Activos</p>
+                    <p className="text-xs font-medium text-purple-600 mb-1">
+                      Tasa Activos
+                    </p>
                     <p className="text-xl font-bold text-slate-800">
-                      {resultados.length > 0 ? Math.round((itemsActivos / resultados.length) * 100) : 0}%
+                      {resultados.length > 0
+                        ? Math.round((itemsActivos / resultados.length) * 100)
+                        : 0}
+                      %
                     </p>
                   </div>
                   <div className="w-10 h-10 bg-purple-500 rounded-lg flex items-center justify-center shadow-md">
-                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                    <svg
+                      className="w-5 h-5 text-white"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                      />
                     </svg>
                   </div>
                 </div>
@@ -162,18 +263,30 @@ export default function App() {
           {error && (
             <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-6 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200">
               <div className="flex items-start gap-3">
-                <svg className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <svg
+                  className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
                 </svg>
                 <div>
-                  <p className="font-semibold text-red-800 text-sm">Error de conexión</p>
+                  <p className="font-semibold text-red-800 text-sm">
+                    Error de conexión
+                  </p>
                   <p className="text-red-700 text-xs">{error}</p>
                 </div>
               </div>
             </div>
           )}
 
-          {/* Tabla profesional con hover */}
+          {/* Tabla */}
           {resultados.length > 0 ? (
             <div className="bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden hover:shadow-xl transition-shadow duration-300">
               <div className="overflow-x-auto">
@@ -197,6 +310,7 @@ export default function App() {
                       </th>
                     </tr>
                   </thead>
+
                   <tbody className="bg-white divide-y divide-slate-100">
                     {resultados.map((r) => (
                       <tr
@@ -208,15 +322,21 @@ export default function App() {
                             {r.codigo_sap}
                           </span>
                         </td>
+
                         <td className="px-4 py-3">
-                          <div className="text-sm text-slate-800 font-medium max-w-md truncate" title={r.modelo}>
+                          <div
+                            className="text-sm text-slate-800 font-medium max-w-md truncate"
+                            title={r.modelo}
+                          >
                             {r.modelo}
                           </div>
                         </td>
+
                         <td className="px-4 py-3 whitespace-nowrap">
                           <span
                             className={`text-sm font-bold ${
-                              r.stock_final === null || r.stock_final === undefined
+                              r.stock_final === null ||
+                              r.stock_final === undefined
                                 ? "text-slate-400"
                                 : r.stock_final === 0
                                 ? "text-red-600"
@@ -228,21 +348,38 @@ export default function App() {
                             {r.stock_final ?? "-"}
                           </span>
                         </td>
+
                         <td className="px-4 py-3 whitespace-nowrap">
                           <span
                             className={`inline-flex items-center px-2.5 py-0.5 text-xs font-medium rounded-full border ${
                               !r.status_equipo
                                 ? "bg-slate-100 text-slate-600 border-slate-200"
-                                : r.status_equipo.toLowerCase().includes("activo") ||
-                                  r.status_equipo.toLowerCase().includes("disponible") ||
-                                  r.status_equipo.toLowerCase().includes("life")
+                                : r.status_equipo
+                                    .toLowerCase()
+                                    .includes("activo") ||
+                                  r.status_equipo
+                                    .toLowerCase()
+                                    .includes("disponible") ||
+                                  r.status_equipo
+                                    .toLowerCase()
+                                    .includes("life")
                                 ? "bg-emerald-100 text-emerald-700 border-emerald-200"
-                                : r.status_equipo.toLowerCase().includes("inactivo") ||
-                                  r.status_equipo.toLowerCase().includes("baja")
+                                : r.status_equipo
+                                    .toLowerCase()
+                                    .includes("inactivo") ||
+                                  r.status_equipo
+                                    .toLowerCase()
+                                    .includes("baja")
                                 ? "bg-red-100 text-red-700 border-red-200"
-                                : r.status_equipo.toLowerCase().includes("mantenimiento") ||
-                                  r.status_equipo.toLowerCase().includes("reposo") ||
-                                  r.status_equipo.toLowerCase().includes("phase")
+                                : r.status_equipo
+                                    .toLowerCase()
+                                    .includes("mantenimiento") ||
+                                  r.status_equipo
+                                    .toLowerCase()
+                                    .includes("reposo") ||
+                                  r.status_equipo
+                                    .toLowerCase()
+                                    .includes("phase")
                                 ? "bg-amber-100 text-amber-700 border-amber-200"
                                 : "bg-blue-100 text-blue-700 border-blue-200"
                             }`}
@@ -250,6 +387,7 @@ export default function App() {
                             {r.status_equipo || "-"}
                           </span>
                         </td>
+
                         <td className="px-4 py-3 whitespace-nowrap">
                           <span className="text-sm text-slate-600 font-medium bg-slate-50 px-2 py-1 rounded border">
                             {r.hoja}
@@ -262,16 +400,32 @@ export default function App() {
               </div>
             </div>
           ) : (
-            !loading && modelo && (
+            !loading &&
+            modelo && (
               <div className="bg-white rounded-xl shadow-lg p-8 text-center border-2 border-dashed border-slate-200 hover:border-slate-300 transition-colors duration-200">
                 <div className="w-16 h-16 bg-gradient-to-r from-slate-100 to-slate-200 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <svg className="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  <svg
+                    className="w-8 h-8 text-slate-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                    />
                   </svg>
                 </div>
+
                 <p className="text-slate-600 text-base mb-2">
-                  No se encontraron resultados para <span className="font-semibold text-slate-800">"{modelo}"</span>
+                  No se encontraron resultados para{" "}
+                  <span className="font-semibold text-slate-800">
+                    "{modelo}"
+                  </span>
                 </p>
+
                 <p className="text-slate-500 text-sm">
                   Intenta con otro término de búsqueda
                 </p>
@@ -279,18 +433,31 @@ export default function App() {
             )
           )}
 
+          {/* Pantalla de inicio */}
           {!modelo && !loading && (
             <div className="bg-white rounded-xl shadow-lg p-8 text-center border border-slate-200 hover:shadow-xl transition-shadow duration-300">
               <div className="w-16 h-16 bg-gradient-to-r from-blue-100 to-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                <svg
+                  className="w-8 h-8 text-slate-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+                  />
                 </svg>
               </div>
+
               <p className="text-slate-800 text-lg font-medium mb-2">
                 Comienza a buscar
               </p>
+
               <p className="text-slate-600">
-                Ingresa el modelo de un equipo para comenzar la búsqueda
+                Ingresa el modelo o código SAP para comenzar
               </p>
             </div>
           )}
