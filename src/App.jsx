@@ -4,9 +4,12 @@ import { supabase } from "./supabase";
 
 export default function App() {
   const [modelo, setModelo] = useState("");
+  const [sedeFiltro, setSedeFiltro] = useState("");
+  const [sedesDisponibles, setSedesDisponibles] = useState([]);
   const [resultados, setResultados] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [sortStockDesc, setSortStockDesc] = useState(true); // true = descendente
 
   // ================================
   // 🔍 BÚSQUEDA POR MODELO *O* CÓDIGO SAP
@@ -41,8 +44,7 @@ export default function App() {
         // 3️⃣ Combinar resultados por codigo_sap o modelo
         const combinados = equiposData.map((eq) => {
           const acc = accesoriosData.find(
-            (a) =>
-              a.codigo_sap === eq.codigo_sap || a.modelo === eq.modelo
+            (a) => a.codigo_sap === eq.codigo_sap || a.modelo === eq.modelo
           );
           return { ...eq, accesorio: acc?.accesorio ?? "-" };
         });
@@ -64,14 +66,36 @@ export default function App() {
   }, [modelo]);
 
   // ================================
+  // 🔹 Actualizar sedes disponibles
+  // ================================
+  useEffect(() => {
+    const sedes = Array.from(new Set(resultados.map(r => r.hoja).filter(Boolean)));
+    setSedesDisponibles(sedes);
+
+    if (sedeFiltro && !sedes.includes(sedeFiltro)) {
+      setSedeFiltro("");
+    }
+  }, [resultados]);
+
+  // ================================
+  // 🔹 Aplicar filtro por sede
+  // ================================
+  const resultadosFiltrados = resultados
+    .filter(r => (sedeFiltro ? r.hoja === sedeFiltro : true))
+    .sort((a, b) => {
+      if (sortStockDesc) return (b.stock_final || 0) - (a.stock_final || 0);
+      return (a.stock_final || 0) - (b.stock_final || 0);
+    });
+
+  // ================================
   // 📊 CÁLCULOS
   // ================================
-  const totalStock = resultados.reduce(
+  const totalStock = resultadosFiltrados.reduce(
     (sum, r) => sum + (r.stock_final || 0),
     0
   );
 
-  const itemsActivos = resultados.filter((r) =>
+  const itemsActivos = resultadosFiltrados.filter((r) =>
     r.status_equipo &&
     (r.status_equipo.toLowerCase().includes("activo") ||
       r.status_equipo.toLowerCase().includes("disponible") ||
@@ -89,18 +113,8 @@ export default function App() {
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-3">
               <div className="w-9 h-9 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center shadow-lg">
-                <svg
-                  className="w-5 h-5 text-white"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
-                  />
+                <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                 </svg>
               </div>
               <div>
@@ -119,21 +133,12 @@ export default function App() {
 
       <div className="pt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          {/* Buscador */}
-          <div className="bg-white rounded-xl shadow-lg border border-slate-200 p-4 mb-6 hover:shadow-xl transition-shadow duration-300">
-            <div className="relative">
-              <svg
-                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                />
+          {/* Buscador + Filtro */}
+          <div className="bg-white rounded-xl shadow-lg border border-slate-200 p-4 mb-6 hover:shadow-xl transition-shadow duration-300 flex flex-col sm:flex-row gap-3 items-center">
+            {/* Input de búsqueda */}
+            <div className="flex-1 relative w-full sm:w-auto">
+              <svg className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
               <input
                 type="text"
@@ -144,16 +149,25 @@ export default function App() {
               />
             </div>
 
-            {loading && (
-              <div className="mt-2 flex items-center gap-2 text-xs text-slate-500">
-                <div className="w-3 h-3 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-                <span>Buscando en tiempo real...</span>
-              </div>
-            )}
+            {/* Filtro por sede */}
+            <div className="w-full sm:w-48">
+              <select
+                value={sedeFiltro}
+                onChange={(e) => setSedeFiltro(e.target.value)}
+                className="w-full border border-slate-200 rounded-lg py-2 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              >
+                <option value="">Todas las sedes</option>
+                {sedesDisponibles.map((sede) => (
+                  <option key={sede} value={sede}>
+                    {sede}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
 
           {/* Estadísticas */}
-          {modelo && resultados.length > 0 && (
+          {modelo && resultadosFiltrados.length > 0 && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
               {/* Resultados */}
               <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl shadow-sm border border-blue-200 p-4 hover:shadow-lg hover:scale-105 transition-all duration-200 cursor-pointer">
@@ -163,22 +177,12 @@ export default function App() {
                       Resultados
                     </p>
                     <p className="text-xl font-bold text-slate-800">
-                      {resultados.length}
+                      {resultadosFiltrados.length}
                     </p>
                   </div>
                   <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center shadow-md">
-                    <svg
-                      className="w-5 h-5 text-white"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                      />
+                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
                   </div>
                 </div>
@@ -196,18 +200,8 @@ export default function App() {
                     </p>
                   </div>
                   <div className="w-10 h-10 bg-emerald-500 rounded-lg flex items-center justify-center shadow-md">
-                    <svg
-                      className="w-5 h-5 text-white"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
-                      />
+                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                     </svg>
                   </div>
                 </div>
@@ -225,18 +219,8 @@ export default function App() {
                     </p>
                   </div>
                   <div className="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center shadow-md">
-                    <svg
-                      className="w-5 h-5 text-white"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
-                      />
+                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                     </svg>
                   </div>
                 </div>
@@ -250,25 +234,15 @@ export default function App() {
                       Tasa Activos
                     </p>
                     <p className="text-xl font-bold text-slate-800">
-                      {resultados.length > 0
-                        ? Math.round((itemsActivos / resultados.length) * 100)
+                      {resultadosFiltrados.length > 0
+                        ? Math.round((itemsActivos / resultadosFiltrados.length) * 100)
                         : 0}
                       %
                     </p>
                   </div>
                   <div className="w-10 h-10 bg-purple-500 rounded-lg flex items-center justify-center shadow-md">
-                    <svg
-                      className="w-5 h-5 text-white"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-                      />
+                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                     </svg>
                   </div>
                 </div>
@@ -280,23 +254,11 @@ export default function App() {
           {error && (
             <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-6 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200">
               <div className="flex items-start gap-3">
-                <svg
-                  className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
+                <svg className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 <div>
-                  <p className="font-semibold text-red-800 text-sm">
-                    Error de conexión
-                  </p>
+                  <p className="font-semibold text-red-800 text-sm">Error de conexión</p>
                   <p className="text-red-700 text-xs">{error}</p>
                 </div>
               </div>
@@ -304,7 +266,7 @@ export default function App() {
           )}
 
           {/* Tabla */}
-          {resultados.length > 0 ? (
+          {resultadosFiltrados.length > 0 ? (
             <div className="bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden hover:shadow-xl transition-shadow duration-300">
               <div className="overflow-x-auto">
                 <table className="min-w-full divide-y divide-slate-200">
@@ -319,8 +281,11 @@ export default function App() {
                       <th className="px-4 py-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
                         Accesorio
                       </th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
-                        Stock
+                      <th
+                        className="px-4 py-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider cursor-pointer"
+                        onClick={() => setSortStockDesc(!sortStockDesc)}
+                      >
+                        Stock {sortStockDesc ? "⬇️" : "⬆️"}
                       </th>
                       <th className="px-4 py-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
                         Estado
@@ -330,9 +295,8 @@ export default function App() {
                       </th>
                     </tr>
                   </thead>
-
                   <tbody className="bg-white divide-y divide-slate-100">
-                    {resultados.map((r) => (
+                    {resultadosFiltrados.map((r) => (
                       <tr
                         key={r.id}
                         className="hover:bg-slate-50 transition-all duration-200 hover:shadow-sm cursor-pointer"
@@ -342,30 +306,20 @@ export default function App() {
                             {r.codigo_sap}
                           </span>
                         </td>
-
                         <td className="px-4 py-3">
-                          <div
-                            className="text-sm text-slate-800 font-medium max-w-md truncate"
-                            title={r.modelo}
-                          >
+                          <div className="text-sm text-slate-800 font-medium max-w-md truncate" title={r.modelo}>
                             {r.modelo}
                           </div>
                         </td>
-
                         <td className="px-4 py-3">
-                          <div
-                            className="text-sm text-slate-700 max-w-md truncate"
-                            title={r.accesorio}
-                          >
+                          <div className="text-sm text-slate-700 max-w-md truncate" title={r.accesorio}>
                             {r.accesorio}
                           </div>
                         </td>
-
                         <td className="px-4 py-3 whitespace-nowrap">
                           <span
                             className={`text-sm font-bold ${
-                              r.stock_final === null ||
-                              r.stock_final === undefined
+                              r.stock_final === null || r.stock_final === undefined
                                 ? "text-slate-400"
                                 : r.stock_final === 0
                                 ? "text-red-600"
@@ -377,38 +331,21 @@ export default function App() {
                             {r.stock_final ?? "-"}
                           </span>
                         </td>
-
                         <td className="px-4 py-3 whitespace-nowrap">
                           <span
                             className={`inline-flex items-center px-2.5 py-0.5 text-xs font-medium rounded-full border ${
                               !r.status_equipo
                                 ? "bg-slate-100 text-slate-600 border-slate-200"
-                                : r.status_equipo
-                                    .toLowerCase()
-                                    .includes("activo") ||
-                                  r.status_equipo
-                                    .toLowerCase()
-                                    .includes("disponible") ||
-                                  r.status_equipo
-                                    .toLowerCase()
-                                    .includes("life")
+                                : r.status_equipo.toLowerCase().includes("activo") ||
+                                  r.status_equipo.toLowerCase().includes("disponible") ||
+                                  r.status_equipo.toLowerCase().includes("life")
                                 ? "bg-emerald-100 text-emerald-700 border-emerald-200"
-                                : r.status_equipo
-                                    .toLowerCase()
-                                    .includes("inactivo") ||
-                                  r.status_equipo
-                                    .toLowerCase()
-                                    .includes("baja")
+                                : r.status_equipo.toLowerCase().includes("inactivo") ||
+                                  r.status_equipo.toLowerCase().includes("baja")
                                 ? "bg-red-100 text-red-700 border-red-200"
-                                : r.status_equipo
-                                    .toLowerCase()
-                                    .includes("mantenimiento") ||
-                                  r.status_equipo
-                                    .toLowerCase()
-                                    .includes("reposo") ||
-                                  r.status_equipo
-                                    .toLowerCase()
-                                    .includes("phase")
+                                : r.status_equipo.toLowerCase().includes("mantenimiento") ||
+                                  r.status_equipo.toLowerCase().includes("reposo") ||
+                                  r.status_equipo.toLowerCase().includes("phase")
                                 ? "bg-amber-100 text-amber-700 border-amber-200"
                                 : "bg-blue-100 text-blue-700 border-blue-200"
                             }`}
@@ -416,7 +353,6 @@ export default function App() {
                             {r.status_equipo || "-"}
                           </span>
                         </td>
-
                         <td className="px-4 py-3 whitespace-nowrap">
                           <span className="text-sm text-slate-600 font-medium bg-slate-50 px-2 py-1 rounded border">
                             {r.hoja}
@@ -433,28 +369,14 @@ export default function App() {
             modelo && (
               <div className="bg-white rounded-xl shadow-lg p-8 text-center border-2 border-dashed border-slate-200 hover:border-slate-300 transition-colors duration-200">
                 <div className="w-16 h-16 bg-gradient-to-r from-slate-100 to-slate-200 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <svg
-                    className="w-8 h-8 text-slate-400"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                    />
+                  <svg className="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                   </svg>
                 </div>
-
                 <p className="text-slate-600 text-base mb-2">
                   No se encontraron resultados para{" "}
-                  <span className="font-semibold text-slate-800">
-                    "{modelo}"
-                  </span>
+                  <span className="font-semibold text-slate-800">"{modelo}"</span>
                 </p>
-
                 <p className="text-slate-500 text-sm">
                   Intenta con otro término de búsqueda
                 </p>
@@ -466,25 +388,13 @@ export default function App() {
           {!modelo && !loading && (
             <div className="bg-white rounded-xl shadow-lg p-8 text-center border border-slate-200 hover:shadow-xl transition-shadow duration-300">
               <div className="w-16 h-16 bg-gradient-to-r from-blue-100 to-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg
-                  className="w-8 h-8 text-slate-600"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
-                  />
+                <svg className="w-8 h-8 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                 </svg>
               </div>
-
               <p className="text-slate-800 text-lg font-medium mb-2">
                 Comienza a buscar
               </p>
-
               <p className="text-slate-600">
                 Ingresa el modelo o código SAP para comenzar
               </p>
