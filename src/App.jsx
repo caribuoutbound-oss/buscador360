@@ -111,7 +111,7 @@ export default function App() {
               </div>
             </div>
             <p className="text-slate-300 text-sm hidden sm:block">
-              Sistema de inventario miua miua
+              Sistema de inventario - métricas 😺
             </p>
           </div>
         </div>
