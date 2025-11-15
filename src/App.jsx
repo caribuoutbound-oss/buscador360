@@ -104,14 +104,14 @@ export default function App() {
                 </svg>
               </div>
               <div>
-                <h1 className="text-xl font-bold">Inventario Pro</h1>
+                <h1 className="text-xl font-bold">Inventario 360</h1>
                 <p className="text-slate-300 text-xs -mt-0.5 hidden sm:block">
                   Gestión de equipos
                 </p>
               </div>
             </div>
             <p className="text-slate-300 text-sm hidden sm:block">
-              Sistema de inventario en tiempo real
+              Sistema de inventario miua miua
             </p>
           </div>
         </div>
