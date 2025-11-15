@@ -63,3 +63,7 @@ li {
 ::-webkit-scrollbar-track {
   background-color: transparent;
 }
+
+.glass-card {
+  @apply backdrop-blur-xl bg-white/40 border border-white/60 shadow-xl rounded-2xl p-6;
+}
