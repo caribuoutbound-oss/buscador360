@@ -38,264 +38,261 @@ export default function App() {
     return () => buscarTiempoReal.cancel();
   }, [modelo]);
 
-  // Calculamos estadísticas
   const totalStock = resultados.reduce((sum, r) => sum + (r.stock_final || 0), 0);
   const itemsActivos = resultados.filter(r => 
-    r.status_equipo && (r.status_equipo.toLowerCase().includes("activo") || 
-                        r.status_equipo.toLowerCase().includes("disponible") ||
-                        r.status_equipo.toLowerCase().includes("life"))
+    r.status_equipo && (
+      r.status_equipo.toLowerCase().includes("activo") ||
+      r.status_equipo.toLowerCase().includes("disponible") ||
+      r.status_equipo.toLowerCase().includes("life")
+    )
   ).length;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
-      {/* Header Fijo */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-slate-800 to-slate-900 text-white shadow-xl">
+    <div className="min-h-screen bg-gradient-to-br from-slate-100 to-slate-200">
+      
+      {/* Header Moderno */}
+      <header className="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl bg-white/70 border-b border-white/40 shadow-[0_4px_20px_rgba(0,0,0,0.05)]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            <div className="flex items-center gap-3">
-              <div className="w-9 h-9 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center shadow-lg">
-                <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+
+            <div className="flex items-center gap-3 group">
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 text-white flex items-center justify-center shadow-md transform transition-all duration-300 group-hover:scale-110">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                        d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
                 </svg>
               </div>
-              <div>
-                <h1 className="text-xl font-bold">Inventario Pro</h1>
-                <p className="text-slate-300 text-xs -mt-0.5 hidden sm:block">Gestión de equipos</p>
-              </div>
+              <h1 className="text-xl font-bold text-slate-800 tracking-tight">
+                Inventario Pro
+              </h1>
             </div>
-            <p className="text-slate-300 text-sm hidden sm:block">
-              Sistema de inventario en tiempo real
+
+            <p className="text-slate-500 text-sm hidden sm:block">
+              Gestión de equipos en tiempo real
             </p>
           </div>
         </div>
       </header>
 
-      <div className="pt-16"> {/* Espacio para header fijo */}
+      {/* Contenido */}
+      <div className="pt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          {/* Barra de búsqueda moderna */}
-          <div className="bg-white rounded-xl shadow-lg border border-slate-200 p-4 mb-6 hover:shadow-xl transition-shadow duration-300">
-            <div className="relative">
-              <svg className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+
+          {/* Search UX Mejorado */}
+          <div className="bg-white/80 backdrop-blur-xl border border-white/60 rounded-2xl shadow-lg p-4 mb-6 transition-all hover:shadow-xl">
+            <div className="relative group">
+              <svg className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5 transition-all duration-200 group-focus-within:text-blue-500"
+                   fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
               </svg>
+
               <input
                 type="text"
-                placeholder="Buscar por modelo..."
+                placeholder="Buscar por modelo…"
                 value={modelo}
                 onChange={(e) => setModelo(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm transition-all duration-200"
+                className="w-full bg-white/60 backdrop-blur-xl pl-11 pr-4 py-2 border border-slate-200 rounded-xl 
+                           focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all text-sm"
               />
             </div>
-            
+
             {loading && (
-              <div className="mt-2 flex items-center gap-2 text-xs text-slate-500">
+              <div className="mt-2 flex items-center gap-2 text-xs text-slate-500 animate-pulse">
                 <div className="w-3 h-3 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-                <span>Buscando en tiempo real...</span>
+                <span>Buscando...</span>
               </div>
             )}
           </div>
 
-          {/* Tarjetas de estadísticas con hover */}
+          {/* Estadísticas Modernizadas */}
           {modelo && resultados.length > 0 && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-              <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl shadow-sm border border-blue-200 p-4 hover:shadow-lg hover:scale-105 transition-all duration-200 cursor-pointer">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-xs font-medium text-blue-600 mb-1">Resultados</p>
-                    <p className="text-xl font-bold text-slate-800">{resultados.length}</p>
-                  </div>
-                  <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center shadow-md">
-                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                  </div>
-                </div>
-              </div>
+              
+              {/* CARD */}
+              <StatCard
+                title="Resultados"
+                value={resultados.length}
+                color="from-blue-500 to-blue-600"
+                icon="search"
+              />
 
-              <div className="bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-xl shadow-sm border border-emerald-200 p-4 hover:shadow-lg hover:scale-105 transition-all duration-200 cursor-pointer">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-xs font-medium text-emerald-600 mb-1">Stock Total</p>
-                    <p className="text-xl font-bold text-slate-800">{totalStock.toLocaleString()}</p>
-                  </div>
-                  <div className="w-10 h-10 bg-emerald-500 rounded-lg flex items-center justify-center shadow-md">
-                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                    </svg>
-                  </div>
-                </div>
-              </div>
+              <StatCard
+                title="Stock Total"
+                value={totalStock.toLocaleString()}
+                color="from-emerald-500 to-emerald-600"
+                icon="stack"
+              />
 
-              <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl shadow-sm border border-green-200 p-4 hover:shadow-lg hover:scale-105 transition-all duration-200 cursor-pointer">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-xs font-medium text-green-600 mb-1">Activos</p>
-                    <p className="text-xl font-bold text-slate-800">{itemsActivos}</p>
-                  </div>
-                  <div className="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center shadow-md">
-                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                    </svg>
-                  </div>
-                </div>
-              </div>
+              <StatCard
+                title="Activos"
+                value={itemsActivos}
+                color="from-green-500 to-green-600"
+                icon="check"
+              />
 
-              <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl shadow-sm border border-purple-200 p-4 hover:shadow-lg hover:scale-105 transition-all duration-200 cursor-pointer">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-xs font-medium text-purple-600 mb-1">Tasa Activos</p>
-                    <p className="text-xl font-bold text-slate-800">
-                      {resultados.length > 0 ? Math.round((itemsActivos / resultados.length) * 100) : 0}%
-                    </p>
-                  </div>
-                  <div className="w-10 h-10 bg-purple-500 rounded-lg flex items-center justify-center shadow-md">
-                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                    </svg>
-                  </div>
-                </div>
-              </div>
+              <StatCard
+                title="Tasa Activos"
+                value={`${Math.round((itemsActivos / resultados.length) * 100)}%`}
+                color="from-purple-500 to-purple-600"
+                icon="chart"
+              />
             </div>
           )}
 
-          {/* Error */}
+          {/* Error Moderno */}
           {error && (
-            <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-6 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200">
-              <div className="flex items-start gap-3">
-                <svg className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <div>
-                  <p className="font-semibold text-red-800 text-sm">Error de conexión</p>
-                  <p className="text-red-700 text-xs">{error}</p>
-                </div>
+            <div className="bg-red-50 border border-red-200 p-4 rounded-xl shadow-sm mb-6 flex gap-3">
+              <svg className="w-5 h-5 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
+                      d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+              </svg>
+              <div>
+                <p className="text-sm font-medium text-red-700">Error</p>
+                <p className="text-xs text-red-600">{error}</p>
               </div>
             </div>
           )}
 
-          {/* Tabla profesional con hover */}
+          {/* Tabla Modernizada */}
           {resultados.length > 0 ? (
-            <div className="bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden hover:shadow-xl transition-shadow duration-300">
-              <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-slate-200">
-                  <thead className="bg-gradient-to-r from-slate-50 to-slate-100">
-                    <tr>
-                      <th className="px-4 py-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
-                        Código SAP
-                      </th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
-                        Modelo
-                      </th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
-                        Stock
-                      </th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
-                        Estado
-                      </th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
-                        Sede
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white divide-y divide-slate-100">
-                    {resultados.map((r) => (
-                      <tr
-                        key={r.id}
-                        className="hover:bg-slate-50 transition-all duration-200 hover:shadow-sm cursor-pointer"
-                      >
-                        <td className="px-4 py-3 whitespace-nowrap">
-                          <span className="text-sm font-mono text-slate-600 bg-slate-100 px-2 py-1 rounded border">
-                            {r.codigo_sap}
-                          </span>
-                        </td>
-                        <td className="px-4 py-3">
-                          <div className="text-sm text-slate-800 font-medium max-w-md truncate" title={r.modelo}>
-                            {r.modelo}
-                          </div>
-                        </td>
-                        <td className="px-4 py-3 whitespace-nowrap">
-                          <span
-                            className={`text-sm font-bold ${
-                              r.stock_final === null || r.stock_final === undefined
-                                ? "text-slate-400"
-                                : r.stock_final === 0
-                                ? "text-red-600"
-                                : r.stock_final <= 5
-                                ? "text-amber-600"
-                                : "text-emerald-600"
-                            }`}
-                          >
-                            {r.stock_final ?? "-"}
-                          </span>
-                        </td>
-                        <td className="px-4 py-3 whitespace-nowrap">
-                          <span
-                            className={`inline-flex items-center px-2.5 py-0.5 text-xs font-medium rounded-full border ${
-                              !r.status_equipo
-                                ? "bg-slate-100 text-slate-600 border-slate-200"
-                                : r.status_equipo.toLowerCase().includes("activo") ||
-                                  r.status_equipo.toLowerCase().includes("disponible") ||
-                                  r.status_equipo.toLowerCase().includes("life")
-                                ? "bg-emerald-100 text-emerald-700 border-emerald-200"
-                                : r.status_equipo.toLowerCase().includes("inactivo") ||
-                                  r.status_equipo.toLowerCase().includes("baja")
-                                ? "bg-red-100 text-red-700 border-red-200"
-                                : r.status_equipo.toLowerCase().includes("mantenimiento") ||
-                                  r.status_equipo.toLowerCase().includes("reposo") ||
-                                  r.status_equipo.toLowerCase().includes("phase")
-                                ? "bg-amber-100 text-amber-700 border-amber-200"
-                                : "bg-blue-100 text-blue-700 border-blue-200"
-                            }`}
-                          >
-                            {r.status_equipo || "-"}
-                          </span>
-                        </td>
-                        <td className="px-4 py-3 whitespace-nowrap">
-                          <span className="text-sm text-slate-600 font-medium bg-slate-50 px-2 py-1 rounded border">
-                            {r.hoja}
-                          </span>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
+            <TableResultados resultados={resultados} />
           ) : (
-            !loading && modelo && (
-              <div className="bg-white rounded-xl shadow-lg p-8 text-center border-2 border-dashed border-slate-200 hover:border-slate-300 transition-colors duration-200">
-                <div className="w-16 h-16 bg-gradient-to-r from-slate-100 to-slate-200 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <svg className="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                  </svg>
-                </div>
-                <p className="text-slate-600 text-base mb-2">
-                  No se encontraron resultados para <span className="font-semibold text-slate-800">"{modelo}"</span>
-                </p>
-                <p className="text-slate-500 text-sm">
-                  Intenta con otro término de búsqueda
-                </p>
-              </div>
+            !loading &&
+            modelo && (
+              <EmptyState title={`No se encontraron resultados para "${modelo}"`} />
             )
           )}
 
-          {!modelo && !loading && (
-            <div className="bg-white rounded-xl shadow-lg p-8 text-center border border-slate-200 hover:shadow-xl transition-shadow duration-300">
-              <div className="w-16 h-16 bg-gradient-to-r from-blue-100 to-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                </svg>
-              </div>
-              <p className="text-slate-800 text-lg font-medium mb-2">
-                Comienza a buscar
-              </p>
-              <p className="text-slate-600">
-                Ingresa el modelo de un equipo para comenzar la búsqueda
-              </p>
-            </div>
-          )}
+          {/* Estado inicial */}
+          {!modelo && !loading && <EmptyState title="Comienza a buscar un modelo" />}
         </div>
       </div>
     </div>
+  );
+}
+
+/* ================================
+    COMPONENTES UI MODERNIZADOS
+================================ */
+
+function StatCard({ title, value, color, icon }) {
+  return (
+    <div className="bg-white/80 border border-white/60 backdrop-blur-xl rounded-2xl p-4 shadow-md hover:shadow-xl transition-all">
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-xs text-slate-500 mb-1">{title}</p>
+          <p className="text-lg font-bold text-slate-800">{value}</p>
+        </div>
+        <div className={`w-9 h-9 rounded-xl bg-gradient-to-br ${color} flex items-center justify-center shadow text-white`}>
+          {icon === "search" && <IconSearch />}
+          {icon === "stack" && <IconStack />}
+          {icon === "check" && <IconCheck />}
+          {icon === "chart" && <IconChart />}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function TableResultados({ resultados }) {
+  return (
+    <div className="bg-white/80 backdrop-blur-xl border border-white/60 shadow-xl rounded-2xl overflow-hidden">
+      <div className="overflow-x-auto">
+        <table className="min-w-full divide-y divide-slate-200 text-slate-800">
+          <thead className="bg-slate-50/70 backdrop-blur-xl">
+            <tr>
+              {["SAP", "Modelo", "Stock", "Estado", "Sede"].map((col) => (
+                <th key={col}
+                  className="px-3 py-2 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">
+                  {col}
+                </th>
+              ))}
+            </tr>
+          </thead>
+
+          <tbody className="divide-y divide-slate-100">
+            {resultados.map((r) => (
+              <tr key={r.id} className="hover:bg-slate-50 transition-all">
+                <td className="px-3 py-2">
+                  <span className="text-xs font-mono text-slate-600 bg-slate-100 px-2 py-0.5 rounded">
+                    {r.codigo_sap}
+                  </span>
+                </td>
+
+                <td className="px-3 py-2">
+                  <div className="text-xs font-medium text-slate-700 truncate max-w-xs">{r.modelo}</div>
+                </td>
+
+                <td className="px-3 py-2">
+                  <span className="text-xs font-semibold">
+                    {r.stock_final ?? "-"}
+                  </span>
+                </td>
+
+                <td className="px-3 py-2">
+                  <span className="inline-flex items-center px-2 py-0.5 text-xs rounded-md border bg-slate-50 text-slate-700">
+                    {r.status_equipo || "-"}
+                  </span>
+                </td>
+
+                <td className="px-3 py-2">
+                  <span className="text-xs text-slate-600">{r.hoja}</span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+
+        </table>
+      </div>
+    </div>
+  );
+}
+
+function EmptyState({ title }) {
+  return (
+    <div className="bg-white/80 backdrop-blur-xl border border-white/60 shadow-md rounded-2xl p-10 text-center">
+      <div className="w-14 h-14 bg-slate-100 rounded-xl flex items-center justify-center mx-auto mb-4">
+        <IconSearch className="w-7 h-7 text-slate-500" />
+      </div>
+      <p className="text-slate-700 text-sm font-medium">{title}</p>
+    </div>
+  );
+}
+
+/* Icons */
+function IconSearch() {
+  return (
+    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+    </svg>
+  );
+}
+
+function IconStack() {
+  return (
+    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+            d="M3 7l9-4 9 4-9 4-9-4zm0 4l9 4 9-4m-9 4v6"/>
+    </svg>
+  );
+}
+
+function IconCheck() {
+  return (
+    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+            d="M5 13l4 4L19 7"/>
+    </svg>
+  );
+}
+
+function IconChart() {
+  return (
+    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+            d="M3 3v18h18M9 17V9m4 8V5m4 12v-6"/>
+    </svg>
   );
 }
