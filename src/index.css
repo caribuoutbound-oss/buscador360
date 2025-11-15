@@ -1,45 +1,47 @@
-/* Body */
+/* Tailwind */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Tu CSS personalizado debajo */
 body {
   font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   padding: 20px;
-  background-color: #f9f9f9; /* Fondo más suave */
+  background-color: #f9f9f9;
   color: #333;
   line-height: 1.6;
 }
 
-/* Inputs */
 input {
-  padding: 10px 14px;           /* Más espacio para escribir */
+  padding: 10px 14px;
   margin-right: 8px;
   border: 1px solid #ccc;
-  border-radius: 8px;           /* Bordes un poco más redondeados */
+  border-radius: 8px;
   font-size: 1rem;
   transition: all 0.2s ease;
 }
 
 input:focus {
-  border-color: #3b82f6;        /* Azul suave al enfocar */
+  border-color: #3b82f6;
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
   outline: none;
 }
 
-/* Buttons */
 button {
   padding: 8px 14px;
   border-radius: 8px;
   border: none;
   cursor: pointer;
   font-weight: 500;
-  background-color: #3b82f6;    /* Azul moderno */
+  background-color: #3b82f6;
   color: white;
   transition: all 0.2s ease;
 }
 
 button:hover {
-  background-color: #2563eb;    /* Hover más oscuro */
+  background-color: #2563eb;
 }
 
-/* Lists */
 ul {
   margin-top: 16px;
   padding-left: 20px;
@@ -49,7 +51,6 @@ li {
   margin-bottom: 8px;
 }
 
-/* Opcional: mejorar scroll y responsividad */
 ::-webkit-scrollbar {
   width: 8px;
 }
