@@ -22,15 +22,32 @@ export default function App() {
       setError(null);
 
       try {
-        const { data, error } = await supabase
+        // 1️⃣ Buscar en equipos
+        const { data: equiposData, error: equiposError } = await supabase
           .from("equipos")
           .select("id, hoja, codigo_sap, modelo, stock_final, status_equipo")
           .or(`modelo.ilike.%${texto}%,codigo_sap.ilike.%${texto}%`)
           .limit(50);
+        if (equiposError) throw equiposError;
 
-        if (error) throw error;
+        // 2️⃣ Buscar en accesorios
+        const { data: accesoriosData, error: accesoriosError } = await supabase
+          .from("accesorios")
+          .select("id, codigo_sap, modelo, accesorio")
+          .or(`modelo.ilike.%${texto}%,codigo_sap.ilike.%${texto}%`)
+          .limit(50);
+        if (accesoriosError) throw accesoriosError;
 
-        setResultados(data || []);
+        // 3️⃣ Combinar resultados por codigo_sap o modelo
+        const combinados = equiposData.map((eq) => {
+          const acc = accesoriosData.find(
+            (a) =>
+              a.codigo_sap === eq.codigo_sap || a.modelo === eq.modelo
+          );
+          return { ...eq, accesorio: acc?.accesorio ?? "-" };
+        });
+
+        setResultados(combinados || []);
       } catch (err) {
         setError(err.message);
         setResultados([]);
@@ -300,6 +317,9 @@ export default function App() {
                         Modelo
                       </th>
                       <th className="px-4 py-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
+                        Accesorio
+                      </th>
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
                         Stock
                       </th>
                       <th className="px-4 py-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
@@ -329,6 +349,15 @@ export default function App() {
                             title={r.modelo}
                           >
                             {r.modelo}
+                          </div>
+                        </td>
+
+                        <td className="px-4 py-3">
+                          <div
+                            className="text-sm text-slate-700 max-w-md truncate"
+                            title={r.accesorio}
+                          >
+                            {r.accesorio}
                           </div>
                         </td>
 
