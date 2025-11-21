@@ -52,20 +52,11 @@ export default function App() {
 
         // 3️⃣ Combinar resultados usando códigos y modelos normalizados
         const accesoriosMapByCodigo = {};
-        const accesoriosMapByModelo = {};
 
         accesoriosData.forEach(acc => {
           const codigoNormalizado = normalizarCodigo(acc.codigo_sap);
-          const modeloNormalizado = normalizarTexto(acc.modelo);
-
           if (codigoNormalizado) {
             accesoriosMapByCodigo[codigoNormalizado] = acc;
-          }
-          if (modeloNormalizado) {
-            // Si hay múltiples accesorios con el mismo modelo, se toma el primero (puedes ajustar según necesidad)
-            if (!accesoriosMapByModelo[modeloNormalizado]) {
-              accesoriosMapByModelo[modeloNormalizado] = acc;
-            }
           }
         });
 
@@ -78,11 +69,23 @@ export default function App() {
             acc = accesoriosMapByCodigo[codigoNormalizado];
           }
 
-          // Si no encontró por código, buscar por modelo
+          // Si no encontró por código, buscar por modelo: 
+          // Buscar cualquier accesorio cuyo modelo esté CONTENIDO en el modelo del equipo
           if (!acc) {
-            const modeloNormalizado = normalizarTexto(eq.modelo);
-            if (modeloNormalizado && accesoriosMapByModelo[modeloNormalizado]) {
-              acc = accesoriosMapByModelo[modeloNormalizado];
+            const modeloEquipoNormalizado = normalizarTexto(eq.modelo);
+            
+            // Recorrer todos los accesorios y ver si su modelo está contenido en el modelo del equipo
+            for (const accesorio of accesoriosData) {
+              const modeloAccesorioNormalizado = normalizarTexto(accesorio.modelo);
+              
+              // Si el modelo del accesorio está contenido en el modelo del equipo
+              if (
+                modeloAccesorioNormalizado &&
+                modeloEquipoNormalizado.includes(modeloAccesorioNormalizado)
+              ) {
+                acc = accesorio;
+                break; // Tomamos el primero que coincida
+              }
             }
           }
 
