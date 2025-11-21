@@ -2,6 +2,12 @@ import { useState, useEffect, useCallback } from "react";
 import debounce from "lodash.debounce";
 import { supabase } from "./supabase";
 
+// Función para normalizar los códigos SAP
+const normalizarCodigo = (codigo) => {
+  if (!codigo) return "";
+  return codigo.toString().trim().toUpperCase().replace(/\s+/g, "");
+};
+
 export default function App() {
   const [modelo, setModelo] = useState("");
   const [sedeFiltro, setSedeFiltro] = useState("");
@@ -9,11 +15,8 @@ export default function App() {
   const [resultados, setResultados] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [sortStockDesc, setSortStockDesc] = useState(true); // true = descendente
+  const [sortStockDesc, setSortStockDesc] = useState(true);
 
-  // ================================
-  // 🔍 BÚSQUEDA POR MODELO *O* CÓDIGO SAP
-  // ================================
   const buscarTiempoReal = useCallback(
     debounce(async (texto) => {
       if (!texto.trim()) {
@@ -41,11 +44,18 @@ export default function App() {
           .limit(50);
         if (accesoriosError) throw accesoriosError;
 
-        // 3️⃣ Combinar resultados por codigo_sap o modelo
+        // 3️⃣ Combinar resultados usando códigos normalizados
+        const accesoriosMap = {};
+        accesoriosData.forEach(acc => {
+          const codigoNormalizado = normalizarCodigo(acc.codigo_sap);
+          if (codigoNormalizado) {
+            accesoriosMap[codigoNormalizado] = acc;
+          }
+        });
+
         const combinados = equiposData.map((eq) => {
-          const acc = accesoriosData.find(
-            (a) => a.codigo_sap === eq.codigo_sap || a.modelo === eq.modelo
-          );
+          const codigoNormalizado = normalizarCodigo(eq.codigo_sap);
+          const acc = accesoriosMap[codigoNormalizado];
           return { ...eq, accesorio: acc?.accesorio ?? "-" };
         });
 
