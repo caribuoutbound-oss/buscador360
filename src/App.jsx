@@ -8,6 +8,12 @@ const normalizarCodigo = (codigo) => {
   return codigo.toString().trim().toUpperCase().replace(/\s+/g, "");
 };
 
+// Función para normalizar texto (modelos): quitar espacios extra, convertir a mayúsculas
+const normalizarTexto = (texto) => {
+  if (!texto) return "";
+  return texto.toString().trim().toUpperCase().replace(/\s+/g, " ");
+};
+
 export default function App() {
   const [modelo, setModelo] = useState("");
   const [sedeFiltro, setSedeFiltro] = useState("");
@@ -44,18 +50,42 @@ export default function App() {
           .limit(50);
         if (accesoriosError) throw accesoriosError;
 
-        // 3️⃣ Combinar resultados usando códigos normalizados
-        const accesoriosMap = {};
+        // 3️⃣ Combinar resultados usando códigos y modelos normalizados
+        const accesoriosMapByCodigo = {};
+        const accesoriosMapByModelo = {};
+
         accesoriosData.forEach(acc => {
           const codigoNormalizado = normalizarCodigo(acc.codigo_sap);
+          const modeloNormalizado = normalizarTexto(acc.modelo);
+
           if (codigoNormalizado) {
-            accesoriosMap[codigoNormalizado] = acc;
+            accesoriosMapByCodigo[codigoNormalizado] = acc;
+          }
+          if (modeloNormalizado) {
+            // Si hay múltiples accesorios con el mismo modelo, se toma el primero (puedes ajustar según necesidad)
+            if (!accesoriosMapByModelo[modeloNormalizado]) {
+              accesoriosMapByModelo[modeloNormalizado] = acc;
+            }
           }
         });
 
         const combinados = equiposData.map((eq) => {
+          let acc = null;
+
+          // Primero, buscar por código SAP (prioritario)
           const codigoNormalizado = normalizarCodigo(eq.codigo_sap);
-          const acc = accesoriosMap[codigoNormalizado];
+          if (codigoNormalizado && accesoriosMapByCodigo[codigoNormalizado]) {
+            acc = accesoriosMapByCodigo[codigoNormalizado];
+          }
+
+          // Si no encontró por código, buscar por modelo
+          if (!acc) {
+            const modeloNormalizado = normalizarTexto(eq.modelo);
+            if (modeloNormalizado && accesoriosMapByModelo[modeloNormalizado]) {
+              acc = accesoriosMapByModelo[modeloNormalizado];
+            }
+          }
+
           return { ...eq, accesorio: acc?.accesorio ?? "-" };
         });
 
