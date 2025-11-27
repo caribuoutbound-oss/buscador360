@@ -74,22 +74,17 @@ export default function App() {
             acc = accesoriosMapByCodigo[codigoNormalizado];
           }
 
-          // Si no encontró por código, buscar por modelo: 
-          // Buscar cualquier accesorio cuyo modelo esté CONTENIDO en el modelo del equipo
+          // Si no encontró por código, buscar por modelo
           if (!acc) {
             const modeloEquipoNormalizado = normalizarTexto(eq.modelo);
-            
-            // Recorrer todos los accesorios y ver si su modelo está contenido en el modelo del equipo
             for (const accesorio of accesoriosData) {
               const modeloAccesorioNormalizado = normalizarTexto(accesorio.modelo);
-              
-              // Si el modelo del accesorio está contenido en el modelo del equipo
               if (
                 modeloAccesorioNormalizado &&
                 modeloEquipoNormalizado.includes(modeloAccesorioNormalizado)
               ) {
                 acc = accesorio;
-                break; // Tomamos el primero que coincida
+                break;
               }
             }
           }
@@ -162,7 +157,7 @@ export default function App() {
         .from("especificaciones")
         .select("*")
         .eq("codigo_sap", normalizarCodigo(codigoSap))
-        .single(); // Solo esperamos un resultado
+        .single();
 
       if (error && error.code !== "PGRST116") {
         throw error;
@@ -225,7 +220,6 @@ export default function App() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           {/* Buscador + Filtro */}
           <div className="bg-white rounded-xl shadow-lg border border-slate-200 p-4 mb-6 hover:shadow-xl transition-shadow duration-300 flex flex-col sm:flex-row gap-3 items-center">
-            {/* Input de búsqueda */}
             <div className="flex-1 relative w-full sm:w-auto">
               <svg className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -239,7 +233,6 @@ export default function App() {
               />
             </div>
 
-            {/* Filtro por sede */}
             <div className="w-full sm:w-48">
               <select
                 value={sedeFiltro}
@@ -259,16 +252,11 @@ export default function App() {
           {/* Estadísticas */}
           {modelo && resultadosFiltrados.length > 0 && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-              {/* Resultados */}
               <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl shadow-sm border border-blue-200 p-4 hover:shadow-lg hover:scale-105 transition-all duration-200 cursor-pointer">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-xs font-medium text-blue-600 mb-1">
-                      Resultados
-                    </p>
-                    <p className="text-xl font-bold text-slate-800">
-                      {resultadosFiltrados.length}
-                    </p>
+                    <p className="text-xs font-medium text-blue-600 mb-1">Resultados</p>
+                    <p className="text-xl font-bold text-slate-800">{resultadosFiltrados.length}</p>
                   </div>
                   <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center shadow-md">
                     <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -278,16 +266,11 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Stock total */}
               <div className="bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-xl shadow-sm border border-emerald-200 p-4 hover:shadow-lg hover:scale-105 transition-all duration-200 cursor-pointer">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-xs font-medium text-emerald-600 mb-1">
-                      Stock Total
-                    </p>
-                    <p className="text-xl font-bold text-slate-800">
-                      {totalStock.toLocaleString()}
-                    </p>
+                    <p className="text-xs font-medium text-emerald-600 mb-1">Stock Total</p>
+                    <p className="text-xl font-bold text-slate-800">{totalStock.toLocaleString()}</p>
                   </div>
                   <div className="w-10 h-10 bg-emerald-500 rounded-lg flex items-center justify-center shadow-md">
                     <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -297,16 +280,11 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Activos */}
               <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl shadow-sm border border-green-200 p-4 hover:shadow-lg hover:scale-105 transition-all duration-200 cursor-pointer">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-xs font-medium text-green-600 mb-1">
-                      Activos
-                    </p>
-                    <p className="text-xl font-bold text-slate-800">
-                      {itemsActivos}
-                    </p>
+                    <p className="text-xs font-medium text-green-600 mb-1">Activos</p>
+                    <p className="text-xl font-bold text-slate-800">{itemsActivos}</p>
                   </div>
                   <div className="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center shadow-md">
                     <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -316,13 +294,10 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Tasa activos */}
               <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl shadow-sm border border-purple-200 p-4 hover:shadow-lg hover:scale-105 transition-all duration-200 cursor-pointer">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-xs font-medium text-purple-600 mb-1">
-                      Tasa Activos
-                    </p>
+                    <p className="text-xs font-medium text-purple-600 mb-1">Tasa Activos</p>
                     <p className="text-xl font-bold text-slate-800">
                       {resultadosFiltrados.length > 0
                         ? Math.round((itemsActivos / resultadosFiltrados.length) * 100)
@@ -383,7 +358,7 @@ export default function App() {
                       <th className="px-4 py-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
                         Sede
                       </th>
-                      {/* 👇 Nueva columna: Ver Especificaciones */}
+                      {/* 👇 Nueva columna: Especificaciones (con botón moderno) */}
                       <th className="px-4 py-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
                         Especificaciones
                       </th>
@@ -452,20 +427,25 @@ export default function App() {
                             {r.hoja}
                           </span>
                         </td>
-                        {/* 👇 Botón para abrir modal de especificaciones */}
+                        {/* 👇 BOTÓN MODERNO AQUÍ */}
                         <td className="px-4 py-3 whitespace-nowrap">
                           <button
-                            onClick={() => {
+                            onClick={(e) => {
+                              e.stopPropagation(); // Previene conflicto si agregas clic en fila después
                               setSelectedCodigoSap(r.codigo_sap);
                               cargarEspecificaciones(r.codigo_sap);
                             }}
-                            className="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center gap-1 transition-colors"
+                            className="flex items-center justify-center w-8 h-8 rounded-full border border-slate-200 bg-white text-slate-500 hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700 transition-all duration-200 group"
                             title="Ver especificaciones técnicas"
                           >
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg 
+                              className="w-4 h-4 group-hover:scale-110 transition-transform" 
+                              fill="none" 
+                              stroke="currentColor" 
+                              viewBox="0 0 24 24"
+                            >
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
-                            Ver
                           </button>
                         </td>
                       </tr>
@@ -522,7 +502,6 @@ export default function App() {
             className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Header del modal */}
             <div className="flex items-center justify-between p-4 border-b border-slate-200 bg-gradient-to-r from-slate-50 to-slate-100 rounded-t-xl">
               <h2 className="text-lg font-bold text-slate-800">
                 Especificaciones Técnicas
@@ -540,7 +519,6 @@ export default function App() {
               </button>
             </div>
 
-            {/* Contenido */}
             <div className="p-4">
               {loadingSpecs ? (
                 <div className="flex justify-center py-6">
