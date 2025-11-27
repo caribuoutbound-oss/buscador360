@@ -23,6 +23,11 @@ export default function App() {
   const [error, setError] = useState(null);
   const [sortStockDesc, setSortStockDesc] = useState(true);
 
+  // 👇 Estado para el modal de especificaciones
+  const [selectedCodigoSap, setSelectedCodigoSap] = useState(null);
+  const [especificaciones, setEspecificaciones] = useState(null);
+  const [loadingSpecs, setLoadingSpecs] = useState(false);
+
   const buscarTiempoReal = useCallback(
     debounce(async (texto) => {
       if (!texto.trim()) {
@@ -144,6 +149,48 @@ export default function App() {
       r.status_equipo.toLowerCase().includes("disponible") ||
       r.status_equipo.toLowerCase().includes("life"))
   ).length;
+
+  // ================================
+  // 🔍 Función para cargar especificaciones
+  // ================================
+  const cargarEspecificaciones = async (codigoSap) => {
+    if (!codigoSap) return;
+
+    setLoadingSpecs(true);
+    try {
+      const { data, error } = await supabase
+        .from("especificaciones")
+        .select("*")
+        .eq("codigo_sap", normalizarCodigo(codigoSap))
+        .single(); // Solo esperamos un resultado
+
+      if (error && error.code !== "PGRST116") {
+        throw error;
+      }
+
+      setEspecificaciones(data || null);
+    } catch (err) {
+      console.error("Error al cargar especificaciones:", err);
+      setEspecificaciones(null);
+    } finally {
+      setLoadingSpecs(false);
+    }
+  };
+
+  // ================================
+  // 🔑 Cerrar modal con Esc
+  // ================================
+  useEffect(() => {
+    const handleEsc = (e) => {
+      if (e.key === "Escape" && selectedCodigoSap) {
+        setSelectedCodigoSap(null);
+        setEspecificaciones(null);
+      }
+    };
+
+    window.addEventListener("keydown", handleEsc);
+    return () => window.removeEventListener("keydown", handleEsc);
+  }, [selectedCodigoSap]);
 
   // ================================
   // UI COMPLETA
@@ -336,13 +383,17 @@ export default function App() {
                       <th className="px-4 py-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
                         Sede
                       </th>
+                      {/* 👇 Nueva columna: Ver Especificaciones */}
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
+                        Especificaciones
+                      </th>
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-slate-100">
                     {resultadosFiltrados.map((r) => (
                       <tr
                         key={r.id}
-                        className="hover:bg-slate-50 transition-all duration-200 hover:shadow-sm cursor-pointer"
+                        className="hover:bg-slate-50 transition-all duration-200 hover:shadow-sm"
                       >
                         <td className="px-4 py-3 whitespace-nowrap">
                           <span className="text-sm font-mono text-slate-600 bg-slate-100 px-2 py-1 rounded border">
@@ -401,6 +452,22 @@ export default function App() {
                             {r.hoja}
                           </span>
                         </td>
+                        {/* 👇 Botón para abrir modal de especificaciones */}
+                        <td className="px-4 py-3 whitespace-nowrap">
+                          <button
+                            onClick={() => {
+                              setSelectedCodigoSap(r.codigo_sap);
+                              cargarEspecificaciones(r.codigo_sap);
+                            }}
+                            className="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center gap-1 transition-colors"
+                            title="Ver especificaciones técnicas"
+                          >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            Ver
+                          </button>
+                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -445,6 +512,65 @@ export default function App() {
           )}
         </div>
       </div>
+
+      {/* ================================ */}
+      {/* Modal de Especificaciones */}
+      {/* ================================ */}
+      {selectedCodigoSap && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50 backdrop-blur-sm">
+          <div
+            className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header del modal */}
+            <div className="flex items-center justify-between p-4 border-b border-slate-200 bg-gradient-to-r from-slate-50 to-slate-100 rounded-t-xl">
+              <h2 className="text-lg font-bold text-slate-800">
+                Especificaciones Técnicas
+              </h2>
+              <button
+                onClick={() => {
+                  setSelectedCodigoSap(null);
+                  setEspecificaciones(null);
+                }}
+                className="text-slate-500 hover:text-slate-700 transition-colors"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Contenido */}
+            <div className="p-4">
+              {loadingSpecs ? (
+                <div className="flex justify-center py-6">
+                  <div className="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                </div>
+              ) : especificaciones ? (
+                <div className="space-y-3">
+                  {Object.entries(especificaciones)
+                    .filter(([key]) => !['id', 'created_at'].includes(key))
+                    .map(([key, value]) => (
+                      <div key={key} className="flex">
+                        <span className="font-medium text-slate-600 min-w-[140px] capitalize">
+                          {key.replace(/_/g, " ")}:
+                        </span>
+                        <span className="text-slate-800 ml-2">
+                          {value || "-"}
+                        </span>
+                      </div>
+                    ))}
+                </div>
+              ) : (
+                <div className="text-center py-6 text-slate-500">
+                  <p>No se encontraron especificaciones para este equipo.</p>
+                  <p className="text-sm mt-1">Código SAP: {selectedCodigoSap}</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
