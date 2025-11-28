@@ -506,38 +506,47 @@ export default function App() {
               <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400"></div>
             </div>
 
-            <div className="p-5 overflow-y-auto max-h-[calc(85vh-90px)] custom-scrollbar text-sm">
-              {loadingSpecs ? (
-                <div className="flex flex-col items-center justify-center py-10">
-                  <div className="relative w-14 h-14 mb-3">
-                    <div className="absolute inset-0 border-3 border-blue-200 rounded-full"></div>
-                    <div className="absolute inset-0 border-3 border-blue-600 rounded-full border-t-transparent animate-spin"></div>
-                  </div>
-                  <p className="text-slate-600 font-medium text-sm">Cargando especificaciones...</p>
-                </div>
-              ) : especificaciones ? (
-                <div className="space-y-2.5">
-                  {Object.entries(especificaciones)
-                    .filter(([key]) => !['id', 'created_at'].includes(key))
-                    .map(([key, value], index) => (
-                      <div 
-                        key={key} 
-                        className="flex items-start gap-3 p-3 bg-gradient-to-r from-slate-50/80 to-blue-50/50 rounded-lg border border-slate-200/50"
-                      >
-                        <div className="flex-shrink-0 w-7 h-7 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-md flex items-center justify-center">
-                          <span className="text-white text-[10px] font-bold">{index + 1}</span>
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <span className="font-semibold text-slate-700 capitalize text-[12px] whitespace-nowrap mr-2">
-                            {key.replace(/_/g, " ")}:
-                          </span>
-                          <span className="text-slate-800 text-[13px] break-words">
-                            {value || <span className="text-slate-400 italic">No especificado</span>}
-                          </span>
-                        </div>
-                      </div>
-                    ))}
-                </div>
+{/* Contenido del Modal */}
+<div className="p-5 overflow-y-auto max-h-[calc(85vh-90px)] custom-scrollbar text-sm">
+  {loadingSpecs ? (
+    <div className="flex flex-col items-center justify-center py-10">
+      <div className="relative w-14 h-14 mb-3">
+        <div className="absolute inset-0 border-3 border-blue-200 rounded-full"></div>
+        <div className="absolute inset-0 border-3 border-blue-600 rounded-full border-t-transparent animate-spin"></div>
+      </div>
+      <p className="text-slate-600 font-medium text-sm">Cargando especificaciones...</p>
+    </div>
+  ) : especificaciones ? (
+    <div className="overflow-hidden">
+      <table className="w-full text-xs leading-tight">
+        <tbody>
+          {Object.entries(especificaciones)
+            .filter(([key]) => !['id', 'created_at', 'codigo_sap'].includes(key))
+            .map(([key, value]) => (
+              <tr key={key} className="border-b border-slate-100 last:border-0 hover:bg-slate-50/50">
+                <td className="w-2/5 py-2.5 px-2 font-medium text-slate-600 capitalize whitespace-nowrap">
+                  {key.replace(/_/g, " ")}:
+                </td>
+                <td className="w-3/5 py-2.5 px-2 text-slate-800 break-words">
+                  {value || <span className="text-slate-400 italic">—</span>}
+                </td>
+              </tr>
+            ))}
+        </tbody>
+      </table>
+    </div>
+  ) : (
+    <div className="flex flex-col items-center justify-center py-10">
+      <div className="w-16 h-16 bg-gradient-to-br from-slate-100 to-slate-200 rounded-full flex items-center justify-center mb-3 shadow">
+        <svg className="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      </div>
+      <p className="text-slate-700 font-semibold text-base mb-1">No hay especificaciones disponibles</p>
+      <p className="text-slate-500 text-sm">Código SAP: {selectedCodigoSap}</p>
+    </div>
+  )}
+</div>
               ) : (
                 <div className="flex flex-col items-center justify-center py-10">
                   <div className="w-16 h-16 bg-gradient-to-br from-slate-100 to-slate-200 rounded-full flex items-center justify-center mb-3 shadow">
