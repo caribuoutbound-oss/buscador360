@@ -8,7 +8,7 @@ const normalizarCodigo = (codigo) => {
   return codigo.toString().trim().toUpperCase().replace(/\s+/g, "");
 };
 
-// Función para normalizar texto (modelos): quitar espacios extra, convertir a mayúsculas
+// Función para normalizar texto (modelos)
 const normalizarTexto = (texto) => {
   if (!texto) return "";
   return texto.toString().trim().toUpperCase().replace(/\s+/g, " ");
@@ -23,7 +23,7 @@ export default function App() {
   const [error, setError] = useState(null);
   const [sortStockDesc, setSortStockDesc] = useState(true);
 
-  // 👇 Estado para el modal de especificaciones
+  // Estado para el modal de especificaciones
   const [selectedCodigoSap, setSelectedCodigoSap] = useState(null);
   const [especificaciones, setEspecificaciones] = useState(null);
   const [loadingSpecs, setLoadingSpecs] = useState(false);
@@ -39,7 +39,6 @@ export default function App() {
       setError(null);
 
       try {
-        // 1️⃣ Buscar en equipos
         const { data: equiposData, error: equiposError } = await supabase
           .from("equipos")
           .select("id, hoja, codigo_sap, modelo, stock_final, status_equipo")
@@ -47,7 +46,6 @@ export default function App() {
           .limit(50);
         if (equiposError) throw equiposError;
 
-        // 2️⃣ Buscar en accesorios
         const { data: accesoriosData, error: accesoriosError } = await supabase
           .from("accesorios")
           .select("id, codigo_sap, modelo, accesorio")
@@ -55,9 +53,7 @@ export default function App() {
           .limit(50);
         if (accesoriosError) throw accesoriosError;
 
-        // 3️⃣ Combinar resultados usando códigos y modelos normalizados
         const accesoriosMapByCodigo = {};
-
         accesoriosData.forEach(acc => {
           const codigoNormalizado = normalizarCodigo(acc.codigo_sap);
           if (codigoNormalizado) {
@@ -67,14 +63,11 @@ export default function App() {
 
         const combinados = equiposData.map((eq) => {
           let acc = null;
-
-          // Primero, buscar por código SAP (prioritario)
           const codigoNormalizado = normalizarCodigo(eq.codigo_sap);
           if (codigoNormalizado && accesoriosMapByCodigo[codigoNormalizado]) {
             acc = accesoriosMapByCodigo[codigoNormalizado];
           }
 
-          // Si no encontró por código, buscar por modelo
           if (!acc) {
             const modeloEquipoNormalizado = normalizarTexto(eq.modelo);
             for (const accesorio of accesoriosData) {
@@ -108,9 +101,6 @@ export default function App() {
     return () => buscarTiempoReal.cancel();
   }, [modelo]);
 
-  // ================================
-  // 🔹 Actualizar sedes disponibles
-  // ================================
   useEffect(() => {
     const sedes = Array.from(new Set(resultados.map(r => r.hoja).filter(Boolean)));
     setSedesDisponibles(sedes);
@@ -120,9 +110,6 @@ export default function App() {
     }
   }, [resultados]);
 
-  // ================================
-  // 🔹 Aplicar filtro por sede
-  // ================================
   const resultadosFiltrados = resultados
     .filter(r => (sedeFiltro ? r.hoja === sedeFiltro : true))
     .sort((a, b) => {
@@ -130,9 +117,6 @@ export default function App() {
       return (a.stock_final || 0) - (b.stock_final || 0);
     });
 
-  // ================================
-  // 📊 CÁLCULOS
-  // ================================
   const totalStock = resultadosFiltrados.reduce(
     (sum, r) => sum + (r.stock_final || 0),
     0
@@ -145,9 +129,6 @@ export default function App() {
       r.status_equipo.toLowerCase().includes("life"))
   ).length;
 
-  // ================================
-  // 🔍 Función para cargar especificaciones
-  // ================================
   const cargarEspecificaciones = async (codigoSap) => {
     if (!codigoSap) return;
 
@@ -172,9 +153,6 @@ export default function App() {
     }
   };
 
-  // ================================
-  // 🔑 Cerrar modal con Esc
-  // ================================
   useEffect(() => {
     const handleEsc = (e) => {
       if (e.key === "Escape" && selectedCodigoSap) {
@@ -187,9 +165,6 @@ export default function App() {
     return () => window.removeEventListener("keydown", handleEsc);
   }, [selectedCodigoSap]);
 
-  // ================================
-  // UI COMPLETA
-  // ================================
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
       {/* Header Fijo */}
@@ -315,7 +290,6 @@ export default function App() {
             </div>
           )}
 
-          {/* Error */}
           {error && (
             <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-6 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200">
               <div className="flex items-start gap-3">
@@ -337,31 +311,18 @@ export default function App() {
                 <table className="min-w-full divide-y divide-slate-200">
                   <thead className="bg-gradient-to-r from-slate-50 to-slate-100">
                     <tr>
-                      <th className="px-4 py-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
-                        Código SAP
-                      </th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
-                        Modelo
-                      </th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
-                        Accesorio
-                      </th>
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">Código SAP</th>
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">Modelo</th>
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">Accesorio</th>
                       <th
                         className="px-4 py-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider cursor-pointer"
                         onClick={() => setSortStockDesc(!sortStockDesc)}
                       >
                         Stock {sortStockDesc ? "⬇️" : "⬆️"}
                       </th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
-                        Estado
-                      </th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
-                        Sede
-                      </th>
-                      {/* 👇 Nueva columna: Especificaciones (con botón moderno) */}
-                      <th className="px-4 py-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
-                        Especificaciones
-                      </th>
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">Estado</th>
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">Sede</th>
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">Especificaciones</th>
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-slate-100">
@@ -427,24 +388,29 @@ export default function App() {
                             {r.hoja}
                           </span>
                         </td>
-                        {/* 👇 BOTÓN MODERNO AQUÍ */}
+                        {/* ✨ Botón moderno con micro-interacción */}
                         <td className="px-4 py-3 whitespace-nowrap">
                           <button
                             onClick={(e) => {
-                              e.stopPropagation(); // Previene conflicto si agregas clic en fila después
+                              e.stopPropagation();
                               setSelectedCodigoSap(r.codigo_sap);
                               cargarEspecificaciones(r.codigo_sap);
                             }}
-                            className="flex items-center justify-center w-8 h-8 rounded-full border border-slate-200 bg-white text-slate-500 hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700 transition-all duration-200 group"
+                            className="relative flex items-center justify-center w-9 h-9 rounded-full bg-slate-100 text-slate-600 hover:bg-blue-500 hover:text-white transition-all duration-200 shadow-sm hover:shadow-md group"
                             title="Ver especificaciones técnicas"
                           >
-                            <svg 
-                              className="w-4 h-4 group-hover:scale-110 transition-transform" 
-                              fill="none" 
-                              stroke="currentColor" 
+                            <svg
+                              className="w-4 h-4 transition-transform group-hover:scale-110"
+                              fill="none"
+                              stroke="currentColor"
                               viewBox="0 0 24 24"
                             >
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                              />
                             </svg>
                           </button>
                         </td>
@@ -474,7 +440,6 @@ export default function App() {
             )
           )}
 
-          {/* Pantalla de inicio */}
           {!modelo && !loading && (
             <div className="bg-white rounded-xl shadow-lg p-8 text-center border border-slate-200 hover:shadow-xl transition-shadow duration-300">
               <div className="w-16 h-16 bg-gradient-to-r from-blue-100 to-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -482,67 +447,79 @@ export default function App() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                 </svg>
               </div>
-              <p className="text-slate-800 text-lg font-medium mb-2">
-                Comienza a buscar
-              </p>
-              <p className="text-slate-600">
-                Ingresa el modelo o código SAP para comenzar
-              </p>
+              <p className="text-slate-800 text-lg font-medium mb-2">Comienza a buscar</p>
+              <p className="text-slate-600">Ingresa el modelo o código SAP para comenzar</p>
             </div>
           )}
         </div>
       </div>
 
-      {/* ================================ */}
-      {/* Modal de Especificaciones */}
-      {/* ================================ */}
+      {/* ✨ Modal moderno con animación */}
       {selectedCodigoSap && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50 backdrop-blur-sm">
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-40 backdrop-blur-sm transition-opacity duration-300"
+          onClick={() => {
+            setSelectedCodigoSap(null);
+            setEspecificaciones(null);
+          }}
+        >
           <div
-            className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+            className="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[85vh] overflow-y-auto transform transition-all duration-300 ease-out scale-95 opacity-0 animate-in fade-in zoom-in-95"
             onClick={(e) => e.stopPropagation()}
+            style={{ animation: "fadeInScale 0.25s ease-out forwards" }}
           >
-            <div className="flex items-center justify-between p-4 border-b border-slate-200 bg-gradient-to-r from-slate-50 to-slate-100 rounded-t-xl">
-              <h2 className="text-lg font-bold text-slate-800">
-                Especificaciones Técnicas
-              </h2>
+            <style jsx>{`
+              @keyframes fadeInScale {
+                from {
+                  opacity: 0;
+                  transform: scale(0.95);
+                }
+                to {
+                  opacity: 1;
+                  transform: scale(1);
+                }
+              }
+            `}</style>
+
+            <div className="flex items-center justify-between p-3.5 border-b border-slate-200 bg-gradient-to-r from-slate-50 to-slate-100 rounded-t-xl">
+              <h2 className="text-base font-semibold text-slate-800">Especificaciones Técnicas</h2>
               <button
                 onClick={() => {
                   setSelectedCodigoSap(null);
                   setEspecificaciones(null);
                 }}
-                className="text-slate-500 hover:text-slate-700 transition-colors"
+                className="text-slate-500 hover:text-slate-800 transition-colors rounded-full p-1 hover:bg-slate-200"
               >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
             </div>
 
-            <div className="p-4">
+            <div className="p-4 text-sm">
               {loadingSpecs ? (
-                <div className="flex justify-center py-6">
-                  <div className="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                <div className="flex justify-center py-4">
+                  <div className="w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
                 </div>
               ) : especificaciones ? (
-                <div className="space-y-3">
+                <div className="space-y-2.5">
                   {Object.entries(especificaciones)
                     .filter(([key]) => !['id', 'created_at'].includes(key))
                     .map(([key, value]) => (
                       <div key={key} className="flex">
-                        <span className="font-medium text-slate-600 min-w-[140px] capitalize">
+                        <span className="font-medium text-slate-600 min-w-[120px] capitalize text-xs">
                           {key.replace(/_/g, " ")}:
                         </span>
-                        <span className="text-slate-800 ml-2">
+                        <span className="text-slate-800 ml-2 text-sm">
                           {value || "-"}
                         </span>
                       </div>
                     ))}
                 </div>
               ) : (
-                <div className="text-center py-6 text-slate-500">
+                <div className="text-center py-4 text-slate-500 text-sm">
                   <p>No se encontraron especificaciones para este equipo.</p>
-                  <p className="text-sm mt-1">Código SAP: {selectedCodigoSap}</p>
+                  <p className="mt-1 opacity-80">Código SAP: {selectedCodigoSap}</p>
                 </div>
               )}
             </div>
