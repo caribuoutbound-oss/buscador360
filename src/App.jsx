@@ -539,15 +539,6 @@ export default function App() {
                 <p className="text-xs text-slate-500">
                   {Object.entries(especificaciones).filter(([key]) => !["id", "created_at"].includes(key)).length} especificaciones encontradas
                 </p>
-                <button
-                  onClick={() => {
-                    setSelectedCodigoSap(null);
-                    setEspecificaciones(null);
-                  }}
-                  className="text-xs font-medium text-slate-600 hover:text-white-600 transition-colors duration-200"
-                >
-                  Presiona ESC para cerrar
-                </button>
               </div>
             )}
           </div>
