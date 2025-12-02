@@ -454,7 +454,7 @@ export default function App() {
         </div>
       </div>
 
-      {/* ✨ Modal moderno con animación */}
+      {/* ✨ Modal moderno con iconos y mejor UX */}
       {selectedCodigoSap && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-40 backdrop-blur-sm transition-opacity duration-300"
@@ -464,7 +464,7 @@ export default function App() {
           }}
         >
           <div
-            className="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[85vh] overflow-y-auto transform transition-all duration-300 ease-out scale-95 opacity-0 animate-in fade-in zoom-in-95"
+            className="bg-white rounded-xl shadow-lg max-w-2xl w-full max-h-[85vh] overflow-y-auto transform transition-all duration-300 ease-out scale-95 opacity-0 animate-in fade-in zoom-in-95"
             onClick={(e) => e.stopPropagation()}
             style={{ animation: "fadeInScale 0.25s ease-out forwards" }}
           >
@@ -481,40 +481,144 @@ export default function App() {
               }
             `}</style>
 
-            <div className="flex items-center justify-between p-3.5 border-b border-slate-200 bg-gradient-to-r from-slate-50 to-slate-100 rounded-t-xl">
-              <h2 className="text-base font-semibold text-slate-800">Especificaciones Técnicas</h2>
+            {/* Header del modal */}
+            <div className="flex items-center justify-between px-4 py-3 border-b border-slate-100 bg-slate-50 rounded-t-xl">
+              <h2 className="text-base font-semibold text-slate-800 flex items-center gap-2">
+                <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h6M7 9a2 2 0 012-2h6a2 2 0 012 2v6a2 2 0 01-2 2H9a2 2 0 01-2-2V9z" />
+                </svg>
+                Especificaciones Técnicas
+              </h2>
               <button
                 onClick={() => {
                   setSelectedCodigoSap(null);
                   setEspecificaciones(null);
                 }}
-                className="text-slate-500 hover:text-slate-800 transition-colors rounded-full p-1 hover:bg-slate-200"
+                className="w-8 h-8 flex items-center justify-center rounded-full text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all duration-200 group"
+                title="Cerrar especificaciones"
               >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg 
+                  className="w-4 h-4 group-hover:rotate-90 transition-transform" 
+                  fill="none" 
+                  stroke="currentColor" 
+                  viewBox="0 0 24 24"
+                >
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
             </div>
 
-            <div className="p-4 text-sm">
+            <div className="p-4 space-y-3">
               {loadingSpecs ? (
-                <div className="flex justify-center py-4">
+                <div className="flex justify-center py-6">
                   <div className="w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
                 </div>
               ) : especificaciones ? (
                 <div className="space-y-2.5">
                   {Object.entries(especificaciones)
                     .filter(([key]) => !['id', 'created_at'].includes(key))
-                    .map(([key, value]) => (
-                      <div key={key} className="flex">
-                        <span className="font-medium text-slate-600 min-w-[120px] capitalize text-xs">
-                          {key.replace(/_/g, " ")}:
-                        </span>
-                        <span className="text-slate-800 ml-2 text-sm">
-                          {value || "-"}
-                        </span>
-                      </div>
-                    ))}
+                    .map(([key, value]) => {
+                      const getIcon = (field) => {
+                        switch (field.toLowerCase()) {
+                          case 'codigo_sap':
+                            return (
+                              <svg className="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h6M7 9a2 2 0 012-2h6a2 2 0 012 2v6a2 2 0 01-2 2H9a2 2 0 01-2-2V9z" />
+                              </svg>
+                            );
+                          case 'modelo':
+                            return (
+                              <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                              </svg>
+                            );
+                          case 'pantalla':
+                            return (
+                              <svg className="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1.75-3M9 12h6v6H9v-6z" />
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                              </svg>
+                            );
+                          case 'procesador':
+                            return (
+                              <svg className="w-4 h-4 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-.426 1.043-.426 1.468 0l1.586 1.586c1.043 1.043 1.043 2.734 0 3.778l-1.586 1.586c-.426.426-1.043.426-1.468 0L8.74 11.47c-1.043-1.043-1.043-2.734 0-3.778l1.586-1.586zM6 18h12" />
+                              </svg>
+                            );
+                          case 'camara_principal':
+                          case 'camara_frontal':
+                            return (
+                              <svg className="w-4 h-4 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.622A10 10 0 1112 19.02M7 12h10v4M7 8v4m4-8v8m0-4v4" />
+                              </svg>
+                            );
+                          case 'memoria_rom':
+                          case 'memoria_ram':
+                          case 'micro_sd':
+                            return (
+                              <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+                              </svg>
+                            );
+                          case 'bateria':
+                            return (
+                              <svg className="w-4 h-4 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                              </svg>
+                            );
+                          case 'carga_rapida':
+                            return (
+                              <svg className="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l6 6m0 0l-6 6m6-6H7" />
+                              </svg>
+                            );
+                          case 'lector_huella':
+                            return (
+                              <svg className="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                              </svg>
+                            );
+                          case 'version_android':
+                            return (
+                              <svg className="w-4 h-4 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.456 9.116 5 7.5 5C5.884 5 4.168 5.456 3 6.253v13C4.168 18.456 5.884 18 7.5 18C9.116 18 10.832 18.456 12 19.253" />
+                              </svg>
+                            );
+                          case 'incluye':
+                            return (
+                              <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                              </svg>
+                            );
+                          default:
+                            return (
+                              <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 5l7 7-7 7M5 5l7 7-7 7" />
+                              </svg>
+                            );
+                        }
+                      };
+
+                      return (
+                        <div
+                          key={key}
+                          className="flex items-start gap-3 py-2 px-2.5 rounded-md hover:bg-slate-50 transition-colors duration-150"
+                        >
+                          <div className="flex-shrink-0 mt-0.5">
+                            {getIcon(key)}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <span className="font-medium text-slate-600 text-xs capitalize block">
+                              {key.replace(/_/g, " ")}:
+                            </span>
+                            <span className="text-slate-800 text-sm break-words">
+                              {value || "-"}
+                            </span>
+                          </div>
+                        </div>
+                      );
+                    })}
                 </div>
               ) : (
                 <div className="text-center py-4 text-slate-500 text-sm">
