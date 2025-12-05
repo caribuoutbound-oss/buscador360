@@ -22,7 +22,7 @@ const convertirDriveUrl = (url) => {
     if (urlObj.hostname === "drive.google.com" && urlObj.pathname.startsWith("/file/d/")) {
       const id = urlObj.pathname.split("/")[3];
       if (id) {
-        return `https://drive.google.com/file/d/  ${id}/preview`;
+        return `https://drive.google.com/file/d/${id}/preview`;
       }
     }
   } catch (e) {
@@ -542,4 +542,4 @@ export default function App() {
       )}
     </div>
   );
-},
+}
