@@ -464,7 +464,7 @@ export default function App() {
           }}
         >
           <div
-           className="bg-white rounded-2xl shadow-2xl max-w-6xl w-full max-h-[90vh] overflow-hidden transform transition-all duration-300 ease-out"
+            className="bg-white rounded-2xl shadow-2xl max-w-6xl w-full max-h-[90vh] overflow-hidden transform transition-all duration-300 ease-out"
             onClick={(e) => e.stopPropagation()}
             style={{
               animation: "modalFadeIn 0.3s ease-out forwards",
@@ -511,43 +511,42 @@ export default function App() {
             </div>
 
             {/* Contenido: PDF */}
-
-{/* Contenido: PDF */}
-<div className="p-0 h-[70vh] bg-white">
-  {loadingSpecs ? (
-    <div className="flex items-center justify-center h-full">
-      <div className="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-    </div>
-  ) : especificaciones?.url ? (
-    <div className="flex justify-center items-start h-full px-4 py-2 overflow-hidden">
-      <iframe
-        src={convertirDriveUrl(especificaciones.url)}
-        title="Ficha técnica PDF"
-        className="border-0 max-w-[90vw] max-h-[95%] w-auto h-auto rounded-lg shadow-md"
-        sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
-        style={{
-          maxHeight: "calc(100vh - 200px)",
-          maxWidth: "1200px",
-          minWidth: "300px",
-        }}
-      />
-    </div>
-  ) : (
-    <div className="flex items-center justify-center h-full p-6 text-center text-slate-500">
-      <div>
-        <svg className="w-12 h-12 mx-auto text-slate-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-        </svg>
-        <p className="text-sm font-medium text-slate-600">No se encontró el PDF técnico</p>
-        <p className="text-xs mt-1 opacity-80">
-          Código SAP: {selectedCodigoSap}
-        </p>
-      </div>
-    </div>
-  )}
-</div>
-
-
+            <div className="p-0 h-[70vh] bg-white">
+              {loadingSpecs ? (
+                <div className="flex items-center justify-center h-full">
+                  <div className="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                </div>
+              ) : especificaciones?.url ? (
+                <div className="flex justify-center items-start h-full px-4 py-2 overflow-auto">
+                  <iframe
+                    src={convertirDriveUrl(especificaciones.url)}
+                    title="Ficha técnica PDF"
+                    className="border-0 rounded-lg shadow-sm"
+                    sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
+                    style={{
+                      width: "auto",
+                      height: "auto",
+                      maxWidth: "1200px",
+                      maxHeight: "calc(100vh - 200px)",
+                      minWidth: "300px",
+                      backgroundColor: "white",
+                    }}
+                  />
+                </div>
+              ) : (
+                <div className="flex items-center justify-center h-full p-6 text-center text-slate-500">
+                  <div>
+                    <svg className="w-12 h-12 mx-auto text-slate-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    <p className="text-sm font-medium text-slate-600">No se encontró el PDF técnico</p>
+                    <p className="text-xs mt-1 opacity-80">
+                      Código SAP: {selectedCodigoSap}
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       )}
