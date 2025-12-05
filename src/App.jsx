@@ -464,7 +464,7 @@ export default function App() {
           }}
         >
           <div
-            className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden transform transition-all duration-300 ease-out"
+           className="bg-white rounded-2xl shadow-2xl max-w-6xl w-full max-h-[90vh] overflow-hidden transform transition-all duration-300 ease-out"
             onClick={(e) => e.stopPropagation()}
             style={{
               animation: "modalFadeIn 0.3s ease-out forwards",
