@@ -678,7 +678,7 @@ export default function App() {
               </div>
               <div>
                 <h1 className="text-xl font-bold">Inventario 360</h1>
-                <p className="text-slate-300 text-xs -mt-0.5 hidden sm:block">Gestión de equipos</p>
+                <p className="text-slate-300 text-xs -mt-0.5 hidden sm:block">Métricas 😺</p>
               </div>
             </div>
             <button
