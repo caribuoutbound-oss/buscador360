@@ -74,4 +74,11 @@ const renderContrato = () => (
 
           <h2 className="text-xl font-semibold mt-6 mb-3 text-slate-700">Autorización de Tratamiento de Datos Personales</h2>
           <p>A fin de crear ofertas personalizadas y recibir anuncios comerciales, autoriza a Movistar a hacer uso y tratamiento de sus datos personales. Te agradeceré decir <strong>SÍ ACEPTO</strong>.</p>
-          <p className="text-s
+          <p className="text-slate-600 italic">Movistar resguardará tus datos personales según la legislación vigente. Para más información, consulta la política de privacidad en <a href="https://www.movistar.com.pe/privacidad" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">www.movistar.com.pe/privacidad</a>.</p>
+
+          <p>Habiendo sido informado de las características del contrato, le agradeceré decir <strong>SÍ ACEPTO</strong>.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+);
