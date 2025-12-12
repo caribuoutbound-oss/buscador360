@@ -39,11 +39,11 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [sortStockDesc, setSortStockDesc] = useState(true);
-
-  // Estado para el modal de especificaciones
   const [selectedCodigoSap, setSelectedCodigoSap] = useState(null);
   const [especificaciones, setEspecificaciones] = useState(null);
   const [loadingSpecs, setLoadingSpecs] = useState(false);
+  // ✨ Nuevo estado para el contrato
+  const [mostrarContrato, setMostrarContrato] = useState(false);
 
   const buscarTiempoReal = useCallback(
     debounce(async (texto) => {
@@ -180,6 +180,116 @@ export default function App() {
     return () => window.removeEventListener("keydown", handleEsc);
   }, [selectedCodigoSap]);
 
+  // ✨ Render del contrato
+  const renderContrato = () => (
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
+      {/* Header del contrato */}
+      <header className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-slate-800 to-slate-900 text-white shadow-xl">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            <h1 className="text-xl font-bold">Lectura de Contrato</h1>
+            <button
+              onClick={() => setMostrarContrato(false)}
+              className="text-white/90 hover:text-white hover:bg-white/20 p-2 rounded-full transition-all"
+              title="Cerrar"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <div className="pt-16 pb-8">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="bg-white rounded-xl shadow-lg border border-slate-200 p-5 sm:p-6 prose prose-slate max-w-none">
+            <h1 className="text-2xl font-bold text-center mb-5 text-slate-800">CONTRATO RENOVACIÓN DE EQUIPO – CAEQ DIGITAL</h1>
+
+            <p>Muy bien Sr/Sra. XXX, vamos a iniciar con la grabación del contrato.</p>
+
+            <p>Siendo hoy (día, mes, año), para continuar con la renovación del número XXX, por su seguridad validaremos los siguientes datos, me indica:</p>
+
+            <ul>
+              <li>Nombres y apellidos</li>
+              <li>Número de DNI</li>
+              <li>Correo electrónico</li>
+              <li>Número adicional de referencia</li>
+              <li>Dirección de entrega</li>
+            </ul>
+
+            <div className="bg-yellow-50 border-l-4 border-yellow-400 p-3 my-4 rounded-r">
+              <p><strong>La dirección debe ser completa:</strong></p>
+              <ul className="list-disc pl-5 mt-1">
+                <li>Calle, número de puerta, distrito y referencias</li>
+                <li>Manzana, lote, urbanización, distrito y referencias</li>
+              </ul>
+            </div>
+
+            <h2 className="text-lg font-semibold mt-5 text-slate-700">Renovación más Cambio de Plan</h2>
+            <p>Sr/Sra. XXX ahora pasará a tener el plan XXX con un precio mensual de S/ XXX. Con este plan, obtendrá los siguientes beneficios: <strong>(LEER PARRILLA DE PLANES Y MENCIONAR LOS BENEFICIOS COMPLETOS)</strong></p>
+
+            <p>Así mismo:</p>
+            <ul className="mt-1">
+              <li>Los beneficios del plan no son acumulables.</li>
+              <li>Los mensajes de texto del cargo fijo no incluyen Premium ni internacionales.</li>
+              <li>Los minutos todo destino no incluyen rurales.</li>
+              <li>Los mensajes de texto incluidos en su plan solo podrán utilizarse para mensajes de uso personal. No podrán ser usados para los fines de los servicios “mensajes de notificaciones” y/o “mensajes de publicidad”.</li>
+              <li>Para llamar a USA y Canadá deberá marcar previamente <strong>1911</strong> antes del número internacional.</li>
+            </ul>
+
+            <h2 className="text-lg font-semibold mt-5 text-slate-700">Equipo Financiado</h2>
+            <p>Para finalizar la renovación, le detallo lo siguiente:</p>
+            <ul className="mt-1">
+              <li>Estamos procediendo a registrar la solicitud del equipo XXX (marca, modelo, capacidad, color).</li>
+              <li>Con una cuota inicial de S/ XXX y S/ XXX por 12 meses.</li>
+              <li>El equipo adquirido tiene un contrato de permanencia de 12 meses.</li>
+            </ul>
+            <p className="mt-2">
+              En caso realice la baja del servicio móvil, migra a prepago o realiza un cambio de plan a uno menor, Telefónica podrá resolver el financiamiento y cobrar todas las cuotas. Es obligación del cliente pagar la totalidad de las cuotas. Recuerde que en caso de no pagar una o más cuotas del equipo o de la totalidad del precio del equipo, en caso de resolverse el financiamiento, Movistar podrá optar por bloquear el equipo de manera remota y reportarlo en las centrales de riesgo.
+            </p>
+
+            <h2 className="text-lg font-semibold mt-5 text-slate-700">Equipo al Contado</h2>
+            <p>Para finalizar la renovación, le detallo lo siguiente:</p>
+            <ul className="mt-1">
+              <li>Estamos procediendo a registrar la solicitud del equipo XXX (marca, modelo, capacidad, color).</li>
+              <li>Con un pago único de S/ XXX.</li>
+              <li>El equipo adquirido tiene un contrato de permanencia de 12 meses.</li>
+            </ul>
+            <p className="mt-2">
+              Nuestro delivery le efectuará el cobro correspondiente del equipo. Cabe recalcar que nuestro delivery no acepta efectivo por lo que el pago deberá efectuarse con tarjeta de débito o crédito Visa, MasterCard y Diners.
+            </p>
+
+            <h2 className="text-lg font-semibold mt-5 text-slate-700">Autorización de Tratamiento de Datos Personales</h2>
+            <p>
+              A fin de crear ofertas personalizadas y recibir anuncios comerciales, autoriza a Movistar a hacer uso y tratamiento de sus datos personales. Te agradeceré decir <strong>SÍ ACEPTO</strong>.
+            </p>
+            <p className="text-slate-600 italic mt-2">
+              Movistar resguardará tus datos personales según la legislación vigente. Para más información, consulta la política de privacidad en{' '}
+              <a
+                href="https://www.movistar.com.pe/privacidad"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 hover:underline"
+              >
+                www.movistar.com.pe/privacidad
+              </a>.
+            </p>
+
+            <p className="mt-3">
+              Habiendo sido informado de las características del contrato, le agradeceré decir <strong>SÍ ACEPTO</strong>.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  // ✨ Render principal condicional
+  if (mostrarContrato) {
+    return renderContrato();
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
       {/* Header Fijo */}
@@ -197,7 +307,18 @@ export default function App() {
                 <p className="text-slate-300 text-xs -mt-0.5 hidden sm:block">Gestión de equipos</p>
               </div>
             </div>
-            <p className="text-slate-300 text-sm hidden sm:block">Sistema de inventario - métricas 😺</p>
+
+            {/* ✨ BOTÓN DE CONTRATO */}
+            <button
+              onClick={() => setMostrarContrato(true)}
+              className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs sm:text-sm font-medium text-white bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-lg shadow-md hover:from-emerald-600 hover:to-emerald-700 hover:shadow-lg hover:scale-105 transition-all duration-200 border border-emerald-400/30"
+              title="Ver contrato de renovación"
+            >
+              <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              <span className="hidden xs:inline">Contrato</span>
+            </button>
           </div>
         </div>
       </header>
@@ -389,7 +510,6 @@ export default function App() {
                         <td className="px-4 py-3 whitespace-nowrap">
                           <span className="text-sm text-slate-600 font-medium bg-slate-50 px-2 py-1 rounded border">{r.hoja}</span>
                         </td>
-                        {/* ✨ Botón moderno con efecto */}
                         <td className="px-4 py-3 whitespace-nowrap">
                           <button
                             onClick={(e) => {
@@ -484,7 +604,6 @@ export default function App() {
               }
             `}</style>
 
-            {/* Header moderno */}
             <div className="relative flex items-center justify-between px-6 py-4 bg-gradient-to-r from-blue-600 via-blue-700 to-purple-700 text-white">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-lg flex items-center justify-center shadow-lg">
@@ -510,7 +629,6 @@ export default function App() {
               </button>
             </div>
 
-            {/* Contenido: PDF */}
             <div className="p-0 h-[70vh]">
               {loadingSpecs ? (
                 <div className="flex items-center justify-center h-full">
@@ -530,9 +648,7 @@ export default function App() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
                     <p className="text-sm font-medium text-slate-600">No se encontró el PDF técnico</p>
-                    <p className="text-xs mt-1 opacity-80">
-                      Código SAP: {selectedCodigoSap}
-                    </p>
+                    <p className="text-xs mt-1 opacity-80">Código SAP: {selectedCodigoSap}</p>
                   </div>
                 </div>
               )}
