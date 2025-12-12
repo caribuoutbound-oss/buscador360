@@ -42,8 +42,9 @@ export default function App() {
   const [selectedCodigoSap, setSelectedCodigoSap] = useState(null);
   const [especificaciones, setEspecificaciones] = useState(null);
   const [loadingSpecs, setLoadingSpecs] = useState(false);
-  // ✨ Nuevo estado para el contrato
   const [mostrarContrato, setMostrarContrato] = useState(false);
+  // ✨ Estado para los modales de planes
+  const [planModalAbierto, setPlanModalAbierto] = useState(null); // 'plan1', 'plan2', 'plan3'
 
   const buscarTiempoReal = useCallback(
     debounce(async (texto) => {
@@ -174,11 +175,14 @@ export default function App() {
         setSelectedCodigoSap(null);
         setEspecificaciones(null);
       }
+      if (e.key === "Escape" && planModalAbierto) {
+        setPlanModalAbierto(null);
+      }
     };
 
     window.addEventListener("keydown", handleEsc);
     return () => window.removeEventListener("keydown", handleEsc);
-  }, [selectedCodigoSap]);
+  }, [selectedCodigoSap, planModalAbierto]);
 
   // ✨ Render del contrato
   const renderContrato = () => (
@@ -227,9 +231,31 @@ export default function App() {
             </div>
 
             <h2 className="text-lg font-semibold mt-5 text-slate-700">Renovación más Cambio de Plan</h2>
-            <p>Sr/Sra. XXX ahora pasará a tener el plan XXX con un precio mensual de S/ XXX. Con este plan, obtendrá los siguientes beneficios: <strong>(LEER PARRILLA DE PLANES Y MENCIONAR LOS BENEFICIOS COMPLETOS)</strong></p>
+            <p>Sr/Sra. XXX ahora pasará a tener el plan XXX con un precio mensual de S/ XXX. Con este plan, obtendrá los siguientes beneficios:</p>
 
-            <p>Así mismo:</p>
+            {/* ✨ Botones de planes */}
+            <div className="mt-4 flex flex-wrap gap-3 justify-center">
+              <button
+                onClick={() => setPlanModalAbierto('plan1')}
+                className="px-4 py-2 bg-gradient-to-r from-rose-500 to-orange-500 text-white text-sm font-semibold rounded-full shadow hover:shadow-lg hover:scale-105 transition-all"
+              >
+                Plan S/35.9
+              </button>
+              <button
+                onClick={() => setPlanModalAbierto('plan2')}
+                className="px-4 py-2 bg-gradient-to-r from-blue-500 to-cyan-500 text-white text-sm font-semibold rounded-full shadow hover:shadow-lg hover:scale-105 transition-all"
+              >
+                Plan S/45.9
+              </button>
+              <button
+                onClick={() => setPlanModalAbierto('plan3')}
+                className="px-4 py-2 bg-gradient-to-r from-slate-800 to-gray-700 text-white text-sm font-semibold rounded-full shadow hover:shadow-lg hover:scale-105 transition-all"
+              >
+                Plan S/55.9
+              </button>
+            </div>
+
+            <p className="mt-4">Así mismo:</p>
             <ul className="mt-1">
               <li>Los beneficios del plan no son acumulables.</li>
               <li>Los mensajes de texto del cargo fijo no incluyen Premium ni internacionales.</li>
@@ -282,10 +308,114 @@ export default function App() {
           </div>
         </div>
       </div>
+
+      {/* ✨ Modales de planes */}
+      {planModalAbierto === 'plan1' && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="bg-white rounded-xl max-w-2xl w-full max-h-[85vh] overflow-y-auto shadow-2xl">
+            <div className="p-5 border-b border-gray-200 relative">
+              <h3 className="text-lg font-bold text-gray-800">Plan Ahorro Mi Movistar S/35.9 VI</h3>
+              <button
+                onClick={() => setPlanModalAbierto(null)}
+                className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 text-2xl"
+              >
+                &times;
+              </button>
+            </div>
+            <div className="p-5 space-y-3 text-sm">
+              <div className="bg-red-50 p-3 rounded-lg">
+                <p className="font-semibold text-red-700">Llamadas Ilimitadas</p>
+                <p className="text-gray-700">A nivel Nacional + 500 SMS</p>
+              </div>
+              <p><span className="font-semibold text-blue-600">20 GB de internet</span></p>
+              <p><span className="text-gray-700">+ 300 min LDI EE.UU./Canadá</span></p>
+              <div className="bg-gray-50 p-3 rounded-lg">
+                <p className="text-xs font-semibold mb-2">Apps ilimitadas (12 meses)</p>
+                <div className="flex flex-wrap gap-2">
+                  {['WhatsApp', 'Facebook Fotos', 'Messenger', 'Instagram', 'Waze'].map((app) => (
+                    <span key={app} className="px-2 py-1 bg-white rounded text-[10px] text-gray-600 border">{app}</span>
+                  ))}
+                </div>
+                <p className="mt-2 text-[9px] text-red-700 flex items-center gap-1">
+                  <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92z" clipRule="evenodd" /></svg>
+                  No informar a clientes de Loreto
+                </p>
+              </div>
+              <p><span className="font-semibold">Beneficios adicionales:</span> 250 MB promocionales (12 meses) para datos internacionales en América y Europa, WhatsApp de texto ilimitado.</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {planModalAbierto === 'plan2' && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="bg-white rounded-xl max-w-2xl w-full max-h-[85vh] overflow-y-auto shadow-2xl">
+            <div className="p-5 border-b border-gray-200 relative">
+              <h3 className="text-lg font-bold text-gray-800">Plan Ahorro Mi Movistar S/45.9</h3>
+              <button
+                onClick={() => setPlanModalAbierto(null)}
+                className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 text-2xl"
+              >
+                &times;
+              </button>
+            </div>
+            <div className="p-5 space-y-3 text-sm">
+              <div className="bg-red-50 p-3 rounded-lg">
+                <p className="font-semibold text-red-700">Llamadas Ilimitadas</p>
+                <p className="text-gray-700">A nivel Nacional + 500 SMS</p>
+              </div>
+              <p><span className="font-semibold text-blue-600">36 GB de internet</span></p>
+              <p><span className="text-gray-700">+ 350 min LDI EE.UU./Canadá</span></p>
+              <div className="bg-gray-50 p-3 rounded-lg">
+                <p className="text-xs font-semibold mb-2">Apps ilimitadas (12 meses)</p>
+                <div className="flex flex-wrap gap-2">
+                  {['WhatsApp', 'Facebook Fotos', 'Messenger', 'Instagram', 'Waze'].map((app) => (
+                    <span key={app} className="px-2 py-1 bg-white rounded text-[10px] text-gray-600 border">{app}</span>
+                  ))}
+                </div>
+                <p className="mt-2 text-[9px] text-red-700 flex items-center gap-1">
+                  <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92z" clipRule="evenodd" /></svg>
+                  No informar a clientes de Loreto
+                </p>
+              </div>
+              <p><span className="font-semibold">Beneficios adicionales:</span> 1.25 GB promocionales (12 meses) para datos internacionales en América y Europa, WhatsApp de texto ilimitado.</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {planModalAbierto === 'plan3' && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="bg-white rounded-xl max-w-2xl w-full max-h-[85vh] overflow-y-auto shadow-2xl">
+            <div className="p-5 border-b border-gray-200 relative">
+              <h3 className="text-lg font-bold text-gray-800">Plan Ilimitado Mi Movistar S/55.9</h3>
+              <button
+                onClick={() => setPlanModalAbierto(null)}
+                className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 text-2xl"
+              >
+                &times;
+              </button>
+            </div>
+            <div className="p-5 space-y-3 text-sm">
+              <div className="bg-red-50 p-3 rounded-lg">
+                <p className="font-semibold text-red-700">Llamadas Ilimitadas</p>
+                <p className="text-gray-700">A nivel Nacional + 500 SMS</p>
+              </div>
+              <div className="bg-blue-50 p-3 rounded-lg">
+                <p className="font-semibold text-blue-700">Internet Ilimitado</p>
+                <p className="text-blue-600">66 GB en alta velocidad</p>
+              </div>
+              <p><span className="text-gray-700">Llamadas Ilimitadas LDI EE.UU./Canadá</span></p>
+              <div className="bg-green-50 p-3 rounded-lg border-l-4 border-green-500">
+                <p className="text-green-700"><span className="font-semibold">Beneficios adicionales:</span> 2 GB promocionales (12 meses) para datos internacionales en América y Europa, WhatsApp de texto ilimitado.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 
-  // ✨ Render principal condicional
   if (mostrarContrato) {
     return renderContrato();
   }
@@ -308,7 +438,6 @@ export default function App() {
               </div>
             </div>
 
-            {/* ✨ BOTÓN DE CONTRATO */}
             <button
               onClick={() => setMostrarContrato(true)}
               className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs sm:text-sm font-medium text-white bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-lg shadow-md hover:from-emerald-600 hover:to-emerald-700 hover:shadow-lg hover:scale-105 transition-all duration-200 border border-emerald-400/30"
