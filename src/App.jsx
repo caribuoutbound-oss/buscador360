@@ -452,13 +452,13 @@ export default function App() {
               </div>
               {/* Términos y condiciones */}
               <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-lg animate-slide-in-right" style={{animationDelay: '0.5s'}}>
-                <h3 className="text-lg font-bold text-slate-800 mb-4">📋 Términos del Plan</h3>
+                <h3 className="text-lg font-bold text-slate-800 mb-4">📋 Términos del Plan | Así mismo</h3>
                 <ul className="space-y-2 text-sm text-slate-700">
                   {[
                     'Los beneficios del plan no son acumulables.',
                     'Los mensajes de texto del cargo fijo no incluyen Premium ni internacionales.',
                     'Los minutos todo destino no incluyen rurales.',
-                    'Los mensajes incluidos solo podrán utilizarse para mensajes de uso personal.',
+                    'Los mensajes de texto incluidos en su plan solo podrán utilizarse para mensajes de uso personal. Nopodrán ser usados para los fines de los servicios “mensajes de notificaciones” y/o “mensajes de publicidad”',
                     'Para llamar a USA y Canadá deberá marcar previamente 1911 antes del número internacional.'
                   ].map((term, idx) => (
                     <li key={idx} className="flex items-start gap-2 p-2 rounded-lg hover:bg-slate-50 transition-colors">
@@ -487,7 +487,7 @@ export default function App() {
                   <ul className="space-y-2 ml-4">
                     <li className="flex items-start gap-2">
                       <span className="text-emerald-500 font-bold">•</span>
-                      <span>Equipo <span className="font-semibold text-emerald-700">XXX</span> (marca, modelo, capacidad, color)</span>
+                      <span>Estamos procediendo a registrar la solicitud del equipo<span className="font-semibold text-emerald-700">XXX</span> (marca, modelo, capacidad, color)</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="text-emerald-500 font-bold">•</span>
@@ -495,12 +495,16 @@ export default function App() {
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="text-emerald-500 font-bold">•</span>
-                      <span>Contrato de permanencia de <span className="font-semibold">12 meses</span></span>
+                      <span>El equipo adquirido tiene un contrato de permanencia de <span className="font-semibold">12 meses</span></span>
                     </li>
                   </ul>
                   <div className="bg-white/50 rounded-xl p-4 mt-4 border border-emerald-200">
                     <p className="text-xs leading-relaxed">
-                      En caso de baja del servicio, migración a prepago o cambio de plan menor, Telefónica podrá resolver el financiamiento y cobrar todas las cuotas. El cliente está obligado a pagar la totalidad. El incumplimiento puede resultar en bloqueo remoto del equipo y reporte en centrales de riesgo.
+                      En caso realice la baja del servicio móvil, migra a prepago o realiza un cambio de plan a uno menor,
+                      Telefónica podrá resolver el financiamiento y cobrar todas las cuotas. Es obligación del cliente pagar la
+                      totalidad de las cuotas. Recuerde que en caso de no pagar una o mas cuotas del equipo o de la totalidad del
+                      precio del equipo, en caso de resolverse el financiamiento, Movistar podrá optar por bloquear el equipo de
+                      manera remota y reportarlo en las centrales de riesgo.
                     </p>
                   </div>
                 </div>
@@ -520,7 +524,7 @@ export default function App() {
                   <ul className="space-y-2 ml-4">
                     <li className="flex items-start gap-2">
                       <span className="text-violet-500 font-bold">•</span>
-                      <span>Equipo <span className="font-semibold text-violet-700">XXX</span> (marca, modelo, capacidad, color)</span>
+                      <span>Estamos procediendo a registrar la solicitud del equipo <span className="font-semibold text-violet-700">XXX</span> (marca, modelo, capacidad, color)</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="text-violet-500 font-bold">•</span>
@@ -528,12 +532,12 @@ export default function App() {
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="text-violet-500 font-bold">•</span>
-                      <span>Contrato de permanencia de <span className="font-semibold">12 meses</span></span>
+                      <span>El equipo adquirido tiene un contrato de permanencia de <span className="font-semibold">12 meses</span></span>
                     </li>
                   </ul>
                   <div className="bg-white/50 rounded-xl p-4 mt-4 border border-violet-200">
                     <p className="text-xs leading-relaxed">
-                      Nuestro delivery le efectuará el cobro correspondiente del equipo. El delivery no acepta efectivo, el pago deberá efectuarse con tarjeta de débito o crédito Visa, MasterCard y Diners.
+                      Nuestro delivery le efectuara el cobro correspondiente del equipo. Cabe recalcar que nuestro delivery no acepta efectivo por lo que el pago deberá efectuarse con tarjeta de débito o crédito Visa, MasterCard y Diners.
                     </p>
                   </div>
                 </div>
