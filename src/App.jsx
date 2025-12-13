@@ -345,111 +345,108 @@ export default function App() {
                   Sr/Sra. <span className="font-semibold text-blue-600">XXX</span> ahora pasará a tener el plan <span className="font-semibold text-blue-600">XXX</span> con un precio mensual de <span className="font-bold text-xl text-blue-700">S/ XXX</span>
                 </p>
                 <p className="text-slate-600 text-sm mb-5">Con este plan, obtendrá los siguientes beneficios:</p>
-
-{/* Botones de planes con tamaño reducido */}
-<div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-  <button
-    onClick={() => setPlanModalAbierto('plan1')}
-    className="group relative overflow-hidden bg-gradient-to-br from-rose-500 via-pink-500 to-orange-500 text-white rounded-xl p-4 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
-  >
-    <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-    <div className="relative">
-      <div className="text-2xl font-black mb-1">S/20.9</div>
-      <div className="text-xs font-semibold opacity-90">Plan Ahorro</div>
-      <div className="mt-2 text-[10px] bg-white/20 px-2 py-0.5 rounded-full inline-block">Ver detalles →</div>
-    </div>
-  </button>
-  <button
-    onClick={() => setPlanModalAbierto('plan2')}
-    className="group relative overflow-hidden bg-gradient-to-br from-blue-500 via-cyan-500 to-teal-500 text-white rounded-xl p-4 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
-  >
-    <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-    <div className="relative">
-      <div className="text-2xl font-black mb-1">S/25.9</div>
-      <div className="text-xs font-semibold opacity-90">Plan Ahorro</div>
-      <div className="mt-2 text-[10px] bg-white/20 px-2 py-0.5 rounded-full inline-block">Ver detalles →</div>
-    </div>
-  </button>
-  <button
-    onClick={() => setPlanModalAbierto('plan3')}
-    className="group relative overflow-hidden bg-gradient-to-br from-slate-700 via-slate-800 to-gray-900 text-white rounded-xl p-4 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
-  >
-    <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-    <div className="relative">
-      <div className="text-2xl font-black mb-1">S/35.9</div>
-      <div className="text-xs font-semibold opacity-90">Plan Ahorro</div>
-      <div className="mt-2 text-[10px] bg-white/20 px-2 py-0.5 rounded-full inline-block">Ver detalles →</div>
-    </div>
-  </button>
-  <button
-    onClick={() => setPlanModalAbierto('plan4')}
-    className="group relative overflow-hidden bg-gradient-to-br from-purple-500 via-indigo-500 to-blue-500 text-white rounded-xl p-4 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
-  >
-    <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-    <div className="relative">
-      <div className="text-2xl font-black mb-1">S/45.9</div>
-      <div className="text-xs font-semibold opacity-90">Plan Ahorro</div>
-      <div className="mt-2 text-[10px] bg-white/20 px-2 py-0.5 rounded-full inline-block">Ver detalles →</div>
-    </div>
-  </button>
-  <button
-    onClick={() => setPlanModalAbierto('plan5')}
-    className="group relative overflow-hidden bg-gradient-to-br from-green-500 via-emerald-500 to-teal-500 text-white rounded-xl p-4 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
-  >
-    <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-    <div className="relative">
-      <div className="text-2xl font-black mb-1">S/55.9</div>
-      <div className="text-xs font-semibold opacity-90">Plan Ilimitado</div>
-      <div className="mt-2 text-[10px] bg-white/20 px-2 py-0.5 rounded-full inline-block">Ver detalles →</div>
-    </div>
-  </button>
-  <button
-    onClick={() => setPlanModalAbierto('plan6')}
-    className="group relative overflow-hidden bg-gradient-to-br from-cyan-500 via-blue-500 to-indigo-500 text-white rounded-xl p-4 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
-  >
-    <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-    <div className="relative">
-      <div className="text-2xl font-black mb-1">S/65.9</div>
-      <div className="text-xs font-semibold opacity-90">Plan Ilimitado</div>
-      <div className="mt-2 text-[10px] bg-white/20 px-2 py-0.5 rounded-full inline-block">Ver detalles →</div>
-    </div>
-  </button>
-  <button
-    onClick={() => setPlanModalAbierto('plan7')}
-    className="group relative overflow-hidden bg-gradient-to-br from-amber-500 via-orange-500 to-red-500 text-white rounded-xl p-4 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
-  >
-    <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-    <div className="relative">
-      <div className="text-2xl font-black mb-1">S/74.9</div>
-      <div className="text-xs font-semibold opacity-90">Plan Ilimitado</div>
-      <div className="mt-2 text-[10px] bg-white/20 px-2 py-0.5 rounded-full inline-block">Ver detalles →</div>
-    </div>
-  </button>
-  <button
-    onClick={() => setPlanModalAbierto('plan8')}
-    className="group relative overflow-hidden bg-gradient-to-br from-pink-500 via-rose-500 to-red-500 text-white rounded-xl p-4 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
-  >
-    <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-    <div className="relative">
-      <div className="text-2xl font-black mb-1">S/85.9</div>
-      <div className="text-xs font-semibold opacity-90">Plan Ilimitado</div>
-      <div className="mt-2 text-[10px] bg-white/20 px-2 py-0.5 rounded-full inline-block">Ver detalles →</div>
-    </div>
-  </button>
-  <button
-    onClick={() => setPlanModalAbierto('plan9')}
-    className="group relative overflow-hidden bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-white rounded-xl p-4 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
-  >
-    <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-    <div className="relative">
-      <div className="text-2xl font-black mb-1">S/114.9</div>
-      <div className="text-xs font-semibold opacity-90">Plan Ilimitado</div>
-      <div className="mt-2 text-[10px] bg-white/20 px-2 py-0.5 rounded-full inline-block">Ver detalles →</div>
-    </div>
-  </button>
-</div>
-
-
+                {/* Botones de planes ultra compactos */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                  <button
+                    onClick={() => setPlanModalAbierto('plan1')}
+                    className="group relative overflow-hidden bg-gradient-to-br from-rose-500 via-pink-500 to-orange-500 text-white rounded-xl p-3 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+                  >
+                    <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div className="relative">
+                      <div className="text-xl font-black mb-0.5">S/20.9</div>
+                      <div className="text-[10px] font-semibold opacity-90">Plan Ahorro</div>
+                      <div className="mt-1 text-[8px] bg-white/20 px-1.5 py-0.5 rounded-full inline-block">Ver detalles →</div>
+                    </div>
+                  </button>
+                  <button
+                    onClick={() => setPlanModalAbierto('plan2')}
+                    className="group relative overflow-hidden bg-gradient-to-br from-blue-500 via-cyan-500 to-teal-500 text-white rounded-xl p-3 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+                  >
+                    <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div className="relative">
+                      <div className="text-xl font-black mb-0.5">S/25.9</div>
+                      <div className="text-[10px] font-semibold opacity-90">Plan Ahorro</div>
+                      <div className="mt-1 text-[8px] bg-white/20 px-1.5 py-0.5 rounded-full inline-block">Ver detalles →</div>
+                    </div>
+                  </button>
+                  <button
+                    onClick={() => setPlanModalAbierto('plan3')}
+                    className="group relative overflow-hidden bg-gradient-to-br from-slate-700 via-slate-800 to-gray-900 text-white rounded-xl p-3 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+                  >
+                    <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div className="relative">
+                      <div className="text-xl font-black mb-0.5">S/35.9</div>
+                      <div className="text-[10px] font-semibold opacity-90">Plan Ahorro</div>
+                      <div className="mt-1 text-[8px] bg-white/20 px-1.5 py-0.5 rounded-full inline-block">Ver detalles →</div>
+                    </div>
+                  </button>
+                  <button
+                    onClick={() => setPlanModalAbierto('plan4')}
+                    className="group relative overflow-hidden bg-gradient-to-br from-purple-500 via-indigo-500 to-blue-500 text-white rounded-xl p-3 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+                  >
+                    <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div className="relative">
+                      <div className="text-xl font-black mb-0.5">S/45.9</div>
+                      <div className="text-[10px] font-semibold opacity-90">Plan Ahorro</div>
+                      <div className="mt-1 text-[8px] bg-white/20 px-1.5 py-0.5 rounded-full inline-block">Ver detalles →</div>
+                    </div>
+                  </button>
+                  <button
+                    onClick={() => setPlanModalAbierto('plan5')}
+                    className="group relative overflow-hidden bg-gradient-to-br from-green-500 via-emerald-500 to-teal-500 text-white rounded-xl p-3 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+                  >
+                    <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div className="relative">
+                      <div className="text-xl font-black mb-0.5">S/55.9</div>
+                      <div className="text-[10px] font-semibold opacity-90">Plan Ilimitado</div>
+                      <div className="mt-1 text-[8px] bg-white/20 px-1.5 py-0.5 rounded-full inline-block">Ver detalles →</div>
+                    </div>
+                  </button>
+                  <button
+                    onClick={() => setPlanModalAbierto('plan6')}
+                    className="group relative overflow-hidden bg-gradient-to-br from-cyan-500 via-blue-500 to-indigo-500 text-white rounded-xl p-3 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+                  >
+                    <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div className="relative">
+                      <div className="text-xl font-black mb-0.5">S/65.9</div>
+                      <div className="text-[10px] font-semibold opacity-90">Plan Ilimitado</div>
+                      <div className="mt-1 text-[8px] bg-white/20 px-1.5 py-0.5 rounded-full inline-block">Ver detalles →</div>
+                    </div>
+                  </button>
+                  <button
+                    onClick={() => setPlanModalAbierto('plan7')}
+                    className="group relative overflow-hidden bg-gradient-to-br from-amber-500 via-orange-500 to-red-500 text-white rounded-xl p-3 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+                  >
+                    <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div className="relative">
+                      <div className="text-xl font-black mb-0.5">S/74.9</div>
+                      <div className="text-[10px] font-semibold opacity-90">Plan Ilimitado</div>
+                      <div className="mt-1 text-[8px] bg-white/20 px-1.5 py-0.5 rounded-full inline-block">Ver detalles →</div>
+                    </div>
+                  </button>
+                  <button
+                    onClick={() => setPlanModalAbierto('plan8')}
+                    className="group relative overflow-hidden bg-gradient-to-br from-pink-500 via-rose-500 to-red-500 text-white rounded-xl p-3 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+                  >
+                    <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div className="relative">
+                      <div className="text-xl font-black mb-0.5">S/85.9</div>
+                      <div className="text-[10px] font-semibold opacity-90">Plan Ilimitado</div>
+                      <div className="mt-1 text-[8px] bg-white/20 px-1.5 py-0.5 rounded-full inline-block">Ver detalles →</div>
+                    </div>
+                  </button>
+                  <button
+                    onClick={() => setPlanModalAbierto('plan9')}
+                    className="group relative overflow-hidden bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-white rounded-xl p-3 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+                  >
+                    <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div className="relative">
+                      <div className="text-xl font-black mb-0.5">S/114.9</div>
+                      <div className="text-[10px] font-semibold opacity-90">Plan Ilimitado</div>
+                      <div className="mt-1 text-[8px] bg-white/20 px-1.5 py-0.5 rounded-full inline-block">Ver detalles →</div>
+                    </div>
+                  </button>
+                </div>
               </div>
               {/* Términos y condiciones */}
               <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-lg animate-slide-in-right" style={{animationDelay: '0.5s'}}>
@@ -586,7 +583,7 @@ export default function App() {
         </div>
       </div>
 
-      {/* ✅ MODALES DE PLANES SIN ANIMACIÓN (solo bg y estructura) */}
+      {/* Modales de Planes (sin animación) */}
       {planModalAbierto === 'plan1' && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" role="dialog" aria-modal="true">
           <div className="bg-white rounded-3xl max-w-2xl w-full max-h-[85vh] overflow-y-auto shadow-2xl">
@@ -618,7 +615,7 @@ export default function App() {
                 <p className="text-sm font-bold mb-3 text-slate-800">📲 Apps ilimitadas (12 meses)</p>
                 <div className="flex flex-wrap gap-2 mb-3">
                   {['WhatsApp', 'Facebook Fotos', 'Messenger', 'Instagram', 'Waze'].map((app) => (
-                    <span key={app} className="px-3 py-1.5 bg-white rounded-lg text-xs font-medium text-slate-700 border border-slate-300 shadow-sm">{app}</span>
+                    <span key={app} className="px-2 py-1 bg-white rounded-lg text-xs font-medium text-slate-700 border border-slate-300 shadow-sm">{app}</span>
                   ))}
                 </div>
                 <div className="bg-red-50 border-l-4 border-red-400 p-3 rounded-r-lg">
@@ -666,7 +663,7 @@ export default function App() {
                 <p className="text-sm font-bold mb-3 text-slate-800">📲 Apps ilimitadas (12 meses)</p>
                 <div className="flex flex-wrap gap-2 mb-3">
                   {['WhatsApp', 'Facebook Fotos', 'Messenger', 'Instagram', 'Waze'].map((app) => (
-                    <span key={app} className="px-3 py-1.5 bg-white rounded-lg text-xs font-medium text-slate-700 border border-slate-300 shadow-sm">{app}</span>
+                    <span key={app} className="px-2 py-1 bg-white rounded-lg text-xs font-medium text-slate-700 border border-slate-300 shadow-sm">{app}</span>
                   ))}
                 </div>
                 <div className="bg-red-50 border-l-4 border-red-400 p-3 rounded-r-lg">
@@ -714,7 +711,7 @@ export default function App() {
                 <p className="text-sm font-bold mb-3 text-slate-800">📲 Apps ilimitadas (12 meses)</p>
                 <div className="flex flex-wrap gap-2 mb-3">
                   {['WhatsApp', 'Facebook Fotos', 'Messenger', 'Instagram', 'Waze'].map((app) => (
-                    <span key={app} className="px-3 py-1.5 bg-white rounded-lg text-xs font-medium text-slate-700 border border-slate-300 shadow-sm">{app}</span>
+                    <span key={app} className="px-2 py-1 bg-white rounded-lg text-xs font-medium text-slate-700 border border-slate-300 shadow-sm">{app}</span>
                   ))}
                 </div>
                 <div className="bg-red-50 border-l-4 border-red-400 p-3 rounded-r-lg">
@@ -762,7 +759,7 @@ export default function App() {
                 <p className="text-sm font-bold mb-3 text-slate-800">📲 Apps ilimitadas (12 meses)</p>
                 <div className="flex flex-wrap gap-2 mb-3">
                   {['WhatsApp', 'Facebook Fotos', 'Messenger', 'Instagram', 'Waze'].map((app) => (
-                    <span key={app} className="px-3 py-1.5 bg-white rounded-lg text-xs font-medium text-slate-700 border border-slate-300 shadow-sm">{app}</span>
+                    <span key={app} className="px-2 py-1 bg-white rounded-lg text-xs font-medium text-slate-700 border border-slate-300 shadow-sm">{app}</span>
                   ))}
                 </div>
                 <div className="bg-red-50 border-l-4 border-red-400 p-3 rounded-r-lg">
