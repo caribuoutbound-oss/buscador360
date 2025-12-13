@@ -802,27 +802,4 @@ export default function App() {
         </div>
       )}
 
-      {/* ✅ Bloque de autorización en la vista principal */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 bg-white shadow-lg border-t border-slate-200 p-3">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-2 text-xs">
-            <p className="text-slate-800">
-              Autorización de Tratamiento de Datos Personales. Te agradeceré decir <span className="font-bold text-pink-600">SÍ ACEPTO</span>.
-            </p>
-            <p className="text-slate-600">
-              Movistar resguardará tus datos personales según la legislación vigente. Para más información, consulta la política de privacidad en{' '}
-              <a
-                href="https://www.movistar.com.pe/privacidad"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-600 hover:underline"
-              >
-                www.movistar.com.pe/privacidad
-              </a>.
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
+    
