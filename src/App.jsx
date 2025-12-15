@@ -31,6 +31,216 @@ const convertirDriveUrl = (url) => {
   return url;
 };
 
+// Datos de los planes (mantenidos fuera del componente para evitar recreaciones)
+const planesData = {
+  plan1: {
+    nombre: "Plan Ahorro Mi Movistar",
+    precio: "S/20.9",
+    gradient: "from-rose-500 via-pink-500 to-orange-500",
+    beneficios: [
+      { tipo: "llamadas", texto: "Llamadas Ilimitadas", sub: "A nivel Nacional + 500 SMS" },
+      { tipo: "internet", texto: "2 GB de internet" },
+      { tipo: "ldi", texto: "+ 200 min LDI EE.UU./Canadá" },
+      { tipo: "apps", apps: ["WhatsApp", "Facebook Fotos", "Messenger", "Instagram", "Waze"], excludeLoreto: true },
+      { tipo: "extra", texto: "50 MB promocionales (12 meses) para datos internacionales en América y Europa." }
+    ]
+  },
+  plan2: {
+    nombre: "Plan Ahorro Mi Movistar",
+    precio: "S/25.9",
+    gradient: "from-blue-500 via-cyan-500 to-teal-500",
+    beneficios: [
+      { tipo: "llamadas", texto: "Llamadas Ilimitadas", sub: "A nivel Nacional + 500 SMS" },
+      { tipo: "internet", texto: "4 GB de internet" },
+      { tipo: "ldi", texto: "+ 250 min LDI EE.UU./Canadá" },
+      { tipo: "apps", apps: ["WhatsApp", "Facebook Fotos", "Messenger", "Instagram", "Waze"], excludeLoreto: true },
+      { tipo: "extra", texto: "50 MB promocionales (12 meses) + WhatsApp de texto ilimitado." }
+    ]
+  },
+  plan3: {
+    nombre: "Plan Ahorro Mi Movistar",
+    precio: "S/35.9",
+    gradient: "from-slate-700 via-slate-800 to-gray-900",
+    beneficios: [
+      { tipo: "llamadas", texto: "Llamadas Ilimitadas", sub: "A nivel Nacional + 500 SMS" },
+      { tipo: "internet", texto: "20 GB de internet" },
+      { tipo: "ldi", texto: "+ 300 min LDI EE.UU./Canadá" },
+      { tipo: "apps", apps: ["WhatsApp", "Facebook Fotos", "Messenger", "Instagram", "Waze"], excludeLoreto: true },
+      { tipo: "extra", texto: "250 MB promocionales (12 meses) + WhatsApp de texto ilimitado." }
+    ]
+  },
+  plan4: {
+    nombre: "Plan Ahorro Mi Movistar",
+    precio: "S/45.9",
+    gradient: "from-purple-500 via-indigo-500 to-blue-500",
+    beneficios: [
+      { tipo: "llamadas", texto: "Llamadas Ilimitadas", sub: "A nivel Nacional + 500 SMS" },
+      { tipo: "internet", texto: "36 GB de internet" },
+      { tipo: "ldi", texto: "+ 350 min LDI EE.UU./Canadá" },
+      { tipo: "apps", apps: ["WhatsApp", "Facebook Fotos", "Messenger", "Instagram", "Waze"], excludeLoreto: true },
+      { tipo: "extra", texto: "1.25 GB promocionales (12 meses) + WhatsApp de texto ilimitado." }
+    ]
+  },
+  plan5: {
+    nombre: "Plan Ilimitado Mi Movistar",
+    precio: "S/55.9",
+    gradient: "from-green-500 via-emerald-500 to-teal-500",
+    beneficios: [
+      { tipo: "llamadas", texto: "Llamadas Ilimitadas", sub: "A nivel Nacional + 500 SMS" },
+      { tipo: "internet", texto: "Internet Ilimitado", sub: "66 GB en alta velocidad" },
+      { tipo: "ldi", texto: "Llamadas Ilimitadas LDI", sub: "EE.UU./Canadá" },
+      { tipo: "extra", texto: "2 GB promocionales (12 meses) + WhatsApp de texto ilimitado." }
+    ]
+  },
+  plan6: {
+    nombre: "Plan Ilimitado Mi Movistar",
+    precio: "S/65.9",
+    gradient: "from-cyan-500 via-blue-500 to-indigo-500",
+    beneficios: [
+      { tipo: "llamadas", texto: "Llamadas Ilimitadas", sub: "A nivel Nacional + 500 SMS" },
+      { tipo: "internet", texto: "Internet Ilimitado", sub: "80 GB en alta velocidad" },
+      { tipo: "ldi", texto: "Llamadas Ilimitadas LDI", sub: "EE.UU./Canadá" },
+      { tipo: "extra", texto: "2 GB promocionales (12 meses) + WhatsApp de texto ilimitado." }
+    ]
+  },
+  plan7: {
+    nombre: "Plan Ilimitado Mi Movistar",
+    precio: "S/74.9",
+    gradient: "from-amber-500 via-orange-500 to-red-500",
+    beneficios: [
+      { tipo: "llamadas", texto: "Llamadas Ilimitadas", sub: "A nivel Nacional + 500 SMS" },
+      { tipo: "internet", texto: "Internet Ilimitado", sub: "110 GB en alta velocidad" },
+      { tipo: "ldi", texto: "Llamadas Ilimitadas LDI", sub: "EE.UU./Canadá" },
+      { tipo: "extra", texto: "3 GB promocionales (12 meses) + WhatsApp de texto ilimitado." }
+    ]
+  },
+  plan8: {
+    nombre: "Plan Ilimitado Mi Movistar",
+    precio: "S/85.9",
+    gradient: "from-pink-500 via-rose-500 to-red-500",
+    beneficios: [
+      { tipo: "llamadas", texto: "Llamadas Ilimitadas", sub: "A nivel Nacional + 500 SMS" },
+      { tipo: "internet", texto: "Internet Ilimitado", sub: "125 GB en alta velocidad" },
+      { tipo: "ldi", texto: "Llamadas Ilimitadas LDI", sub: "EE.UU./Canadá" },
+      { tipo: "extra", texto: "3 GB promocionales (12 meses) + WhatsApp de texto ilimitado." }
+    ]
+  },
+  plan9: {
+    nombre: "Plan Ilimitado Mi Movistar",
+    precio: "S/114.9",
+    gradient: "from-indigo-500 via-purple-500 to-pink-500",
+    beneficios: [
+      { tipo: "llamadas", texto: "Llamadas Ilimitadas", sub: "A nivel Nacional + 500 SMS" },
+      { tipo: "internet", texto: "Internet Ilimitado", sub: "145 GB en alta velocidad + 500MB tethering" },
+      { tipo: "ldi", texto: "Llamadas Ilimitadas LDI", sub: "EE.UU./Canadá" },
+      { tipo: "extra", texto: "8 GB promocionales (12 meses) + WhatsApp de texto ilimitado." }
+    ]
+  }
+};
+
+function PlanModal({ plan, isOpen, onClose }) {
+  if (!isOpen || !plan) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 bg-black/60 backdrop-blur-sm" role="dialog" aria-modal="true">
+      <div className="bg-white rounded-lg max-w-2xl w-full max-h-[70vh] overflow-y-auto shadow-2xl">
+        <div className={`sticky top-0 bg-gradient-to-r ${plan.gradient} p-3 rounded-t-lg relative`}>
+          <h3 className="text-sm font-bold text-white">{plan.nombre}</h3>
+          <p className="text-white/90 text-xs">{plan.precio} mensuales</p>
+          <button
+            onClick={onClose}
+            className="absolute top-1 right-1 text-white/80 hover:text-white hover:bg-white/20 p-1 rounded-full transition-all"
+            aria-label="Cerrar modal del plan"
+          >
+            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        <div className="p-3 text-xs space-y-2">
+          {plan.beneficios.map((beneficio, idx) => {
+            if (beneficio.tipo === "llamadas") {
+              return (
+                <div key={idx} className="bg-rose-50 rounded-lg p-2 border border-rose-200">
+                  <div className="flex items-center gap-2">
+                    <svg className="w-4 h-4 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.848.536l1.42 2.028a1 1 0 01-.024.912l-1.264 6.324a1 1 0 01-1.028.868 1 1 0 01-1.028-.868L3.3 12.028A1 1 0 012 11.118V5a2 2 0 012-2z" />
+                    </svg>
+                    <span className="font-bold text-rose-700">{beneficio.texto}</span>
+                  </div>
+                  <div className="ml-6 mt-1 text-slate-700">{beneficio.sub}</div>
+                </div>
+              );
+            }
+            if (beneficio.tipo === "internet") {
+              return (
+                <div key={idx} className="bg-blue-50 rounded-lg p-2 border border-blue-200">
+                  <div className="flex items-center gap-2">
+                    <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7H6a2 2 0 00-2 2v9a2 2 0 002 2h12a2 2 0 002-2V9a2 2 0 00-2-2h-3M9 7V4M9 4H6M9 4h12M9 4v3M15 7h3" />
+                    </svg>
+                    <span className="font-bold text-blue-700">{beneficio.texto}</span>
+                  </div>
+                  {beneficio.sub && <div className="ml-6 mt-1 text-slate-700">{beneficio.sub}</div>}
+                </div>
+              );
+            }
+            if (beneficio.tipo === "ldi") {
+              return (
+                <div key={idx} className="bg-purple-50 rounded-lg p-2 border border-purple-200">
+                  <div className="flex items-center gap-2">
+                    <svg className="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 00-9-9v9h9z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10a4 4 0 00-8 0v6a4 4 0 008 0v-6z" />
+                    </svg>
+                    <span className="text-slate-700">{beneficio.texto}</span>
+                  </div>
+                  {beneficio.sub && <div className="ml-6 mt-1 text-slate-700">{beneficio.sub}</div>}
+                </div>
+              );
+            }
+            if (beneficio.tipo === "apps") {
+              return (
+                <div key={idx} className="bg-slate-50 rounded-lg p-2 border border-slate-200">
+                  <div className="flex items-center gap-2">
+                    <svg className="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                    </svg>
+                    <span className="font-bold text-slate-800">Apps ilimitadas (12 meses)</span>
+                  </div>
+                  <div className="mt-1 flex flex-wrap gap-1">
+                    {beneficio.apps.map((app) => (
+                      <span key={app} className="px-1.5 py-0.5 bg-white text-[10px] rounded border border-slate-300 shadow-sm">{app}</span>
+                    ))}
+                  </div>
+                  {beneficio.excludeLoreto && (
+                    <div className="mt-1 bg-red-50 border-l-4 border-red-400 p-1 rounded-r">
+                      <p className="text-[10px] text-red-700 flex items-center gap-1">
+                        <svg className="w-3 h-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92z" clipRule="evenodd" /></svg>
+                        <span className="font-semibold">No informar a clientes de Loreto</span>
+                      </p>
+                    </div>
+                  )}
+                </div>
+              );
+            }
+            if (beneficio.tipo === "extra") {
+              return (
+                <div key={idx} className="bg-green-50 rounded-lg p-2 border border-green-200">
+                  <div className="text-slate-700">
+                    <span className="font-bold text-green-700">🎁 Beneficios adicionales:</span> {beneficio.texto}
+                  </div>
+                </div>
+              );
+            }
+            return null;
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function App() {
   const [modelo, setModelo] = useState("");
   const [sedeFiltro, setSedeFiltro] = useState("");
@@ -66,7 +276,6 @@ export default function App() {
           .or(`modelo.ilike.%${texto}%,codigo_sap.ilike.%${texto}%`)
           .limit(50);
         if (accesoriosError) throw accesoriosError;
-
         const accesoriosMapByCodigo = {};
         accesoriosData.forEach((acc) => {
           const codigoNormalizado = normalizarCodigo(acc.codigo_sap);
@@ -74,7 +283,6 @@ export default function App() {
             accesoriosMapByCodigo[codigoNormalizado] = acc;
           }
         });
-
         const combinados = equiposData.map((eq) => {
           let acc = null;
           const codigoNormalizado = normalizarCodigo(eq.codigo_sap);
@@ -96,7 +304,6 @@ export default function App() {
           }
           return { ...eq, accesorio: acc?.accesorio ?? "-" };
         });
-
         setResultados(combinados || []);
       } catch (err) {
         setError(err.message);
@@ -120,6 +327,7 @@ export default function App() {
     }
   }, [resultados]);
 
+  // Cálculo correcto de resultados filtrados, totalStock e itemsActivos
   const resultadosFiltrados = resultados
     .filter((r) => (sedeFiltro ? r.hoja === sedeFiltro : true))
     .sort((a, b) => {
@@ -178,91 +386,36 @@ export default function App() {
 
   const renderContrato = () => (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50">
-      <style>{`
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        @keyframes slideInRight {
-          from {
-            opacity: 0;
-            transform: translateX(30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateX(0);
-          }
-        }
-        @keyframes scaleIn {
-          from {
-            opacity: 0;
-            transform: scale(0.9);
-          }
-          to {
-            opacity: 1;
-            transform: scale(1);
-          }
-        }
-        @keyframes shimmer {
-          0% {
-            background-position: -1000px 0;
-          }
-          100% {
-            background-position: 1000px 0;
-          }
-        }
-
-        .animate-slide-in-right {
-          animation: slideInRight 0.5s ease-out forwards;
-        }
-
-        .shimmer-effect {
-          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-          background-size: 200% 100%;
-          animation: shimmer 2s infinite;
-        }
-      `}</style>
-      
       {/* Header del contrato */}
-
-<header className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-slate-800 to-slate-900 text-white shadow-xl">
-  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div className="flex items-center justify-between h-16">
-      {/* Título con icono a la izquierda */}
-      <div className="flex items-center gap-3">
-        <div className="inline-flex items-center justify-center w-10 h-10 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 rounded-xl shadow-lg">
-          <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-          </svg>
+      <header className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-slate-800 to-slate-900 text-white shadow-xl">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            {/* Título con icono a la izquierda */}
+            <div className="flex items-center gap-3">
+              <div className="inline-flex items-center justify-center w-10 h-10 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 rounded-xl shadow-lg">
+                <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+              </div>
+              <h1 className="text-xl font-bold">Lectura de Contrato</h1>
+            </div>
+            {/* Botón de cierre */}
+            <button
+              onClick={() => setMostrarContrato(false)}
+              className="text-white/90 hover:text-white hover:bg-white/20 p-2 rounded-full transition-all"
+              title="Cerrar"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
         </div>
-        <h1 className="text-xl font-bold">Lectura de Contrato</h1>
-      </div>
-
-      {/* Botón de cierre */}
-      <button
-        onClick={() => setMostrarContrato(false)}
-        className="text-white/90 hover:text-white hover:bg-white/20 p-2 rounded-full transition-all"
-        title="Cerrar"
-      >
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-        </svg>
-      </button>
-    </div>
-  </div>
-</header>
-
+      </header>
       <div className="pt-20 pb-12 px-4">
         <div className="max-w-5xl mx-auto">
- 
           {/* Contenedor principal del contrato */}
-          <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 overflow-hidden animate-scale-in">
+          <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 overflow-hidden">
             {/* Barra decorativa superior */}
             <div className="h-2 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 shimmer-effect"></div>
             <div className="p-8 sm:p-10 space-y-8">
@@ -580,561 +733,12 @@ export default function App() {
         </div>
       </div>
 
-      {/* Modales de Planes Compactos */}
-      {planModalAbierto === 'plan1' && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-2 bg-black/60 backdrop-blur-sm" role="dialog" aria-modal="true">
-          <div className="bg-white rounded-lg max-w-2xl w-full max-h-[70vh] overflow-y-auto shadow-2xl">
-            <div className="sticky top-0 bg-gradient-to-r from-rose-500 via-pink-500 to-orange-500 p-3 rounded-t-lg relative">
-              <h3 className="text-sm font-bold text-white">Plan Ahorro Mi Movistar</h3>
-              <p className="text-white/90 text-xs">S/20.9 mensuales</p>
-              <button
-                onClick={() => setPlanModalAbierto(null)}
-                className="absolute top-1 right-1 text-white/80 hover:text-white hover:bg-white/20 p-1 rounded-full transition-all"
-                aria-label="Cerrar modal del plan"
-              >
-                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-            <div className="p-3 text-xs space-y-2">
-              <div className="bg-rose-50 rounded-lg p-2 border border-rose-200">
-                <div className="flex items-center gap-2">
-                  <svg className="w-4 h-4 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.848.536l1.42 2.028a1 1 0 01-.024.912l-1.264 6.324a1 1 0 01-1.028.868 1 1 0 01-1.028-.868L3.3 12.028A1 1 0 012 11.118V5a2 2 0 012-2z" />
-                  </svg>
-                  <span className="font-bold text-rose-700">Llamadas Ilimitadas</span>
-                </div>
-                <div className="ml-6 mt-1 text-slate-700">A nivel Nacional + 500 SMS</div>
-              </div>
-              <div className="bg-blue-50 rounded-lg p-2 border border-blue-200">
-                <div className="flex items-center gap-2">
-                  <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7H6a2 2 0 00-2 2v9a2 2 0 002 2h12a2 2 0 002-2V9a2 2 0 00-2-2h-3M9 7V4M9 4H6M9 4h12M9 4v3M15 7h3" />
-                  </svg>
-                  <span className="font-bold text-blue-700">2 GB de internet</span>
-                </div>
-              </div>
-              <div className="bg-purple-50 rounded-lg p-2 border border-purple-200">
-                <div className="flex items-center gap-2">
-                  <svg className="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 00-9-9v9h9z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10a4 4 0 00-8 0v6a4 4 0 008 0v-6z" />
-                  </svg>
-                  <span className="text-slate-700">+ 200 min LDI EE.UU./Canadá</span>
-                </div>
-              </div>
-              <div className="bg-slate-50 rounded-lg p-2 border border-slate-200">
-                <div className="flex items-center gap-2">
-                  <svg className="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                  </svg>
-                  <span className="font-bold text-slate-800">Apps ilimitadas (12 meses)</span>
-                </div>
-                <div className="mt-1 flex flex-wrap gap-1">
-                  {['WhatsApp', 'Facebook Fotos', 'Messenger', 'Instagram', 'Waze'].map((app) => (
-                    <span key={app} className="px-1.5 py-0.5 bg-white text-[10px] rounded border border-slate-300 shadow-sm">{app}</span>
-                  ))}
-                </div>
-                <div className="mt-1 bg-red-50 border-l-4 border-red-400 p-1 rounded-r">
-                  <p className="text-[10px] text-red-700 flex items-center gap-1">
-                    <svg className="w-3 h-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92z" clipRule="evenodd" /></svg>
-                    <span className="font-semibold">No informar a clientes de Loreto</span>
-                  </p>
-                </div>
-              </div>
-              <div className="bg-green-50 rounded-lg p-2 border border-green-200">
-                <div className="text-slate-700">
-                  <span className="font-bold text-green-700">🎁 Beneficios adicionales:</span> 50 MB promocionales (12 meses) para datos internacionales en América y Europa.
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-      {planModalAbierto === 'plan2' && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-2 bg-black/60 backdrop-blur-sm" role="dialog" aria-modal="true">
-          <div className="bg-white rounded-lg max-w-2xl w-full max-h-[70vh] overflow-y-auto shadow-2xl">
-            <div className="sticky top-0 bg-gradient-to-r from-blue-500 via-cyan-500 to-teal-500 p-3 rounded-t-lg relative">
-              <h3 className="text-sm font-bold text-white">Plan Ahorro Mi Movistar</h3>
-              <p className="text-white/90 text-xs">S/25.9 mensuales</p>
-              <button
-                onClick={() => setPlanModalAbierto(null)}
-                className="absolute top-1 right-1 text-white/80 hover:text-white hover:bg-white/20 p-1 rounded-full transition-all"
-                aria-label="Cerrar modal del plan"
-              >
-                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-            <div className="p-3 text-xs space-y-2">
-              <div className="bg-rose-50 rounded-lg p-2 border border-rose-200">
-                <div className="flex items-center gap-2">
-                  <svg className="w-4 h-4 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.848.536l1.42 2.028a1 1 0 01-.024.912l-1.264 6.324a1 1 0 01-1.028.868 1 1 0 01-1.028-.868L3.3 12.028A1 1 0 012 11.118V5a2 2 0 012-2z" />
-                  </svg>
-                  <span className="font-bold text-rose-700">Llamadas Ilimitadas</span>
-                </div>
-                <div className="ml-6 mt-1 text-slate-700">A nivel Nacional + 500 SMS</div>
-              </div>
-              <div className="bg-blue-50 rounded-lg p-2 border border-blue-200">
-                <div className="flex items-center gap-2">
-                  <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7H6a2 2 0 00-2 2v9a2 2 0 002 2h12a2 2 0 002-2V9a2 2 0 00-2-2h-3M9 7V4M9 4H6M9 4h12M9 4v3M15 7h3" />
-                  </svg>
-                  <span className="font-bold text-blue-700">4 GB de internet</span>
-                </div>
-              </div>
-              <div className="bg-purple-50 rounded-lg p-2 border border-purple-200">
-                <div className="flex items-center gap-2">
-                  <svg className="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 00-9-9v9h9z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10a4 4 0 00-8 0v6a4 4 0 008 0v-6z" />
-                  </svg>
-                  <span className="text-slate-700">+ 250 min LDI EE.UU./Canadá</span>
-                </div>
-              </div>
-              <div className="bg-slate-50 rounded-lg p-2 border border-slate-200">
-                <div className="flex items-center gap-2">
-                  <svg className="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                  </svg>
-                  <span className="font-bold text-slate-800">Apps ilimitadas (12 meses)</span>
-                </div>
-                <div className="mt-1 flex flex-wrap gap-1">
-                  {['WhatsApp', 'Facebook Fotos', 'Messenger', 'Instagram', 'Waze'].map((app) => (
-                    <span key={app} className="px-1.5 py-0.5 bg-white text-[10px] rounded border border-slate-300 shadow-sm">{app}</span>
-                  ))}
-                </div>
-                <div className="mt-1 bg-red-50 border-l-4 border-red-400 p-1 rounded-r">
-                  <p className="text-[10px] text-red-700 flex items-center gap-1">
-                    <svg className="w-3 h-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92z" clipRule="evenodd" /></svg>
-                    <span className="font-semibold">No informar a clientes de Loreto</span>
-                  </p>
-                </div>
-              </div>
-              <div className="bg-green-50 rounded-lg p-2 border border-green-200">
-                <div className="text-slate-700">
-                  <span className="font-bold text-green-700">🎁 Beneficios adicionales:</span> 50 MB promocionales (12 meses) + WhatsApp de texto ilimitado.
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-      {planModalAbierto === 'plan3' && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-2 bg-black/60 backdrop-blur-sm" role="dialog" aria-modal="true">
-          <div className="bg-white rounded-lg max-w-2xl w-full max-h-[70vh] overflow-y-auto shadow-2xl">
-            <div className="sticky top-0 bg-gradient-to-r from-slate-700 via-slate-800 to-gray-900 p-3 rounded-t-lg relative">
-              <h3 className="text-sm font-bold text-white">Plan Ahorro Mi Movistar</h3>
-              <p className="text-white/90 text-xs">S/35.9 mensuales</p>
-              <button
-                onClick={() => setPlanModalAbierto(null)}
-                className="absolute top-1 right-1 text-white/80 hover:text-white hover:bg-white/20 p-1 rounded-full transition-all"
-                aria-label="Cerrar modal del plan"
-              >
-                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-            <div className="p-3 text-xs space-y-2">
-              <div className="bg-rose-50 rounded-lg p-2 border border-rose-200">
-                <div className="flex items-center gap-2">
-                  <svg className="w-4 h-4 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.848.536l1.42 2.028a1 1 0 01-.024.912l-1.264 6.324a1 1 0 01-1.028.868 1 1 0 01-1.028-.868L3.3 12.028A1 1 0 012 11.118V5a2 2 0 012-2z" />
-                  </svg>
-                  <span className="font-bold text-rose-700">Llamadas Ilimitadas</span>
-                </div>
-                <div className="ml-6 mt-1 text-slate-700">A nivel Nacional + 500 SMS</div>
-              </div>
-              <div className="bg-blue-50 rounded-lg p-2 border border-blue-200">
-                <div className="flex items-center gap-2">
-                  <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7H6a2 2 0 00-2 2v9a2 2 0 002 2h12a2 2 0 002-2V9a2 2 0 00-2-2h-3M9 7V4M9 4H6M9 4h12M9 4v3M15 7h3" />
-                  </svg>
-                  <span className="font-bold text-blue-700">20 GB de internet</span>
-                </div>
-              </div>
-              <div className="bg-purple-50 rounded-lg p-2 border border-purple-200">
-                <div className="flex items-center gap-2">
-                  <svg className="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 00-9-9v9h9z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10a4 4 0 00-8 0v6a4 4 0 008 0v-6z" />
-                  </svg>
-                  <span className="text-slate-700">+ 300 min LDI EE.UU./Canadá</span>
-                </div>
-              </div>
-              <div className="bg-slate-50 rounded-lg p-2 border border-slate-200">
-                <div className="flex items-center gap-2">
-                  <svg className="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                  </svg>
-                  <span className="font-bold text-slate-800">Apps ilimitadas (12 meses)</span>
-                </div>
-                <div className="mt-1 flex flex-wrap gap-1">
-                  {['WhatsApp', 'Facebook Fotos', 'Messenger', 'Instagram', 'Waze'].map((app) => (
-                    <span key={app} className="px-1.5 py-0.5 bg-white text-[10px] rounded border border-slate-300 shadow-sm">{app}</span>
-                  ))}
-                </div>
-                <div className="mt-1 bg-red-50 border-l-4 border-red-400 p-1 rounded-r">
-                  <p className="text-[10px] text-red-700 flex items-center gap-1">
-                    <svg className="w-3 h-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92z" clipRule="evenodd" /></svg>
-                    <span className="font-semibold">No informar a clientes de Loreto</span>
-                  </p>
-                </div>
-              </div>
-              <div className="bg-green-50 rounded-lg p-2 border border-green-200">
-                <div className="text-slate-700">
-                  <span className="font-bold text-green-700">🎁 Beneficios adicionales:</span> 250 MB promocionales (12 meses) + WhatsApp de texto ilimitado.
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-      {planModalAbierto === 'plan4' && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-2 bg-black/60 backdrop-blur-sm" role="dialog" aria-modal="true">
-          <div className="bg-white rounded-lg max-w-2xl w-full max-h-[70vh] overflow-y-auto shadow-2xl">
-            <div className="sticky top-0 bg-gradient-to-r from-purple-500 via-indigo-500 to-blue-500 p-3 rounded-t-lg relative">
-              <h3 className="text-sm font-bold text-white">Plan Ahorro Mi Movistar</h3>
-              <p className="text-white/90 text-xs">S/45.9 mensuales</p>
-              <button
-                onClick={() => setPlanModalAbierto(null)}
-                className="absolute top-1 right-1 text-white/80 hover:text-white hover:bg-white/20 p-1 rounded-full transition-all"
-                aria-label="Cerrar modal del plan"
-              >
-                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-            <div className="p-3 text-xs space-y-2">
-              <div className="bg-rose-50 rounded-lg p-2 border border-rose-200">
-                <div className="flex items-center gap-2">
-                  <svg className="w-4 h-4 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.848.536l1.42 2.028a1 1 0 01-.024.912l-1.264 6.324a1 1 0 01-1.028.868 1 1 0 01-1.028-.868L3.3 12.028A1 1 0 012 11.118V5a2 2 0 012-2z" />
-                  </svg>
-                  <span className="font-bold text-rose-700">Llamadas Ilimitadas</span>
-                </div>
-                <div className="ml-6 mt-1 text-slate-700">A nivel Nacional + 500 SMS</div>
-              </div>
-              <div className="bg-blue-50 rounded-lg p-2 border border-blue-200">
-                <div className="flex items-center gap-2">
-                  <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7H6a2 2 0 00-2 2v9a2 2 0 002 2h12a2 2 0 002-2V9a2 2 0 00-2-2h-3M9 7V4M9 4H6M9 4h12M9 4v3M15 7h3" />
-                  </svg>
-                  <span className="font-bold text-blue-700">36 GB de internet</span>
-                </div>
-              </div>
-              <div className="bg-purple-50 rounded-lg p-2 border border-purple-200">
-                <div className="flex items-center gap-2">
-                  <svg className="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 00-9-9v9h9z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10a4 4 0 00-8 0v6a4 4 0 008 0v-6z" />
-                  </svg>
-                  <span className="text-slate-700">+ 350 min LDI EE.UU./Canadá</span>
-                </div>
-              </div>
-              <div className="bg-slate-50 rounded-lg p-2 border border-slate-200">
-                <div className="flex items-center gap-2">
-                  <svg className="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                  </svg>
-                  <span className="font-bold text-slate-800">Apps ilimitadas (12 meses)</span>
-                </div>
-                <div className="mt-1 flex flex-wrap gap-1">
-                  {['WhatsApp', 'Facebook Fotos', 'Messenger', 'Instagram', 'Waze'].map((app) => (
-                    <span key={app} className="px-1.5 py-0.5 bg-white text-[10px] rounded border border-slate-300 shadow-sm">{app}</span>
-                  ))}
-                </div>
-                <div className="mt-1 bg-red-50 border-l-4 border-red-400 p-1 rounded-r">
-                  <p className="text-[10px] text-red-700 flex items-center gap-1">
-                    <svg className="w-3 h-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92z" clipRule="evenodd" /></svg>
-                    <span className="font-semibold">No informar a clientes de Loreto</span>
-                  </p>
-                </div>
-              </div>
-              <div className="bg-green-50 rounded-lg p-2 border border-green-200">
-                <div className="text-slate-700">
-                  <span className="font-bold text-green-700">🎁 Beneficios adicionales:</span> 1.25 GB promocionales (12 meses) + WhatsApp de texto ilimitado.
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-      {planModalAbierto === 'plan5' && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-2 bg-black/60 backdrop-blur-sm" role="dialog" aria-modal="true">
-          <div className="bg-white rounded-lg max-w-2xl w-full max-h-[70vh] overflow-y-auto shadow-2xl">
-            <div className="sticky top-0 bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 p-3 rounded-t-lg relative">
-              <h3 className="text-sm font-bold text-white">Plan Ilimitado Mi Movistar</h3>
-              <p className="text-white/90 text-xs">S/55.9 mensuales</p>
-              <button
-                onClick={() => setPlanModalAbierto(null)}
-                className="absolute top-1 right-1 text-white/80 hover:text-white hover:bg-white/20 p-1 rounded-full transition-all"
-                aria-label="Cerrar modal del plan"
-              >
-                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-            <div className="p-3 text-xs space-y-2">
-              <div className="bg-rose-50 rounded-lg p-2 border border-rose-200">
-                <div className="flex items-center gap-2">
-                  <svg className="w-4 h-4 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.848.536l1.42 2.028a1 1 0 01-.024.912l-1.264 6.324a1 1 0 01-1.028.868 1 1 0 01-1.028-.868L3.3 12.028A1 1 0 012 11.118V5a2 2 0 012-2z" />
-                  </svg>
-                  <span className="font-bold text-rose-700">Llamadas Ilimitadas</span>
-                </div>
-                <div className="ml-6 mt-1 text-slate-700">A nivel Nacional + 500 SMS</div>
-              </div>
-              <div className="bg-blue-50 rounded-lg p-2 border border-blue-200">
-                <div className="flex items-center gap-2">
-                  <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7H6a2 2 0 00-2 2v9a2 2 0 002 2h12a2 2 0 002-2V9a2 2 0 00-2-2h-3M9 7V4M9 4H6M9 4h12M9 4v3M15 7h3" />
-                  </svg>
-                  <span className="font-bold text-blue-700">Internet Ilimitado</span>
-                </div>
-                <div className="ml-6 mt-1 text-slate-700">66 GB en alta velocidad</div>
-              </div>
-              <div className="bg-purple-50 rounded-lg p-2 border border-purple-200">
-                <div className="flex items-center gap-2">
-                  <svg className="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 00-9-9v9h9z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10a4 4 0 00-8 0v6a4 4 0 008 0v-6z" />
-                  </svg>
-                  <span className="font-bold text-slate-700">Llamadas Ilimitadas LDI</span>
-                </div>
-                <div className="ml-6 mt-1 text-slate-700">EE.UU./Canadá</div>
-              </div>
-              <div className="bg-green-50 rounded-lg p-2 border border-green-200">
-                <div className="text-slate-700">
-                  <span className="font-bold text-green-700">🎁 Beneficios adicionales:</span> 2 GB promocionales (12 meses) + WhatsApp de texto ilimitado.
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-      {planModalAbierto === 'plan6' && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-2 bg-black/60 backdrop-blur-sm" role="dialog" aria-modal="true">
-          <div className="bg-white rounded-lg max-w-2xl w-full max-h-[70vh] overflow-y-auto shadow-2xl">
-            <div className="sticky top-0 bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-500 p-3 rounded-t-lg relative">
-              <h3 className="text-sm font-bold text-white">Plan Ilimitado Mi Movistar</h3>
-              <p className="text-white/90 text-xs">S/65.9 mensuales</p>
-              <button
-                onClick={() => setPlanModalAbierto(null)}
-                className="absolute top-1 right-1 text-white/80 hover:text-white hover:bg-white/20 p-1 rounded-full transition-all"
-                aria-label="Cerrar modal del plan"
-              >
-                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-            <div className="p-3 text-xs space-y-2">
-              <div className="bg-rose-50 rounded-lg p-2 border border-rose-200">
-                <div className="flex items-center gap-2">
-                  <svg className="w-4 h-4 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.848.536l1.42 2.028a1 1 0 01-.024.912l-1.264 6.324a1 1 0 01-1.028.868 1 1 0 01-1.028-.868L3.3 12.028A1 1 0 012 11.118V5a2 2 0 012-2z" />
-                  </svg>
-                  <span className="font-bold text-rose-700">Llamadas Ilimitadas</span>
-                </div>
-                <div className="ml-6 mt-1 text-slate-700">A nivel Nacional + 500 SMS</div>
-              </div>
-              <div className="bg-blue-50 rounded-lg p-2 border border-blue-200">
-                <div className="flex items-center gap-2">
-                  <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7H6a2 2 0 00-2 2v9a2 2 0 002 2h12a2 2 0 002-2V9a2 2 0 00-2-2h-3M9 7V4M9 4H6M9 4h12M9 4v3M15 7h3" />
-                  </svg>
-                  <span className="font-bold text-blue-700">Internet Ilimitado</span>
-                </div>
-                <div className="ml-6 mt-1 text-slate-700">80 GB en alta velocidad</div>
-              </div>
-              <div className="bg-purple-50 rounded-lg p-2 border border-purple-200">
-                <div className="flex items-center gap-2">
-                  <svg className="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 00-9-9v9h9z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10a4 4 0 00-8 0v6a4 4 0 008 0v-6z" />
-                  </svg>
-                  <span className="font-bold text-slate-700">Llamadas Ilimitadas LDI</span>
-                </div>
-                <div className="ml-6 mt-1 text-slate-700">EE.UU./Canadá</div>
-              </div>
-              <div className="bg-green-50 rounded-lg p-2 border border-green-200">
-                <div className="text-slate-700">
-                  <span className="font-bold text-green-700">🎁 Beneficios adicionales:</span> 2 GB promocionales (12 meses) + WhatsApp de texto ilimitado.
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-      {planModalAbierto === 'plan7' && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-2 bg-black/60 backdrop-blur-sm" role="dialog" aria-modal="true">
-          <div className="bg-white rounded-lg max-w-2xl w-full max-h-[70vh] overflow-y-auto shadow-2xl">
-            <div className="sticky top-0 bg-gradient-to-r from-amber-500 via-orange-500 to-red-500 p-3 rounded-t-lg relative">
-              <h3 className="text-sm font-bold text-white">Plan Ilimitado Mi Movistar</h3>
-              <p className="text-white/90 text-xs">S/74.9 mensuales</p>
-              <button
-                onClick={() => setPlanModalAbierto(null)}
-                className="absolute top-1 right-1 text-white/80 hover:text-white hover:bg-white/20 p-1 rounded-full transition-all"
-                aria-label="Cerrar modal del plan"
-              >
-                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-            <div className="p-3 text-xs space-y-2">
-              <div className="bg-rose-50 rounded-lg p-2 border border-rose-200">
-                <div className="flex items-center gap-2">
-                  <svg className="w-4 h-4 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.848.536l1.42 2.028a1 1 0 01-.024.912l-1.264 6.324a1 1 0 01-1.028.868 1 1 0 01-1.028-.868L3.3 12.028A1 1 0 012 11.118V5a2 2 0 012-2z" />
-                  </svg>
-                  <span className="font-bold text-rose-700">Llamadas Ilimitadas</span>
-                </div>
-                <div className="ml-6 mt-1 text-slate-700">A nivel Nacional + 500 SMS</div>
-              </div>
-              <div className="bg-blue-50 rounded-lg p-2 border border-blue-200">
-                <div className="flex items-center gap-2">
-                  <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7H6a2 2 0 00-2 2v9a2 2 0 002 2h12a2 2 0 002-2V9a2 2 0 00-2-2h-3M9 7V4M9 4H6M9 4h12M9 4v3M15 7h3" />
-                  </svg>
-                  <span className="font-bold text-blue-700">Internet Ilimitado</span>
-                </div>
-                <div className="ml-6 mt-1 text-slate-700">110 GB en alta velocidad</div>
-              </div>
-              <div className="bg-purple-50 rounded-lg p-2 border border-purple-200">
-                <div className="flex items-center gap-2">
-                  <svg className="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 00-9-9v9h9z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10a4 4 0 00-8 0v6a4 4 0 008 0v-6z" />
-                  </svg>
-                  <span className="font-bold text-slate-700">Llamadas Ilimitadas LDI</span>
-                </div>
-                <div className="ml-6 mt-1 text-slate-700">EE.UU./Canadá</div>
-              </div>
-              <div className="bg-green-50 rounded-lg p-2 border border-green-200">
-                <div className="text-slate-700">
-                  <span className="font-bold text-green-700">🎁 Beneficios adicionales:</span> 3 GB promocionales (12 meses) + WhatsApp de texto ilimitado.
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-      {planModalAbierto === 'plan8' && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-2 bg-black/60 backdrop-blur-sm" role="dialog" aria-modal="true">
-          <div className="bg-white rounded-lg max-w-2xl w-full max-h-[70vh] overflow-y-auto shadow-2xl">
-            <div className="sticky top-0 bg-gradient-to-r from-pink-500 via-rose-500 to-red-500 p-3 rounded-t-lg relative">
-              <h3 className="text-sm font-bold text-white">Plan Ilimitado Mi Movistar</h3>
-              <p className="text-white/90 text-xs">S/85.9 mensuales</p>
-              <button
-                onClick={() => setPlanModalAbierto(null)}
-                className="absolute top-1 right-1 text-white/80 hover:text-white hover:bg-white/20 p-1 rounded-full transition-all"
-                aria-label="Cerrar modal del plan"
-              >
-                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-            <div className="p-3 text-xs space-y-2">
-              <div className="bg-rose-50 rounded-lg p-2 border border-rose-200">
-                <div className="flex items-center gap-2">
-                  <svg className="w-4 h-4 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.848.536l1.42 2.028a1 1 0 01-.024.912l-1.264 6.324a1 1 0 01-1.028.868 1 1 0 01-1.028-.868L3.3 12.028A1 1 0 012 11.118V5a2 2 0 012-2z" />
-                  </svg>
-                  <span className="font-bold text-rose-700">Llamadas Ilimitadas</span>
-                </div>
-                <div className="ml-6 mt-1 text-slate-700">A nivel Nacional + 500 SMS</div>
-              </div>
-              <div className="bg-blue-50 rounded-lg p-2 border border-blue-200">
-                <div className="flex items-center gap-2">
-                  <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7H6a2 2 0 00-2 2v9a2 2 0 002 2h12a2 2 0 002-2V9a2 2 0 00-2-2h-3M9 7V4M9 4H6M9 4h12M9 4v3M15 7h3" />
-                  </svg>
-                  <span className="font-bold text-blue-700">Internet Ilimitado</span>
-                </div>
-                <div className="ml-6 mt-1 text-slate-700">125 GB en alta velocidad</div>
-              </div>
-              <div className="bg-purple-50 rounded-lg p-2 border border-purple-200">
-                <div className="flex items-center gap-2">
-                  <svg className="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 00-9-9v9h9z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10a4 4 0 00-8 0v6a4 4 0 008 0v-6z" />
-                  </svg>
-                  <span className="font-bold text-slate-700">Llamadas Ilimitadas LDI</span>
-                </div>
-                <div className="ml-6 mt-1 text-slate-700">EE.UU./Canadá</div>
-              </div>
-              <div className="bg-green-50 rounded-lg p-2 border border-green-200">
-                <div className="text-slate-700">
-                  <span className="font-bold text-green-700">🎁 Beneficios adicionales:</span> 3 GB promocionales (12 meses) + WhatsApp de texto ilimitado.
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-      {planModalAbierto === 'plan9' && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-2 bg-black/60 backdrop-blur-sm" role="dialog" aria-modal="true">
-          <div className="bg-white rounded-lg max-w-2xl w-full max-h-[70vh] overflow-y-auto shadow-2xl">
-            <div className="sticky top-0 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 p-3 rounded-t-lg relative">
-              <h3 className="text-sm font-bold text-white">Plan Ilimitado Mi Movistar</h3>
-              <p className="text-white/90 text-xs">S/114.9 mensuales</p>
-              <button
-                onClick={() => setPlanModalAbierto(null)}
-                className="absolute top-1 right-1 text-white/80 hover:text-white hover:bg-white/20 p-1 rounded-full transition-all"
-                aria-label="Cerrar modal del plan"
-              >
-                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-            <div className="p-3 text-xs space-y-2">
-              <div className="bg-rose-50 rounded-lg p-2 border border-rose-200">
-                <div className="flex items-center gap-2">
-                  <svg className="w-4 h-4 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.848.536l1.42 2.028a1 1 0 01-.024.912l-1.264 6.324a1 1 0 01-1.028.868 1 1 0 01-1.028-.868L3.3 12.028A1 1 0 012 11.118V5a2 2 0 012-2z" />
-                  </svg>
-                  <span className="font-bold text-rose-700">Llamadas Ilimitadas</span>
-                </div>
-                <div className="ml-6 mt-1 text-slate-700">A nivel Nacional + 500 SMS</div>
-              </div>
-              <div className="bg-blue-50 rounded-lg p-2 border border-blue-200">
-                <div className="flex items-center gap-2">
-                  <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7H6a2 2 0 00-2 2v9a2 2 0 002 2h12a2 2 0 002-2V9a2 2 0 00-2-2h-3M9 7V4M9 4H6M9 4h12M9 4v3M15 7h3" />
-                  </svg>
-                  <span className="font-bold text-blue-700">Internet Ilimitado</span>
-                </div>
-                <div className="ml-6 mt-1 text-slate-700">145 GB en alta velocidad + 500MB tethering</div>
-              </div>
-              <div className="bg-purple-50 rounded-lg p-2 border border-purple-200">
-                <div className="flex items-center gap-2">
-                  <svg className="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 00-9-9v9h9z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10a4 4 0 00-8 0v6a4 4 0 008 0v-6z" />
-                  </svg>
-                  <span className="font-bold text-slate-700">Llamadas Ilimitadas LDI</span>
-                </div>
-                <div className="ml-6 mt-1 text-slate-700">EE.UU./Canadá</div>
-              </div>
-              <div className="bg-green-50 rounded-lg p-2 border border-green-200">
-                <div className="text-slate-700">
-                  <span className="font-bold text-green-700">🎁 Beneficios adicionales:</span> 8 GB promocionales (12 meses) + WhatsApp de texto ilimitado.
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Modal de Planes Reutilizable */}
+      <PlanModal
+        plan={planesData[planModalAbierto]}
+        isOpen={!!planModalAbierto}
+        onClose={() => setPlanModalAbierto(null)}
+      />
     </div>
   );
 
