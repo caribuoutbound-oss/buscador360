@@ -223,15 +223,14 @@ export default function App() {
         .animate-slide-in-right {
           animation: slideInRight 0.5s ease-out forwards;
         }
-        .animate-scale-in {
-          animation: scaleIn 0.4s ease-out forwards;
-        }
+
         .shimmer-effect {
           background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
           background-size: 200% 100%;
           animation: shimmer 2s infinite;
         }
       `}</style>
+      
       {/* Header del contrato */}
 
 <header className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-slate-800 to-slate-900 text-white shadow-xl">
@@ -260,10 +259,10 @@ export default function App() {
     </div>
   </div>
 </header>
+
       <div className="pt-20 pb-12 px-4">
         <div className="max-w-5xl mx-auto">
  
-
           {/* Contenedor principal del contrato */}
           <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 overflow-hidden animate-scale-in">
             {/* Barra decorativa superior */}
