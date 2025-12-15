@@ -268,7 +268,7 @@ export default function App() {
             <h1 className="text-4xl font-extrabold bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">
               Contrato de Renovación
             </h1>
-            <p className="text-slate-600 text-lg">CAEQ Digital - Movistar</p>
+
           </div>
           {/* Contenedor principal del contrato */}
           <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 overflow-hidden animate-scale-in">
