@@ -217,9 +217,7 @@ export default function App() {
             background-position: 1000px 0;
           }
         }
-        .animate-fade-in-up {
-          animation: fadeInUp 0.6s ease-out forwards;
-        }
+
         .animate-slide-in-right {
           animation: slideInRight 0.5s ease-out forwards;
         }
