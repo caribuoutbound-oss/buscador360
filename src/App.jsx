@@ -262,14 +262,8 @@ export default function App() {
 </header>
       <div className="pt-20 pb-12 px-4">
         <div className="max-w-5xl mx-auto">
-          {/* Título principal animado */}
-          <div className="text-center mb-8 animate-fade-in-up">
+ 
 
-            <h1 className="text-4xl font-extrabold bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">
-              Contrato de Renovación
-            </h1>
-
-          </div>
           {/* Contenedor principal del contrato */}
           <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 overflow-hidden animate-scale-in">
             {/* Barra decorativa superior */}
