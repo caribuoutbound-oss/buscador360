@@ -268,8 +268,10 @@ export default function App() {
         @keyframes slideInRight { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
         @keyframes scaleIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
         @keyframes shimmer { 0% { background-position: -1000px 0; } 100% { background-position: 1000px 0; } }
+        @keyframes pulseAndSpin { 0% { transform: scale(1) rotate(0deg); } 50% { transform: scale(1.2) rotate(180deg); }100% { transform: scale(1) rotate(360deg); }}
         .animate-slide-in-right { animation: slideInRight 0.5s ease-out forwards; }
         .shimmer-effect { background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent); background-size: 200% 100%; animation: shimmer 2s infinite; }
+
       `}</style>
 <header className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-slate-800 to-slate-900 text-white shadow-xl">
   <div className="max-w-7xl mx-auto px-6">
@@ -524,18 +526,47 @@ export default function App() {
               </div>
 
               {/* Aceptación Final */}
+
+
               <div className="bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 rounded-2xl p-6 border-2 border-indigo-300 shadow-xl animate-slide-in-right" style={{animationDelay: '0.9s'}}>
-                <div className="text-center">
-                  <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 rounded-full shadow-lg mb-4">
-                    <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              <div className="text-center">
+                {/* Ícono con efecto interactivo */}
+                <button
+                  onClick={() => {
+                    const icon = document.getElementById('accept-icon');
+                    if (icon) {
+                      icon.classList.remove('animate-spin', 'scale-110', 'shadow-lg');
+                      void icon.offsetWidth; // Forzar reflow
+                      icon.classList.add('animate-spin', 'scale-110', 'shadow-lg');
+                    }
+                  }}
+                  className="group relative inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 rounded-full mb-4 transition-all duration-300 hover:scale-105 hover:shadow-xl"
+                >
+                  <div
+                    id="accept-icon"
+                    className="w-8 h-8 flex items-center justify-center text-white transition-transform duration-500 ease-out"
+                  >
+                    <svg
+                      className="w-6 h-6"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
                     </svg>
                   </div>
-                  <p className="text-slate-800 text-lg leading-relaxed font-medium">
-                    Habiendo sido informado de las características del contrato, le agradeceré decir <span className="font-bold text-indigo-700 text-xl">SÍ ACEPTO</span>.
-                  </p>
-                </div>
+                </button>
+                <p className="text-slate-800 text-lg leading-relaxed font-medium">
+                  Habiendo sido informado de las características del contrato, le agradeceré decir <span className="font-bold text-indigo-700 text-xl">SÍ ACEPTO</span>.
+                </p>
               </div>
+            </div>
+
             </div>
           </div>
         </div>
