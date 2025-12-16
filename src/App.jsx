@@ -25,7 +25,7 @@ const convertirDriveUrl = (url) => {
   return url;
 };
 
-// Datos de los planes
+// Datos de planes
 const planesData = {
   plan1: { nombre: "Plan Ahorro Mi Movistar", precio: "S/20.9", gradient: "from-rose-500 via-pink-500 to-orange-500", tipo: "Ahorro" },
   plan2: { nombre: "Plan Ahorro Mi Movistar", precio: "S/25.9", gradient: "from-blue-500 via-cyan-500 to-teal-500", tipo: "Ahorro" },
@@ -155,20 +155,20 @@ export default function App() {
   const [loadingSpecs, setLoadingSpecs] = useState(false);
   const [mostrarContrato, setMostrarContrato] = useState(false);
   const [planModalAbierto, setPlanModalAbierto] = useState(null);
-  const [currentIndex, setCurrentIndex] = useState(0); // Para el carrusel
+  const [currentIndex, setCurrentIndex] = useState(0); // Índice del carrusel
 
   const buscarTiempoReal = useCallback(
     debounce(async (texto) => {
       if (!texto.trim()) { setResultados([]); return; }
       setLoading(true); setError(null);
       try {
-        const { data: equiposData, error: equiposError } = await supabase
+        const {  equiposData, error: equiposError } = await supabase
           .from("equipos")
           .select("id, hoja, codigo_sap, modelo, stock_final, status_equipo")
           .or(`modelo.ilike.%${texto}%,codigo_sap.ilike.%${texto}%`)
           .limit(50);
         if (equiposError) throw equiposError;
-        const { data: accesoriosData, error: accesoriosError } = await supabase
+        const {  accesoriosData, error: accesoriosError } = await supabase
           .from("accesorios")
           .select("id, codigo_sap, modelo, accesorio")
           .or(`modelo.ilike.%${texto}%,codigo_sap.ilike.%${texto}%`)
@@ -357,28 +357,29 @@ export default function App() {
                 </p>
                 <p className="text-slate-600 text-sm mb-5">Con este plan, obtendrá los siguientes beneficios:</p>
 
-                {/* CARRUSEL COMPACTO PARA PC */}
+                {/* CARRUSEL COMPACTO PARA PC - CORREGIDO */}
                 <div className="relative">
                   <div className="overflow-hidden">
                     <div
                       className="flex transition-transform duration-300 ease-out"
                       style={{
                         transform: `translateX(-${currentIndex * (100 / 3)}%)`,
-                        width: '300%'
+                        width: '300%',
+                        display: 'flex',
+                        flexWrap: 'nowrap'
                       }}
                     >
-                      {[...Array(3)].map((_, repeat) =>
+                      {[...Array(3)].map((_, repeatIndex) =>
                         Object.entries(planesData).map(([key, plan]) => (
-                          <div key={`${repeat}-${key}`} className="w-1/3 flex-shrink-0 px-1">
+                          <div key={`${repeatIndex}-${key}`} className="w-1/3 flex-shrink-0 px-1">
                             <button
                               onClick={() => setPlanModalAbierto(key)}
-                              className={`group relative overflow-hidden text-white rounded-lg p-3 h-16 w-full shadow transition-all duration-200
-                                ${plan.gradient}`}
+                              className={`group relative overflow-hidden text-white rounded-lg p-3 h-16 w-full shadow transition-all duration-200 ${plan.gradient}`}
                             >
                               <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                               <div className="relative text-center">
                                 <div className="text-sm font-black">{plan.precio}</div>
-                                <div className="text-[9px] font-semibold opacity-90">{plan.tipo}</div>
+                                <div className="text-[9px] font-semibold opacity-90 mt-0.5">{plan.tipo}</div>
                               </div>
                             </button>
                           </div>
@@ -388,7 +389,7 @@ export default function App() {
                   </div>
                   <button
                     onClick={() => setCurrentIndex(prev => (prev === 0 ? 8 : prev - 1))}
-                    className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-2 w-6 h-6 rounded-full bg-white shadow flex items-center justify-center"
+                    className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-2 w-6 h-6 rounded-full bg-white shadow-md flex items-center justify-center"
                     aria-label="Plan anterior"
                   >
                     <svg className="w-3 h-3 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -397,7 +398,7 @@ export default function App() {
                   </button>
                   <button
                     onClick={() => setCurrentIndex(prev => (prev === 8 ? 0 : prev + 1))}
-                    className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-2 w-6 h-6 rounded-full bg-white shadow flex items-center justify-center"
+                    className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-2 w-6 h-6 rounded-full bg-white shadow-md flex items-center justify-center"
                     aria-label="Siguiente plan"
                   >
                     <svg className="w-3 h-3 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -579,19 +580,27 @@ export default function App() {
             </select>
           </div>
 
+          {/* ✅ ESTADÍSTICAS CON COLORES RESTAURADOS */}
           {modelo && resultadosFiltrados.length > 0 && (
-            <div className="grid grid-cols-4 gap-4 mb-6">
-              {[
-                { label: "Resultados", value: resultadosFiltrados.length },
-                { label: "Stock Total", value: totalStock.toLocaleString() },
-                { label: "Activos", value: itemsActivos },
-                { label: "Tasa Activos", value: `${resultadosFiltrados.length > 0 ? Math.round((itemsActivos / resultadosFiltrados.length) * 100) : 0}%` }
-              ].map((stat, i) => (
-                <div key={i} className="bg-white rounded-lg p-4 shadow text-center">
-                  <p className="text-xs text-slate-600">{stat.label}</p>
-                  <p className="text-lg font-bold text-slate-800">{stat.value}</p>
-                </div>
-              ))}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+              <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl shadow-sm border border-blue-200 p-4">
+                <p className="text-xs font-medium text-blue-600 mb-1">Resultados</p>
+                <p className="text-lg font-bold text-slate-800">{resultadosFiltrados.length}</p>
+              </div>
+              <div className="bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-xl shadow-sm border border-emerald-200 p-4">
+                <p className="text-xs font-medium text-emerald-600 mb-1">Stock Total</p>
+                <p className="text-lg font-bold text-slate-800">{totalStock.toLocaleString()}</p>
+              </div>
+              <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl shadow-sm border border-green-200 p-4">
+                <p className="text-xs font-medium text-green-600 mb-1">Activos</p>
+                <p className="text-lg font-bold text-slate-800">{itemsActivos}</p>
+              </div>
+              <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl shadow-sm border border-purple-200 p-4">
+                <p className="text-xs font-medium text-purple-600 mb-1">Tasa Activos</p>
+                <p className="text-lg font-bold text-slate-800">
+                  {resultadosFiltrados.length > 0 ? Math.round((itemsActivos / resultadosFiltrados.length) * 100) : 0}%
+                </p>
+              </div>
             </div>
           )}
 
