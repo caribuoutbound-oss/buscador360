@@ -127,12 +127,12 @@ function PlanModal({ plan, isOpen, onClose }) {
           <div className="bg-green-50 rounded-lg p-2 border border-green-200">
             <div className="text-slate-700">
               <span className="font-bold text-green-700">🎁 Beneficios adicionales:</span>{" "}
-              {plan.precio === "S/20.9" ? "50 MB promocionales (12 meses) para datos internacionales en América y Europa."
-              : plan.precio === "S/25.9" ? "50 MB promocionales (12 meses) + WhatsApp de texto ilimitado."
-              : plan.precio === "S/35.9" ? "250 MB promocionales (12 meses) + WhatsApp de texto ilimitado."
-              : plan.precio === "S/45.9" ? "1.25 GB promocionales (12 meses) + WhatsApp de texto ilimitado."
-              : plan.precio === "S/55.9" || plan.precio === "S/65.9" ? "2 GB promocionales (12 meses) + WhatsApp de texto ilimitado."
-              : plan.precio === "S/74.9" || plan.precio === "S/85.9" ? "3 GB promocionales (12 meses) + WhatsApp de texto ilimitado."
+              {plan.precio === "S/20.9" ? "50 MB promocionales (12 meses) para usarlos como datos internacionales en determinados países de América y Europa."
+              : plan.precio === "S/25.9" ? "50 MB promocionales (12 meses) para usarlos como datos internacionales en determinados países de América y Europa, así como WhatsApp de texto ilimitado."
+              : plan.precio === "S/35.9" ? "250 MB promocionales (12 meses) para usarlos como datos internacionales en determinados países de América y Europa, así como WhatsApp de texto ilimitado."
+              : plan.precio === "S/45.9" ? "1.25 GB promocionales (12 meses) para usarlos como datos internacionales en determinados países de América y Europa, así como WhatsApp de texto ilimitado."
+              : plan.precio === "S/55.9" || plan.precio === "S/65.9" ? "2 GB promocionales (12 meses) para usarlos como datos internacionales en determinados países de América y Europa, así como WhatsApp de texto ilimitado."
+              : plan.precio === "S/74.9" || plan.precio === "S/85.9" ? "3 GB promocionales (12 meses) para usarlos como datos internacionales en determinados países de América y Europa, así como WhatsApp de texto ilimitado."
               : "8 GB promocionales (12 meses) + WhatsApp de texto ilimitado."}
             </div>
           </div>
@@ -315,7 +315,7 @@ export default function App() {
                       Muy bien Sr/Sra. <span className="font-semibold text-indigo-600">XXX</span>, vamos a iniciar con la grabación del contrato.
                     </p>
                     <p className="text-slate-700 mt-3 leading-relaxed">
-                      Siendo hoy <span className="font-semibold">(día, mes, año)</span>, para continuar con la renovación del número <span className="font-semibold text-indigo-600">XXX</span>, por su seguridad validaremos los siguientes datos:
+                      Siendo hoy <span className="font-semibold">(día, mes, año)</span>, para continuar con la renovación del número <span className="font-semibold text-indigo-600">XXX</span>, por su seguridad validaremos los siguientes datos, me indica:
                     </p>
                   </div>
                 </div>
@@ -461,7 +461,10 @@ export default function App() {
                   <div className="bg-white/50 rounded-xl p-4 mt-4 border border-emerald-200">
                     <p className="text-xs leading-relaxed">
                       En caso realice la baja del servicio móvil, migra a prepago o realiza un cambio de plan a uno menor,
-                      Telefónica podrá resolver el financiamiento y cobrar todas las cuotas...
+                      Telefónica podrá resolver el financiamiento y cobrar todas las cuotas. Es obligación del cliente pagar la
+                      totalidad de las cuotas. Recuerde que en caso de no pagar una o mas cuotas del equipo o de la totalidad del
+                      precio del equipo, en caso de resolverse el financiamiento, Movistar podrá optar por bloquear el equipo de
+                      manera remota y reportarlo en las centrales de riesgo.
                     </p>
                   </div>
                 </div>
@@ -486,7 +489,9 @@ export default function App() {
                   </ul>
                   <div className="bg-white/50 rounded-xl p-4 mt-4 border border-violet-200">
                     <p className="text-xs leading-relaxed">
-                      Nuestro delivery le efectuará el cobro... no acepta efectivo...
+                      Nuestro delivery le efectuara el cobro correspondiente del equipo. Cabe recalcar que nuestro delivery no
+                      acepta efectivo por lo que el pago deberá efectuarse con tarjeta de débito o crédito Visa, MasterCard y
+                      Diners.
                     </p>
                   </div>
                 </div>
@@ -503,8 +508,19 @@ export default function App() {
                   <h3 className="text-xl font-bold text-pink-900">🔒 Tratamiento de Datos Personales</h3>
                 </div>
                 <p className="text-sm leading-relaxed">
-                  A fin de crear ofertas personalizadas... autoriza a Movistar... Te agradeceré decir <span className="font-bold text-pink-700">SÍ ACEPTO</span>.
+                  A fin de crear ofertas personalizadas y recibir anuncios comerciales, autoriza a Movistar a hacer uso y
+                  tratamiento de sus datos personales. Te agradeceré decir
+                  <span className="font-bold text-pink-700">SÍ ACEPTO</span>.
                 </p>
+
+                  <div className="bg-white/50 rounded-xl p-4 mt-4 border border-red-200">
+                    <p className="text-xs leading-relaxed">
+                    Movistar resguardara tus datos personales según la legislación vigente. Para más información, consulta la
+                    política de privacidad en www.movistar.com.pe/privacidad
+                    </p>
+                  </div>
+
+
               </div>
 
               {/* Aceptación Final */}
@@ -516,7 +532,7 @@ export default function App() {
                     </svg>
                   </div>
                   <p className="text-slate-800 text-lg leading-relaxed font-medium">
-                    Habiendo sido informado... le agradeceré decir <span className="font-bold text-indigo-700 text-xl">SÍ ACEPTO</span>.
+                    Habiendo sido informado de las características del contrato, le agradeceré decir <span className="font-bold text-indigo-700 text-xl">SÍ ACEPTO</span>.
                   </p>
                 </div>
               </div>
