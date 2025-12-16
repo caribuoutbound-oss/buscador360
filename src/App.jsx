@@ -174,18 +174,23 @@ export default function App() {
           .or(`modelo.ilike.%${texto}%,codigo_sap.ilike.%${texto}%`)
           .limit(50);
         if (accesoriosError) throw accesoriosError;
+
+        // ✅ Protección: asegurar que data sea array
+        const equiposLista = Array.isArray(equiposData) ? equiposData : [];
+        const accesoriosLista = Array.isArray(accesoriosData) ? accesoriosData : [];
+
         const accMap = {};
-        accesoriosData.forEach(acc => {
+        accesoriosLista.forEach(acc => {
           const c = normalizarCodigo(acc.codigo_sap);
           if (c) accMap[c] = acc;
         });
-        const combinados = equiposData.map(eq => {
+        const combinados = equiposLista.map(eq => {
           let acc = null;
           const c = normalizarCodigo(eq.codigo_sap);
           if (c && accMap[c]) acc = accMap[c];
           if (!acc) {
             const modeloEq = normalizarTexto(eq.modelo);
-            for (const a of accesoriosData) {
+            for (const a of accesoriosLista) {
               const modeloAcc = normalizarTexto(a.modelo);
               if (modeloAcc && modeloEq.includes(modeloAcc)) { acc = a; break; }
             }
@@ -288,7 +293,7 @@ export default function App() {
       </header>
       <div className="pt-20 pb-12 px-6">
         <div className="max-w-5xl mx-auto">
-          <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 overflow-hidden animate-scale-in">
+          <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 overflow-hidden animate-scaleIn">
             <div className="h-2 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 shimmer-effect"></div>
             <div className="p-8 sm:p-10 space-y-8">
               {/* Introducción */}
@@ -364,21 +369,22 @@ export default function App() {
                       className="flex transition-transform duration-300 ease-out"
                       style={{
                         transform: `translateX(-${currentIndex * (100 / 3)}%)`,
-                        width: '300%'
+                        width: '300%',
+                        display: 'flex',
+                        flexWrap: 'nowrap'
                       }}
                     >
-                      {[...Array(3)].map((_, repeat) =>
+                      {[...Array(3)].map((_, repeatIndex) =>
                         Object.entries(planesData).map(([key, plan]) => (
-                          <div key={`${repeat}-${key}`} className="w-1/3 flex-shrink-0 px-1">
+                          <div key={`${repeatIndex}-${key}`} className="w-1/3 flex-shrink-0 px-1">
                             <button
                               onClick={() => setPlanModalAbierto(key)}
-                              className={`group relative overflow-hidden text-white rounded-lg p-3 h-16 w-full shadow transition-all duration-200
-                                ${plan.gradient}`}
+                              className={`group relative overflow-hidden text-white rounded-lg p-3 h-16 w-full shadow transition-all duration-200 ${plan.gradient}`}
                             >
                               <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                               <div className="relative text-center">
                                 <div className="text-sm font-black">{plan.precio}</div>
-                                <div className="text-[9px] font-semibold opacity-90">{plan.tipo}</div>
+                                <div className="text-[9px] font-semibold opacity-90 mt-0.5">{plan.tipo}</div>
                               </div>
                             </button>
                           </div>
@@ -388,7 +394,7 @@ export default function App() {
                   </div>
                   <button
                     onClick={() => setCurrentIndex(prev => (prev === 0 ? 8 : prev - 1))}
-                    className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-2 w-6 h-6 rounded-full bg-white shadow flex items-center justify-center"
+                    className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-2 w-6 h-6 rounded-full bg-white shadow-md flex items-center justify-center"
                     aria-label="Plan anterior"
                   >
                     <svg className="w-3 h-3 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -397,7 +403,7 @@ export default function App() {
                   </button>
                   <button
                     onClick={() => setCurrentIndex(prev => (prev === 8 ? 0 : prev + 1))}
-                    className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-2 w-6 h-6 rounded-full bg-white shadow flex items-center justify-center"
+                    className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-2 w-6 h-6 rounded-full bg-white shadow-md flex items-center justify-center"
                     aria-label="Siguiente plan"
                   >
                     <svg className="w-3 h-3 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -579,19 +585,27 @@ export default function App() {
             </select>
           </div>
 
+          {/* ✅ ESTADÍSTICAS CON COLORES RESTAURADOS */}
           {modelo && resultadosFiltrados.length > 0 && (
-            <div className="grid grid-cols-4 gap-4 mb-6">
-              {[
-                { label: "Resultados", value: resultadosFiltrados.length },
-                { label: "Stock Total", value: totalStock.toLocaleString() },
-                { label: "Activos", value: itemsActivos },
-                { label: "Tasa Activos", value: `${resultadosFiltrados.length > 0 ? Math.round((itemsActivos / resultadosFiltrados.length) * 100) : 0}%` }
-              ].map((stat, i) => (
-                <div key={i} className="bg-white rounded-lg p-4 shadow text-center">
-                  <p className="text-xs text-slate-600">{stat.label}</p>
-                  <p className="text-lg font-bold text-slate-800">{stat.value}</p>
-                </div>
-              ))}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+              <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl shadow-sm border border-blue-200 p-4">
+                <p className="text-xs font-medium text-blue-600 mb-1">Resultados</p>
+                <p className="text-lg font-bold text-slate-800">{resultadosFiltrados.length}</p>
+              </div>
+              <div className="bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-xl shadow-sm border border-emerald-200 p-4">
+                <p className="text-xs font-medium text-emerald-600 mb-1">Stock Total</p>
+                <p className="text-lg font-bold text-slate-800">{totalStock.toLocaleString()}</p>
+              </div>
+              <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl shadow-sm border border-green-200 p-4">
+                <p className="text-xs font-medium text-green-600 mb-1">Activos</p>
+                <p className="text-lg font-bold text-slate-800">{itemsActivos}</p>
+              </div>
+              <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl shadow-sm border border-purple-200 p-4">
+                <p className="text-xs font-medium text-purple-600 mb-1">Tasa Activos</p>
+                <p className="text-lg font-bold text-slate-800">
+                  {resultadosFiltrados.length > 0 ? Math.round((itemsActivos / resultadosFiltrados.length) * 100) : 0}%
+                </p>
+              </div>
             </div>
           )}
 
@@ -602,6 +616,7 @@ export default function App() {
             </div>
           )}
 
+          {/* ✅ TABLA CON COLORES RESTAURADOS */}
           {resultadosFiltrados.length > 0 ? (
             <div className="bg-white rounded-xl shadow overflow-x-auto">
               <table className="min-w-full divide-y">
@@ -624,19 +639,33 @@ export default function App() {
                       <td className="px-4 py-2">{r.accesorio}</td>
                       <td className="px-4 py-2">
                         <span className={`font-bold ${
-                          r.stock_final === 0 ? "text-red-600"
-                          : r.stock_final <= 5 ? "text-amber-600"
-                          : "text-emerald-600"
+                          r.stock_final === null || r.stock_final === undefined
+                            ? "text-slate-400"
+                            : r.stock_final === 0
+                            ? "text-red-600"
+                            : r.stock_final <= 5
+                            ? "text-amber-600"
+                            : "text-emerald-600"
                         }`}>
                           {r.stock_final ?? "-"}
                         </span>
                       </td>
-                      <td className="px-4 py-2">
-                        <span className={`px-2 py-1 text-xs rounded-full ${
-                          !r.status_equipo ? "bg-slate-100 text-slate-600"
-                          : r.status_equipo.toLowerCase().includes("activo") ? "bg-emerald-100 text-emerald-700"
-                          : r.status_equipo.toLowerCase().includes("inactivo") ? "bg-red-100 text-red-700"
-                          : "bg-amber-100 text-amber-700"
+                      <td className="px-4 py-2 whitespace-nowrap">
+                        <span className={`inline-flex items-center px-2.5 py-0.5 text-xs font-medium rounded-full ${
+                          !r.status_equipo
+                            ? "bg-slate-100 text-slate-600"
+                            : r.status_equipo.toLowerCase().includes("activo") ||
+                              r.status_equipo.toLowerCase().includes("disponible") ||
+                              r.status_equipo.toLowerCase().includes("life")
+                            ? "bg-emerald-100 text-emerald-700"
+                            : r.status_equipo.toLowerCase().includes("inactivo") ||
+                              r.status_equipo.toLowerCase().includes("baja")
+                            ? "bg-red-100 text-red-700"
+                            : r.status_equipo.toLowerCase().includes("mantenimiento") ||
+                              r.status_equipo.toLowerCase().includes("reposo") ||
+                              r.status_equipo.toLowerCase().includes("phase")
+                            ? "bg-amber-100 text-amber-700"
+                            : "bg-blue-100 text-blue-700"
                         }`}>
                           {r.status_equipo || "-"}
                         </span>
