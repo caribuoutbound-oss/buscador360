@@ -41,7 +41,6 @@ const planesData = {
 // Modal reutilizable de plan
 function PlanModal({ plan, isOpen, onClose }) {
   if (!isOpen || !plan) return null;
-
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" role="dialog" aria-modal="true">
       <div className="bg-white rounded-lg max-w-2xl w-full max-h-[70vh] overflow-y-auto shadow-2xl">
@@ -155,7 +154,7 @@ export default function App() {
   const [loadingSpecs, setLoadingSpecs] = useState(false);
   const [mostrarContrato, setMostrarContrato] = useState(false);
   const [planModalAbierto, setPlanModalAbierto] = useState(null);
-  const [currentIndex, setCurrentIndex] = useState(0); // Para el carrusel
+  const [currentIndex, setCurrentIndex] = useState(0); // Para el carrusel (0, 1, 2)
 
   const buscarTiempoReal = useCallback(
     debounce(async (texto) => {
@@ -174,11 +173,8 @@ export default function App() {
           .or(`modelo.ilike.%${texto}%,codigo_sap.ilike.%${texto}%`)
           .limit(50);
         if (accesoriosError) throw accesoriosError;
-
-        // ✅ Protección: asegurar que data sea array
         const equiposLista = Array.isArray(equiposData) ? equiposData : [];
         const accesoriosLista = Array.isArray(accesoriosData) ? accesoriosData : [];
-
         const accMap = {};
         accesoriosLista.forEach(acc => {
           const c = normalizarCodigo(acc.codigo_sap);
@@ -268,36 +264,37 @@ export default function App() {
         @keyframes slideInRight { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
         @keyframes scaleIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
         @keyframes shimmer { 0% { background-position: -1000px 0; } 100% { background-position: 1000px 0; } }
-        @keyframes pulseAndSpin { 0% { transform: scale(1) rotate(0deg); } 50% { transform: scale(1.2) rotate(180deg); }100% { transform: scale(1) rotate(360deg); }}
+        @keyframes pulseAndSpin { 
+          0% { transform: scale(1) rotate(0deg); } 
+          50% { transform: scale(1.2) rotate(180deg); }
+          100% { transform: scale(1) rotate(360deg); 
+        }}
         .animate-slide-in-right { animation: slideInRight 0.5s ease-out forwards; }
         .shimmer-effect { background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent); background-size: 200% 100%; animation: shimmer 2s infinite; }
-
       `}</style>
-<header className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-slate-800 to-slate-900 text-white shadow-xl">
-  <div className="max-w-7xl mx-auto px-6">
-    <div className="flex items-center justify-between h-16">
-      {/* Título con icono (igual que el header principal) */}
-      <div className="flex items-center gap-3">
-        <div className="w-9 h-9 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center shadow-lg">
-          <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-          </svg>
+      <header className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-slate-800 to-slate-900 text-white shadow-xl">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="flex items-center justify-between h-16">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center shadow-lg">
+                <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+              </div>
+              <h1 className="text-xl font-bold">Lectura de Contrato</h1>
+            </div>
+            <button
+              onClick={() => setMostrarContrato(false)}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-white bg-gradient-to-r from-red-500 to-red-600 rounded-lg shadow-md hover:from-red-600 hover:to-red-700 transition-all border border-red-400/30"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+              Cerrar
+            </button>
+          </div>
         </div>
-        <h1 className="text-xl font-bold">Lectura de Contrato</h1>
-      </div>
-      {/* Botón de cierre (estilo consistente con "Contrato") */}
-      <button
-        onClick={() => setMostrarContrato(false)}
-        className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-white bg-gradient-to-r from-red-500 to-red-600 rounded-lg shadow-md hover:from-red-600 hover:to-red-700 transition-all border border-red-400/30"
-      >
-        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-        </svg>
-        Cerrar
-      </button>
-    </div>
-  </div>
-</header>
+      </header>
       <div className="pt-20 pb-12 px-6">
         <div className="max-w-5xl mx-auto">
           <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 overflow-hidden animate-scaleIn">
@@ -322,7 +319,6 @@ export default function App() {
                   </div>
                 </div>
               </div>
-
               {/* Datos a validar */}
               <div className="bg-white rounded-2xl p-6 border-2 border-indigo-100 shadow-lg animate-slide-in-right" style={{animationDelay: '0.2s'}}>
                 <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
@@ -344,7 +340,6 @@ export default function App() {
                   ))}
                 </div>
               </div>
-
               {/* Advertencia dirección */}
               <div className="bg-gradient-to-br from-amber-50 to-orange-50 border-l-4 border-amber-400 rounded-xl p-5 shadow-lg animate-slide-in-right" style={{animationDelay: '0.3s'}}>
                 <p className="font-bold text-amber-900 mb-2">⚠️ Dirección Completa Requerida</p>
@@ -353,8 +348,7 @@ export default function App() {
                   <li className="flex items-start gap-2"><span className="text-amber-500 mt-0.5">•</span> Manzana, lote, urbanización, distrito y referencias</li>
                 </ul>
               </div>
-
-              {/* Renovación + Cambio de Plan (CON CARRUSEL) */}
+              {/* Renovación + Cambio de Plan (CON CARRUSEL CORREGIDO) */}
               <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl p-6 border border-blue-200 shadow-lg animate-slide-in-right" style={{animationDelay: '0.4s'}}>
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center shadow-lg">
@@ -368,8 +362,7 @@ export default function App() {
                   Sr/Sra. <span className="font-semibold text-blue-600">XXX</span> ahora pasará a tener el plan <span className="font-semibold text-blue-600">XXX</span> con un precio mensual de <span className="font-bold text-xl text-blue-700">S/ XXX</span>
                 </p>
                 <p className="text-slate-600 text-sm mb-5">Con este plan, obtendrá los siguientes beneficios:</p>
-
-                {/* CARRUSEL COMPACTO PARA PC */}
+                {/* CARRUSEL COMPACTO PARA PC - CORREGIDO */}
                 <div className="relative">
                   <div className="overflow-hidden">
                     <div
@@ -400,7 +393,7 @@ export default function App() {
                     </div>
                   </div>
                   <button
-                    onClick={() => setCurrentIndex(prev => (prev === 0 ? 8 : prev - 1))}
+                    onClick={() => setCurrentIndex(prev => (prev === 0 ? 2 : prev - 1))} // ✅ CORREGIDO: 0 → 2 (no 8)
                     className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-2 w-6 h-6 rounded-full bg-white shadow-md flex items-center justify-center"
                     aria-label="Plan anterior"
                   >
@@ -409,7 +402,7 @@ export default function App() {
                     </svg>
                   </button>
                   <button
-                    onClick={() => setCurrentIndex(prev => (prev === 8 ? 0 : prev + 1))}
+                    onClick={() => setCurrentIndex(prev => (prev === 2 ? 0 : prev + 1))} // ✅ CORREGIDO: 2 → 0 (no 8)
                     className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-2 w-6 h-6 rounded-full bg-white shadow-md flex items-center justify-center"
                     aria-label="Siguiente plan"
                   >
@@ -419,7 +412,6 @@ export default function App() {
                   </button>
                 </div>
               </div>
-
               {/* Términos y condiciones */}
               <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-lg animate-slide-in-right" style={{animationDelay: '0.5s'}}>
                 <h3 className="text-lg font-bold text-slate-800 mb-4">📋 Términos del Plan | Así mismo</h3>
@@ -442,7 +434,6 @@ export default function App() {
                   ))}
                 </ul>
               </div>
-
               {/* Equipo Financiado */}
               <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl p-6 border border-emerald-200 shadow-lg animate-slide-in-right" style={{animationDelay: '0.6s'}}>
                 <div className="flex items-center gap-3 mb-4">
@@ -471,7 +462,6 @@ export default function App() {
                   </div>
                 </div>
               </div>
-
               {/* Equipo al Contado */}
               <div className="bg-gradient-to-br from-violet-50 to-purple-50 rounded-2xl p-6 border border-violet-200 shadow-lg animate-slide-in-right" style={{animationDelay: '0.7s'}}>
                 <div className="flex items-center gap-3 mb-4">
@@ -498,7 +488,6 @@ export default function App() {
                   </div>
                 </div>
               </div>
-
               {/* Autorización de Datos */}
               <div className="bg-gradient-to-br from-pink-50 to-rose-50 rounded-2xl p-6 border border-pink-200 shadow-lg animate-slide-in-right" style={{animationDelay: '0.8s'}}>
                 <div className="flex items-center gap-3 mb-4">
@@ -514,64 +503,57 @@ export default function App() {
                   tratamiento de sus datos personales. Te agradeceré decir
                   <span className="font-bold text-pink-700">SÍ ACEPTO</span>.
                 </p>
-
                   <div className="bg-white/50 rounded-xl p-4 mt-4 border border-red-200">
                     <p className="text-xs leading-relaxed">
                     Movistar resguardara tus datos personales según la legislación vigente. Para más información, consulta la
                     política de privacidad en www.movistar.com.pe/privacidad
                     </p>
                   </div>
-
-
               </div>
-
-              {/* Aceptación Final */}
-
-
+              {/* Aceptación Final - CORREGIDO */}
               <div className="bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 rounded-2xl p-6 border-2 border-indigo-300 shadow-xl animate-slide-in-right" style={{animationDelay: '0.9s'}}>
-              <div className="text-center">
-                {/* Ícono con efecto interactivo */}
-                <button
-                  onClick={() => {
-                    const icon = document.getElementById('accept-icon');
-                    if (icon) {
-                      icon.classList.remove('animate-spin', 'scale-110', 'shadow-lg');
-                      void icon.offsetWidth; // Forzar reflow
-                      icon.classList.add('animate-spin', 'scale-110', 'shadow-lg');
-                    }
-                  }}
-                  className="group relative inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 rounded-full mb-4 transition-all duration-300 hover:scale-105 hover:shadow-xl"
-                >
-                  <div
-                    id="accept-icon"
-                    className="w-8 h-8 flex items-center justify-center text-white transition-transform duration-500 ease-out"
+                <div className="text-center">
+                  {/* Ícono con efecto interactivo - CORREGIDO */}
+                  <button
+                    onClick={() => {
+                      const icon = document.getElementById('accept-icon');
+                      if (icon) {
+                        // ✅ CORREGIDO: Forzar reinicio de animación
+                        icon.classList.remove('animate-pulseAndSpin');
+                        void icon.offsetWidth; // Trigger reflow
+                        icon.classList.add('animate-pulseAndSpin');
+                      }
+                    }}
+                    className="group relative inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 rounded-full mb-4 transition-all duration-300 hover:scale-105 hover:shadow-xl"
                   >
-                    <svg
-                      className="w-6 h-6"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
+                    <div
+                      id="accept-icon"
+                      className="w-8 h-8 flex items-center justify-center text-white"
                     >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                      />
-                    </svg>
-                  </div>
-                </button>
-                <p className="text-slate-800 text-lg leading-relaxed font-medium">
-                  Habiendo sido informado de las características del contrato, le agradeceré decir <span className="font-bold text-indigo-700 text-xl">SÍ ACEPTO</span>.
-                </p>
+                      <svg
+                        className="w-6 h-6"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
+                      </svg>
+                    </div>
+                  </button>
+                  <p className="text-slate-800 text-lg leading-relaxed font-medium">
+                    Habiendo sido informado de las características del contrato, le agradeceré decir <span className="font-bold text-indigo-700 text-xl">SÍ ACEPTO</span>.
+                  </p>
+                </div>
               </div>
-            </div>
-
             </div>
           </div>
         </div>
       </div>
-
       {/* Modal de Plan Reutilizable */}
       <PlanModal
         plan={planesData[planModalAbierto]}
@@ -636,7 +618,6 @@ export default function App() {
               ))}
             </select>
           </div>
-
           {/* ✅ ESTADÍSTICAS CON COLORES RESTAURADOS */}
           {modelo && resultadosFiltrados.length > 0 && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
@@ -660,14 +641,12 @@ export default function App() {
               </div>
             </div>
           )}
-
           {error && (
             <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-6 rounded-xl shadow-sm">
               <p className="font-semibold text-red-800 text-sm">Error de conexión</p>
               <p className="text-red-700 text-xs">{error}</p>
             </div>
           )}
-
           {/* ✅ TABLA CON COLORES RESTAURADOS */}
           {resultadosFiltrados.length > 0 ? (
             <div className="bg-white rounded-xl shadow overflow-x-auto">
@@ -745,7 +724,6 @@ export default function App() {
               <p className="text-slate-600">No se encontraron resultados para "<span className="font-semibold">{modelo}</span>"</p>
             </div>
           )}
-
           {!modelo && !loading && (
             <div className="bg-white rounded-xl p-8 text-center border border-slate-200">
               <p className="text-slate-800 text-lg font-medium mb-2">Comienza a buscar</p>
@@ -754,7 +732,6 @@ export default function App() {
           )}
         </div>
       </div>
-
       {/* Modal PDF */}
       {selectedCodigoSap && (
         <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4" onClick={() => { setSelectedCodigoSap(null); setEspecificaciones(null); }}>
