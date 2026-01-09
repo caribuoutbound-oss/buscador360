@@ -38,16 +38,6 @@ const planesData = {
   plan9: { nombre: "Plan Ilimitado Mi Movistar", precio: "S/114.9", gradient: "from-indigo-500 via-purple-500 to-pink-500", tipo: "Ilimitado" }
 };
 
-// Agrupar planes en páginas de 3
-const getPlanPages = () => {
-  const planesArray = Object.entries(planesData).map(([key, value]) => ({ key, ...value }));
-  const pages = [];
-  for (let i = 0; i < planesArray.length; i += 3) {
-    pages.push(planesArray.slice(i, i + 3));
-  }
-  return pages; // [[p1,p2,p3], [p4,p5,p6], [p7,p8,p9]]
-};
-
 // Modal reutilizable de plan
 function PlanModal({ plan, isOpen, onClose }) {
   if (!isOpen || !plan) return null;
@@ -151,6 +141,16 @@ function PlanModal({ plan, isOpen, onClose }) {
   );
 }
 
+// ✅ Función para dividir los planes en grupos de 3
+const getPlanPages = () => {
+  const planesArray = Object.entries(planesData).map(([key, value]) => ({ key, ...value }));
+  const pages = [];
+  for (let i = 0; i < planesArray.length; i += 3) {
+    pages.push(planesArray.slice(i, i + 3));
+  }
+  return pages; // [[p1,p2,p3], [p4,p5,p6], [p7,p8,p9]]
+};
+
 export default function App() {
   const [modelo, setModelo] = useState("");
   const [sedeFiltro, setSedeFiltro] = useState("");
@@ -164,10 +164,10 @@ export default function App() {
   const [loadingSpecs, setLoadingSpecs] = useState(false);
   const [mostrarContrato, setMostrarContrato] = useState(false);
   const [planModalAbierto, setPlanModalAbierto] = useState(null);
-  const [currentIndex, setCurrentIndex] = useState(0); // Solo 0, 1, 2 (3 páginas)
+  const [currentIndex, setCurrentIndex] = useState(0); // Página actual: 0, 1 o 2
 
-  // Preparar las páginas de planes
-  const planPages = getPlanPages(); // 3 páginas con 3 planes cada una
+  // ✅ Preparar las páginas de planes
+  const planPages = getPlanPages(); // 3 páginas
 
   const buscarTiempoReal = useCallback(
     debounce(async (texto) => {
@@ -374,7 +374,7 @@ export default function App() {
                 </ul>
               </div>
 
-              {/* Renovación + Cambio de Plan (CARRUSEL CORREGIDO) */}
+              {/* ✅ CARRUSEL CORREGIDO: 3 planes por página, sin duplicados */}
               <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl p-6 border border-blue-200 shadow-lg animate-slide-in-right" style={{ animationDelay: '0.4s' }}>
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center shadow-lg">
@@ -389,7 +389,6 @@ export default function App() {
                 </p>
                 <p className="text-slate-600 text-sm mb-5">Con este plan, obtendrá los siguientes beneficios:</p>
 
-                {/* CARRUSEL COMPACTO CORREGIDO */}
                 <div className="relative">
                   <div className="overflow-hidden">
                     <div
@@ -583,7 +582,7 @@ export default function App() {
         </div>
       </div>
 
-      {/* Modal de Plan Reutilizable */}
+      {/* Modal de Plan */}
       <PlanModal
         plan={planesData[planModalAbierto]}
         isOpen={!!planModalAbierto}
