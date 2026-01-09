@@ -141,16 +141,6 @@ function PlanModal({ plan, isOpen, onClose }) {
   );
 }
 
-// ✅ Función para dividir los planes en grupos de 3
-const getPlanPages = () => {
-  const planesArray = Object.entries(planesData).map(([key, value]) => ({ key, ...value }));
-  const pages = [];
-  for (let i = 0; i < planesArray.length; i += 3) {
-    pages.push(planesArray.slice(i, i + 3));
-  }
-  return pages; // [[p1,p2,p3], [p4,p5,p6], [p7,p8,p9]]
-};
-
 export default function App() {
   const [modelo, setModelo] = useState("");
   const [sedeFiltro, setSedeFiltro] = useState("");
@@ -164,10 +154,7 @@ export default function App() {
   const [loadingSpecs, setLoadingSpecs] = useState(false);
   const [mostrarContrato, setMostrarContrato] = useState(false);
   const [planModalAbierto, setPlanModalAbierto] = useState(null);
-  const [currentIndex, setCurrentIndex] = useState(0); // Página actual: 0, 1 o 2
-
-  // ✅ Preparar las páginas de planes
-  const planPages = getPlanPages(); // 3 páginas
+  const [currentIndex, setCurrentIndex] = useState(0); // Páginas: 0, 1, 2
 
   const buscarTiempoReal = useCallback(
     debounce(async (texto) => {
@@ -374,7 +361,7 @@ export default function App() {
                 </ul>
               </div>
 
-              {/* ✅ CARRUSEL CORREGIDO: 3 planes por página, sin duplicados */}
+              {/* ✅ CARRUSEL CORREGIDO: 3 PÁGINAS DE 3 PLANES */}
               <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl p-6 border border-blue-200 shadow-lg animate-slide-in-right" style={{ animationDelay: '0.4s' }}>
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center shadow-lg">
@@ -395,13 +382,15 @@ export default function App() {
                       className="flex transition-transform duration-300 ease-out"
                       style={{
                         transform: `translateX(-${currentIndex * 100}%)`,
-                        width: `${planPages.length * 100}%`,
-                        display: 'flex'
+                        width: '300%',
+                        display: 'flex',
                       }}
                     >
-                      {planPages.map((page, pageIndex) => (
-                        <div key={pageIndex} className="w-full flex-shrink-0 flex">
-                          {page.map(({ key, ...plan }) => (
+                      {/* Página 1: Planes 1-3 */}
+                      <div className="w-full flex-shrink-0 flex">
+                        {['plan1', 'plan2', 'plan3'].map((key) => {
+                          const plan = planesData[key];
+                          return (
                             <div key={key} className="w-1/3 px-1">
                               <button
                                 onClick={() => setPlanModalAbierto(key)}
@@ -414,14 +403,57 @@ export default function App() {
                                 </div>
                               </button>
                             </div>
-                          ))}
-                        </div>
-                      ))}
+                          );
+                        })}
+                      </div>
+
+                      {/* Página 2: Planes 4-6 */}
+                      <div className="w-full flex-shrink-0 flex">
+                        {['plan4', 'plan5', 'plan6'].map((key) => {
+                          const plan = planesData[key];
+                          return (
+                            <div key={key} className="w-1/3 px-1">
+                              <button
+                                onClick={() => setPlanModalAbierto(key)}
+                                className={`group relative overflow-hidden text-white rounded-lg p-3 h-16 w-full shadow transition-all duration-200 ${plan.gradient}`}
+                              >
+                                <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                <div className="relative text-center">
+                                  <div className="text-sm font-black">{plan.precio}</div>
+                                  <div className="text-[9px] font-semibold opacity-90 mt-0.5">{plan.tipo}</div>
+                                </div>
+                              </button>
+                            </div>
+                          );
+                        })}
+                      </div>
+
+                      {/* Página 3: Planes 7-9 */}
+                      <div className="w-full flex-shrink-0 flex">
+                        {['plan7', 'plan8', 'plan9'].map((key) => {
+                          const plan = planesData[key];
+                          return (
+                            <div key={key} className="w-1/3 px-1">
+                              <button
+                                onClick={() => setPlanModalAbierto(key)}
+                                className={`group relative overflow-hidden text-white rounded-lg p-3 h-16 w-full shadow transition-all duration-200 ${plan.gradient}`}
+                              >
+                                <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                <div className="relative text-center">
+                                  <div className="text-sm font-black">{plan.precio}</div>
+                                  <div className="text-[9px] font-semibold opacity-90 mt-0.5">{plan.tipo}</div>
+                                </div>
+                              </button>
+                            </div>
+                          );
+                        })}
+                      </div>
                     </div>
                   </div>
 
+                  {/* Botones de navegación */}
                   <button
-                    onClick={() => setCurrentIndex(prev => (prev === 0 ? planPages.length - 1 : prev - 1))}
+                    onClick={() => setCurrentIndex(prev => (prev === 0 ? 2 : prev - 1))}
                     className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-2 w-6 h-6 rounded-full bg-white shadow-md flex items-center justify-center"
                     aria-label="Plan anterior"
                   >
@@ -430,7 +462,7 @@ export default function App() {
                     </svg>
                   </button>
                   <button
-                    onClick={() => setCurrentIndex(prev => (prev === planPages.length - 1 ? 0 : prev + 1))}
+                    onClick={() => setCurrentIndex(prev => (prev === 2 ? 0 : prev + 1))}
                     className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-2 w-6 h-6 rounded-full bg-white shadow-md flex items-center justify-center"
                     aria-label="Siguiente plan"
                   >
@@ -438,10 +470,23 @@ export default function App() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                     </svg>
                   </button>
+
+                  {/* Indicadores de página */}
+                  <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 flex gap-1">
+                    {[0, 1, 2].map((i) => (
+                      <div
+                        key={i}
+                        className={`w-2 h-2 rounded-full transition-colors ${
+                          currentIndex === i ? 'bg-blue-600' : 'bg-white/50'
+                        }`}
+                        onClick={() => setCurrentIndex(i)}
+                      />
+                    ))}
+                  </div>
                 </div>
               </div>
 
-              {/* Resto del contrato (sin cambios) */}
+              {/* Términos y condiciones */}
               <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-lg animate-slide-in-right" style={{ animationDelay: '0.5s' }}>
                 <h3 className="text-lg font-bold text-slate-800 mb-4">📋 Términos del Plan | Así mismo</h3>
                 <ul className="space-y-2 text-sm text-slate-700">
@@ -464,6 +509,7 @@ export default function App() {
                 </ul>
               </div>
 
+              {/* Equipo Financiado */}
               <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl p-6 border border-emerald-200 shadow-lg animate-slide-in-right" style={{ animationDelay: '0.6s' }}>
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-xl flex items-center justify-center shadow-lg">
@@ -492,6 +538,7 @@ export default function App() {
                 </div>
               </div>
 
+              {/* Equipo al Contado */}
               <div className="bg-gradient-to-br from-violet-50 to-purple-50 rounded-2xl p-6 border border-violet-200 shadow-lg animate-slide-in-right" style={{ animationDelay: '0.7s' }}>
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-10 h-10 bg-gradient-to-br from-violet-500 to-purple-500 rounded-xl flex items-center justify-center shadow-lg">
@@ -518,6 +565,7 @@ export default function App() {
                 </div>
               </div>
 
+              {/* Autorización de Datos */}
               <div className="bg-gradient-to-br from-pink-50 to-rose-50 rounded-2xl p-6 border border-pink-200 shadow-lg animate-slide-in-right" style={{ animationDelay: '0.8s' }}>
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-10 h-10 bg-gradient-to-br from-pink-500 to-rose-500 rounded-xl flex items-center justify-center shadow-lg">
@@ -540,6 +588,7 @@ export default function App() {
                 </div>
               </div>
 
+              {/* Aceptación Final */}
               <div className="bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 rounded-2xl p-6 border-2 border-indigo-300 shadow-xl animate-slide-in-right" style={{ animationDelay: '0.9s' }}>
                 <div className="text-center">
                   <button
@@ -648,6 +697,7 @@ export default function App() {
             </select>
           </div>
 
+          {/* Estadísticas */}
           {modelo && resultadosFiltrados.length > 0 && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
               <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl shadow-sm border border-blue-200 p-4">
@@ -678,6 +728,7 @@ export default function App() {
             </div>
           )}
 
+          {/* Tabla de resultados */}
           {resultadosFiltrados.length > 0 ? (
             <div className="bg-white rounded-xl shadow overflow-x-auto">
               <table className="min-w-full divide-y">
