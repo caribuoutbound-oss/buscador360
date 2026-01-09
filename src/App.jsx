@@ -486,7 +486,7 @@ export default function App() {
                   <span className="font-bold text-pink-700">SÍ ACEPTO</span>.
                 </p>
                 <div className="bg-white/50 rounded-xl p-4 mt-4 border border-red-200">
-                  <p className="text-xs leading-relaxed">
+                  <p className="text-sm leading-relaxed">
                     Movistar resguardara tus datos personales según la legislación vigente. Para más información, consulta la
                     política de privacidad en www.movistar.com.pe/privacidad
                   </p>
