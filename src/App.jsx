@@ -78,7 +78,11 @@ function PlanModal({ plan, isOpen, onClose }) {
             </div>
             {plan.nombre.includes("Ilimitado") && (
               <div className="ml-6 mt-1 text-slate-700">
-                {plan.precio === "S/55.9" ? "66 GB en alta velocidad" : plan.precio === "S/65.9" ? "80 GB en alta velocidad" : plan.precio === "S/74.9" ? "110 GB en alta velocidad" : plan.precio === "S/85.9" ? "125 GB en alta velocidad" : "145 GB en alta velocidad + 500MB tethering"}
+                {plan.precio === "S/55.9" ? "66 GB en alta velocidad"
+                  : plan.precio === "S/65.9" ? "80 GB en alta velocidad"
+                    : plan.precio === "S/74.9" ? "110 GB en alta velocidad"
+                      : plan.precio === "S/85.9" ? "125 GB en alta velocidad"
+                        : "145 GB en alta velocidad + 500MB tethering"}
               </div>
             )}
           </div>
@@ -89,7 +93,11 @@ function PlanModal({ plan, isOpen, onClose }) {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10a4 4 0 00-8 0v6a4 4 0 008 0v-6z" />
               </svg>
               <span className="text-slate-700">
-                {plan.precio === "S/20.9" ? "+ 200 min LDI EE.UU./Canadá" : plan.precio === "S/25.9" ? "+ 250 min LDI EE.UU./Canadá" : plan.precio === "S/35.9" ? "+ 300 min LDI EE.UU./Canadá" : plan.precio === "S/45.9" ? "+ 350 min LDI EE.UU./Canadá" : "Llamadas Ilimitadas LDI"}
+                {plan.precio === "S/20.9" ? "+ 200 min LDI EE.UU./Canadá"
+                  : plan.precio === "S/25.9" ? "+ 250 min LDI EE.UU./Canadá"
+                    : plan.precio === "S/35.9" ? "+ 300 min LDI EE.UU./Canadá"
+                      : plan.precio === "S/45.9" ? "+ 350 min LDI EE.UU./Canadá"
+                        : "Llamadas Ilimitadas LDI"}
               </span>
             </div>
             {plan.nombre.includes("Ilimitado") && <div className="ml-6 mt-1 text-slate-700">EE.UU./Canadá</div>}
@@ -109,9 +117,7 @@ function PlanModal({ plan, isOpen, onClose }) {
               </div>
               <div className="mt-1 bg-red-50 border-l-4 border-red-400 p-1 rounded-r">
                 <p className="text-[10px] text-red-700 flex items-center gap-1">
-                  <svg className="w-3 h-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92z" clipRule="evenodd" />
-                  </svg>
+                  <svg className="w-3 h-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92z" clipRule="evenodd" /></svg>
                   <span className="font-semibold">No informar a clientes de Loreto</span>
                 </p>
               </div>
@@ -120,7 +126,13 @@ function PlanModal({ plan, isOpen, onClose }) {
           <div className="bg-green-50 rounded-lg p-2 border border-green-200">
             <div className="text-slate-700">
               <span className="font-bold text-green-700">🎁 Beneficios adicionales:</span>{" "}
-              {plan.precio === "S/20.9" ? "50 MB promocionales (12 meses) para usarlos como datos internacionales en determinados países de América y Europa." : plan.precio === "S/25.9" ? "50 MB promocionales (12 meses) para usarlos como datos internacionales en determinados países de América y Europa, así como WhatsApp de texto ilimitado." : plan.precio === "S/35.9" ? "250 MB promocionales (12 meses) para usarlos como datos internacionales en determinados países de América y Europa, así como WhatsApp de texto ilimitado." : plan.precio === "S/45.9" ? "1.25 GB promocionales (12 meses) para usarlos como datos internacionales en determinados países de América y Europa, así como WhatsApp de texto ilimitado." : plan.precio === "S/55.9" || plan.precio === "S/65.9" ? "2 GB promocionales (12 meses) para usarlos como datos internacionales en determinados países de América y Europa, así como WhatsApp de texto ilimitado." : plan.precio === "S/74.9" || plan.precio === "S/85.9" ? "3 GB promocionales (12 meses) para usarlos como datos internacionales en determinados países de América y Europa, así como WhatsApp de texto ilimitado." : "8 GB promocionales (12 meses) para usarlos como datos internacionales en determinados países de América y Europa, así como WhatsApp de texto ilimitado."}
+              {plan.precio === "S/20.9" ? "50 MB promocionales (12 meses) para usarlos como datos internacionales en determinados países de América y Europa."
+                : plan.precio === "S/25.9" ? "50 MB promocionales (12 meses) para usarlos como datos internacionales en determinados países de América y Europa, así como WhatsApp de texto ilimitado."
+                  : plan.precio === "S/35.9" ? "250 MB promocionales (12 meses) para usarlos como datos internacionales en determinados países de América y Europa, así como WhatsApp de texto ilimitado."
+                    : plan.precio === "S/45.9" ? "1.25 GB promocionales (12 meses) para usarlos como datos internacionales en determinados países de América y Europa, así como WhatsApp de texto ilimitado."
+                      : plan.precio === "S/55.9" || plan.precio === "S/65.9" ? "2 GB promocionales (12 meses) para usarlos como datos internacionales en determinados países de América y Europa, así como WhatsApp de texto ilimitado."
+                        : plan.precio === "S/74.9" || plan.precio === "S/85.9" ? "3 GB promocionales (12 meses) para usarlos como datos internacionales en determinados países de América y Europa, así como WhatsApp de texto ilimitado."
+                          : "8 GB promocionales (12 meses) para usarlos como datos internacionales en determinados países de América y Europa, así como WhatsApp de texto ilimitado."}
             </div>
           </div>
         </div>
@@ -142,7 +154,7 @@ export default function App() {
   const [loadingSpecs, setLoadingSpecs] = useState(false);
   const [mostrarContrato, setMostrarContrato] = useState(false);
   const [planModalAbierto, setPlanModalAbierto] = useState(null);
-  const [currentIndex, setCurrentIndex] = useState(0);
+  // ⚠️ Eliminamos currentIndex porque ya no usamos carrusel
 
   const buscarTiempoReal = useCallback(
     debounce(async (texto) => {
@@ -154,6 +166,7 @@ export default function App() {
           .select("id, hoja, codigo_sap, modelo, stock_final, status_equipo")
           .or(`modelo.ilike.%${texto}%,codigo_sap.ilike.%${texto}%`)
           .limit(50);
+
         if (equiposError) throw equiposError;
 
         const { data: accesoriosData, error: accesoriosError } = await supabase
@@ -161,10 +174,12 @@ export default function App() {
           .select("id, codigo_sap, modelo, accesorio")
           .or(`modelo.ilike.%${texto}%,codigo_sap.ilike.%${texto}%`)
           .limit(50);
+
         if (accesoriosError) throw accesoriosError;
 
         const equiposLista = Array.isArray(equiposData) ? equiposData : [];
         const accesoriosLista = Array.isArray(accesoriosData) ? accesoriosData : [];
+
         const accMap = {};
         accesoriosLista.forEach(acc => {
           const c = normalizarCodigo(acc.codigo_sap);
@@ -189,9 +204,8 @@ export default function App() {
       } catch (err) {
         setError(err.message);
         setResultados([]);
-      } finally {
-        setLoading(false);
       }
+      setLoading(false);
     }, 300),
     []
   );
@@ -213,11 +227,9 @@ export default function App() {
 
   const totalStock = resultadosFiltrados.reduce((sum, r) => sum + (r.stock_final || 0), 0);
   const itemsActivos = resultadosFiltrados.filter(
-    r => r.status_equipo && (
-      r.status_equipo.toLowerCase().includes("activo") ||
+    r => r.status_equipo && (r.status_equipo.toLowerCase().includes("activo") ||
       r.status_equipo.toLowerCase().includes("disponible") ||
-      r.status_equipo.toLowerCase().includes("life")
-    )
+      r.status_equipo.toLowerCase().includes("life"))
   ).length;
 
   const cargarEspecificaciones = async (codigoSap) => {
@@ -229,6 +241,7 @@ export default function App() {
         .select("*")
         .eq("codigo_sap", normalizarCodigo(codigoSap))
         .single();
+
       if (error && error.code !== "PGRST116") throw error;
       setEspecificaciones(data || null);
     } catch (err) {
@@ -252,354 +265,285 @@ export default function App() {
     return () => window.removeEventListener("keydown", handleEsc);
   }, []);
 
-  const renderContrato = () => {
-    // ✅ Dividimos los 9 planes en grupos de 3
-    const planesArray = Object.entries(planesData);
-    const groupSize = 3;
-    const groups = [];
-    for (let i = 0; i < planesArray.length; i += groupSize) {
-      groups.push(planesArray.slice(i, i + groupSize));
-    }
+  const renderContrato = () => (
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50">
+      <style>{`
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideInRight { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes scaleIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+        @keyframes shimmer { 0% { background-position: -1000px 0; } 100% { background-position: 1000px 0; } }
+        @keyframes pulseAndSpin {
+          0% { transform: scale(1) rotate(0deg); }
+          50% { transform: scale(1.2) rotate(180deg); }
+          100% { transform: scale(1) rotate(360deg);
+        }}
+        .animate-slide-in-right { animation: slideInRight 0.5s ease-out forwards; }
+        .shimmer-effect { background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent); background-size: 200% 100%; animation: shimmer 2s infinite; }
+      `}</style>
 
-    const handlePrev = () => {
-      setCurrentIndex(prev => (prev > 0 ? prev - 1 : groups.length - 1));
-    };
-
-    const handleNext = () => {
-      setCurrentIndex(prev => (prev < groups.length - 1 ? prev + 1 : 0));
-    };
-
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50">
-        <style>{`
-          @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-          @keyframes slideInRight { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
-          @keyframes scaleIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
-          @keyframes shimmer { 0% { background-position: -1000px 0; } 100% { background-position: 1000px 0; } }
-          @keyframes pulseAndSpin {
-            0% { transform: scale(1) rotate(0deg); }
-            50% { transform: scale(1.2) rotate(180deg); }
-            100% { transform: scale(1) rotate(360deg); }
-          }
-          .animate-slide-in-right { animation: slideInRight 0.5s ease-out forwards; }
-          .shimmer-effect { background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent); background-size: 200% 100%; animation: shimmer 2s infinite; }
-        `}</style>
-
-        <header className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-slate-800 to-slate-900 text-white shadow-xl">
-          <div className="max-w-7xl mx-auto px-6">
-            <div className="flex items-center justify-between h-16">
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center shadow-lg">
-                  <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                  </svg>
-                </div>
-                <h1 className="text-xl font-bold">Lectura de Contrato</h1>
-              </div>
-              <button
-                onClick={() => setMostrarContrato(false)}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-white bg-gradient-to-r from-red-500 to-red-600 rounded-lg shadow-md hover:from-red-600 hover:to-red-700 transition-all border border-red-400/30"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+      <header className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-slate-800 to-slate-900 text-white shadow-xl">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="flex items-center justify-between h-16">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center shadow-lg">
+                <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
-                Cerrar
-              </button>
+              </div>
+              <h1 className="text-xl font-bold">Lectura de Contrato</h1>
             </div>
+            <button
+              onClick={() => setMostrarContrato(false)}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-white bg-gradient-to-r from-red-500 to-red-600 rounded-lg shadow-md hover:from-red-600 hover:to-red-700 transition-all border border-red-400/30"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+              Cerrar
+            </button>
           </div>
-        </header>
+        </div>
+      </header>
 
-        <div className="pt-20 pb-12 px-6">
-          <div className="max-w-5xl mx-auto">
-            <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 overflow-hidden animate-scaleIn">
-              <div className="h-2 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 shimmer-effect"></div>
-              <div className="p-8 sm:p-10 space-y-8">
-                {/* Introducción */}
-                <div className="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-2xl p-6 border border-indigo-100 shadow-lg animate-slide-in-right" style={{ animationDelay: '0.1s' }}>
-                  <div className="flex items-start gap-4">
-                    <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-xl flex items-center justify-center shadow-lg">
-                      <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                      </svg>
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="text-lg font-bold text-indigo-900 mb-2">Inicio de Grabación</h3>
-                      <p className="text-slate-700 leading-relaxed">
-                        Muy bien Sr/Sra. <span className="font-semibold text-indigo-600">XXX</span>, vamos a iniciar con la grabación del contrato.
-                      </p>
-                      <p className="text-slate-700 mt-3 leading-relaxed">
-                        Siendo hoy <span className="font-semibold">(día, mes, año)</span>, para continuar con la renovación del número <span className="font-semibold text-indigo-600">XXX</span>, por su seguridad validaremos los siguientes datos, me indica:
-                      </p>
-                    </div>
+      <div className="pt-20 pb-12 px-6">
+        <div className="max-w-5xl mx-auto">
+          <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 overflow-hidden animate-scaleIn">
+            <div className="h-2 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 shimmer-effect"></div>
+            <div className="p-8 sm:p-10 space-y-8">
+              {/* Introducción */}
+              <div className="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-2xl p-6 border border-indigo-100 shadow-lg animate-slide-in-right" style={{ animationDelay: '0.1s' }}>
+                <div className="flex items-start gap-4">
+                  <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-xl flex items-center justify-center shadow-lg">
+                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
                   </div>
-                </div>
-
-                {/* Datos a validar */}
-                <div className="bg-white rounded-2xl p-6 border-2 border-indigo-100 shadow-lg animate-slide-in-right" style={{ animationDelay: '0.2s' }}>
-                  <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
-                    <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-lg flex items-center justify-center">
-                      <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                      </svg>
-                    </div>
-                    Datos de Validación
-                  </h3>
-                  <div className="grid grid-cols-2 gap-3">
-                    {['Nombres y apellidos', 'Número de DNI', 'Correo electrónico', 'Número adicional de referencia', 'Dirección de entrega'].map((item, idx) => (
-                      <div key={idx} className="flex items-center gap-3 bg-gradient-to-r from-slate-50 to-indigo-50 p-3 rounded-xl border border-slate-200 hover:shadow-md transition-all duration-300 hover:scale-105">
-                        <div className="w-6 h-6 bg-indigo-500 rounded-full flex items-center justify-center flex-shrink-0">
-                          <span className="text-white text-xs font-bold">{idx + 1}</span>
-                        </div>
-                        <span className="text-sm text-slate-700 font-medium">{item}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Advertencia dirección */}
-                <div className="bg-gradient-to-br from-amber-50 to-orange-50 border-l-4 border-amber-400 rounded-xl p-5 shadow-lg animate-slide-in-right" style={{ animationDelay: '0.3s' }}>
-                  <p className="font-bold text-amber-900 mb-2">⚠️ Dirección Completa Requerida</p>
-                  <ul className="space-y-1 text-sm text-amber-800">
-                    <li className="flex items-start gap-2"><span className="text-amber-500 mt-0.5">•</span> Calle, número de puerta, distrito y referencias</li>
-                    <li className="flex items-start gap-2"><span className="text-amber-500 mt-0.5">•</span> Manzana, lote, urbanización, distrito y referencias</li>
-                  </ul>
-                </div>
-
-                {/* Renovación + Cambio de Plan — CARRUSEL CORREGIDO */}
-                <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl p-6 border border-blue-200 shadow-lg animate-slide-in-right" style={{ animationDelay: '0.4s' }}>
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center shadow-lg">
-                      <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                      </svg>
-                    </div>
-                    <h3 className="text-xl font-bold text-blue-900">Renovación + Cambio de Plan</h3>
-                  </div>
-                  <p className="text-slate-700 mb-4 leading-relaxed">
-                    Sr/Sra. <span className="font-semibold text-blue-600">XXX</span> ahora pasará a tener el plan <span className="font-semibold text-blue-600">XXX</span> con un precio mensual de <span className="font-bold text-xl text-blue-700">S/ XXX</span>
-                  </p>
-                  <p className="text-slate-600 text-sm mb-5">Con este plan, obtendrá los siguientes beneficios:</p>
-
-                  {/* Carrusel por grupos */}
-                  <div className="relative">
-                    <div className="overflow-hidden rounded-lg">
-                      <div
-                        className="flex transition-transform duration-300 ease-out"
-                        style={{
-                          transform: `translateX(-${currentIndex * 100}%)`,
-                          width: `${groups.length * 100}%`,
-                        }}
-                      >
-                        {groups.map((group, groupIndex) => (
-                          <div key={groupIndex} className="flex w-full" style={{ width: '100%' }}>
-                            {group.map(([key, plan]) => (
-                              <div key={key} className="w-1/3 flex-shrink-0 px-1">
-                                <button
-                                  onClick={() => setPlanModalAbierto(key)}
-                                  className={`group relative overflow-hidden text-white rounded-lg p-3 h-16 w-full shadow transition-all duration-200 bg-gradient-to-r ${plan.gradient} hover:scale-105`}
-                                >
-                                  <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                                  <div className="relative text-center">
-                                    <div className="text-sm font-black">{plan.precio}</div>
-                                    <div className="text-[9px] font-semibold opacity-90 mt-0.5">{plan.tipo}</div>
-                                  </div>
-                                </button>
-                              </div>
-                            ))}
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Botón Anterior */}
-                    <button
-                      onClick={handlePrev}
-                      className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-2 w-6 h-6 rounded-full bg-white shadow-md flex items-center justify-center hover:scale-110 transition-all"
-                      aria-label="Plan anterior"
-                    >
-                      <svg className="w-3 h-3 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                      </svg>
-                    </button>
-
-                    {/* Botón Siguiente */}
-                    <button
-                      onClick={handleNext}
-                      className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-2 w-6 h-6 rounded-full bg-white shadow-md flex items-center justify-center hover:scale-110 transition-all"
-                      aria-label="Siguiente plan"
-                    >
-                      <svg className="w-3 h-3 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </svg>
-                    </button>
-                  </div>
-
-                  {/* Indicadores */}
-                  <div className="flex justify-center gap-1.5 mt-3">
-                    {groups.map((_, idx) => (
-                      <button
-                        key={idx}
-                        onClick={() => setCurrentIndex(idx)}
-                        className={`h-1.5 rounded-full transition-all ${currentIndex === idx ? 'w-6 bg-blue-600' : 'w-1.5 bg-blue-300'}`}
-                        aria-label={`Ir al grupo ${idx + 1}`}
-                      />
-                    ))}
-                  </div>
-                </div>
-
-                {/* Términos y condiciones */}
-                <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-lg animate-slide-in-right" style={{ animationDelay: '0.5s' }}>
-                  <h3 className="text-lg font-bold text-slate-800 mb-4">📋 Términos del Plan | Así mismo</h3>
-                  <ul className="space-y-2 text-sm text-slate-700">
-                    {[
-                      'Los beneficios del plan no son acumulables.',
-                      'Los mensajes de texto del cargo fijo no incluyen Premium ni internacionales.',
-                      'Los minutos todo destino no incluyen rurales.',
-                      'Los mensajes de texto incluidos en su plan solo podrán utilizarse para mensajes de uso personal. No podrán ser usados para los fines de los servicios "mensajes de notificaciones" y/o "mensajes de publicidad"',
-                      'Para llamar a USA y Canadá deberá marcar previamente 1911 antes del número internacional.'
-                    ].map((term, idx) => (
-                      <li key={idx} className="flex items-start gap-2 p-2 rounded-lg hover:bg-slate-50 transition-colors">
-                        <div className="w-5 h-5 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                          <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                          </svg>
-                        </div>
-                        <span>{term}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                {/* Equipo Financiado */}
-                <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl p-6 border border-emerald-200 shadow-lg animate-slide-in-right" style={{ animationDelay: '0.6s' }}>
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-xl flex items-center justify-center shadow-lg">
-                      <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                      </svg>
-                    </div>
-                    <h3 className="text-xl font-bold text-emerald-900">💳 Equipo Financiado</h3>
-                  </div>
-                  <div className="space-y-3 text-sm text-slate-700">
-                    <p>Para finalizar la renovación, le detallo lo siguiente:</p>
-                    <ul className="space-y-2 ml-4">
-                      <li className="flex items-start gap-2"><span className="text-emerald-500 font-bold">•</span> Estamos procediendo a registrar la solicitud del equipo <span className="font-semibold text-emerald-700">XXX</span> (marca, modelo, capacidad, color)</li>
-                      <li className="flex items-start gap-2"><span className="text-emerald-500 font-bold">•</span> Cuota inicial de <span className="font-bold text-emerald-700">S/ XXX</span> y <span className="font-bold text-emerald-700">S/ XXX</span> por 12 meses</li>
-                      <li className="flex items-start gap-2"><span className="text-emerald-500 font-bold">•</span> El equipo adquirido tiene un contrato de permanencia de <span className="font-semibold">12 meses</span></li>
-                    </ul>
-                    <div className="bg-white/50 rounded-xl p-4 mt-4 border border-emerald-200">
-                      <p className="text-xs leading-relaxed">
-                        En caso realice la baja del servicio móvil, migra a prepago o realiza un cambio de plan a uno menor,
-                        Telefónica podrá resolver el financiamiento y cobrar todas las cuotas. Es obligación del cliente pagar la
-                        totalidad de las cuotas. Recuerde que en caso de no pagar una o mas cuotas del equipo o de la totalidad del
-                        precio del equipo, en caso de resolverse el financiamiento, Movistar podrá optar por bloquear el equipo de
-                        manera remota y reportarlo en las centrales de riesgo.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Equipo al Contado */}
-                <div className="bg-gradient-to-br from-violet-50 to-purple-50 rounded-2xl p-6 border border-violet-200 shadow-lg animate-slide-in-right" style={{ animationDelay: '0.7s' }}>
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-10 h-10 bg-gradient-to-br from-violet-500 to-purple-500 rounded-xl flex items-center justify-center shadow-lg">
-                      <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
-                      </svg>
-                    </div>
-                    <h3 className="text-xl font-bold text-violet-900">💰 Equipo al Contado</h3>
-                  </div>
-                  <div className="space-y-3 text-sm text-slate-700">
-                    <p>Para finalizar la renovación, le detallo lo siguiente:</p>
-                    <ul className="space-y-2 ml-4">
-                      <li className="flex items-start gap-2"><span className="text-violet-500 font-bold">•</span> Estamos procediendo a registrar la solicitud del equipo <span className="font-semibold text-violet-700">XXX</span></li>
-                      <li className="flex items-start gap-2"><span className="text-violet-500 font-bold">•</span> Pago único de <span className="font-bold text-violet-700">S/ XXX</span></li>
-                      <li className="flex items-start gap-2"><span className="text-violet-500 font-bold">•</span> El equipo adquirido tiene un contrato de permanencia de <span className="font-semibold">12 meses</span></li>
-                    </ul>
-                    <div className="bg-white/50 rounded-xl p-4 mt-4 border border-violet-200">
-                      <p className="text-xs leading-relaxed">
-                        Nuestro delivery le efectuara el cobro correspondiente del equipo. Cabe recalcar que nuestro delivery no
-                        acepta efectivo por lo que el pago deberá efectuarse con tarjeta de débito o crédito Visa, MasterCard y
-                        Diners.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Autorización de Datos */}
-                <div className="bg-gradient-to-br from-pink-50 to-rose-50 rounded-2xl p-6 border border-pink-200 shadow-lg animate-slide-in-right" style={{ animationDelay: '0.8s' }}>
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-10 h-10 bg-gradient-to-br from-pink-500 to-rose-500 rounded-xl flex items-center justify-center shadow-lg">
-                      <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                      </svg>
-                    </div>
-                    <h3 className="text-xl font-bold text-pink-900">🔒 Tratamiento de Datos Personales</h3>
-                  </div>
-                  <p className="text-sm leading-relaxed">
-                    A fin de crear ofertas personalizadas y recibir anuncios comerciales, autoriza a Movistar a hacer uso y
-                    tratamiento de sus datos personales. Te agradeceré decir
-                    <span className="font-bold text-pink-700"> SÍ ACEPTO</span>.
-                  </p>
-                  <div className="bg-white/50 rounded-xl p-4 mt-4 border border-red-200">
-                    <p className="text-xs leading-relaxed">
-                      Movistar resguardara tus datos personales según la legislación vigente. Para más información, consulta la
-                      política de privacidad en www.movistar.com.pe/privacidad
+                  <div className="flex-1">
+                    <h3 className="text-lg font-bold text-indigo-900 mb-2">Inicio de Grabación</h3>
+                    <p className="text-slate-700 leading-relaxed">
+                      Muy bien Sr/Sra. <span className="font-semibold text-indigo-600">XXX</span>, vamos a iniciar con la grabación del contrato.
+                    </p>
+                    <p className="text-slate-700 mt-3 leading-relaxed">
+                      Siendo hoy <span className="font-semibold">(día, mes, año)</span>, para continuar con la renovación del número <span className="font-semibold text-indigo-600">XXX</span>, por su seguridad validaremos los siguientes datos, me indica:
                     </p>
                   </div>
                 </div>
+              </div>
 
-                {/* Aceptación Final */}
-                <div className="bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 rounded-2xl p-6 border-2 border-indigo-300 shadow-xl animate-slide-in-right" style={{ animationDelay: '0.9s' }}>
-                  <div className="text-center">
+              {/* Datos a validar */}
+              <div className="bg-white rounded-2xl p-6 border-2 border-indigo-100 shadow-lg animate-slide-in-right" style={{ animationDelay: '0.2s' }}>
+                <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
+                  <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-lg flex items-center justify-center">
+                    <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                    </svg>
+                  </div>
+                  Datos de Validación
+                </h3>
+                <div className="grid grid-cols-2 gap-3">
+                  {['Nombres y apellidos', 'Número de DNI', 'Correo electrónico', 'Número adicional de referencia', 'Dirección de entrega'].map((item, idx) => (
+                    <div key={idx} className="flex items-center gap-3 bg-gradient-to-r from-slate-50 to-indigo-50 p-3 rounded-xl border border-slate-200 hover:shadow-md transition-all duration-300 hover:scale-105">
+                      <div className="w-6 h-6 bg-indigo-500 rounded-full flex items-center justify-center flex-shrink-0">
+                        <span className="text-white text-xs font-bold">{idx + 1}</span>
+                      </div>
+                      <span className="text-sm text-slate-700 font-medium">{item}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Advertencia dirección */}
+              <div className="bg-gradient-to-br from-amber-50 to-orange-50 border-l-4 border-amber-400 rounded-xl p-5 shadow-lg animate-slide-in-right" style={{ animationDelay: '0.3s' }}>
+                <p className="font-bold text-amber-900 mb-2">⚠️ Dirección Completa Requerida</p>
+                <ul className="space-y-1 text-sm text-amber-800">
+                  <li className="flex items-start gap-2"><span className="text-amber-500 mt-0.5">•</span> Calle, número de puerta, distrito y referencias</li>
+                  <li className="flex items-start gap-2"><span className="text-amber-500 mt-0.5">•</span> Manzana, lote, urbanización, distrito y referencias</li>
+                </ul>
+              </div>
+
+              {/* ✅ PLANES: FILA COMPACTA DE 9 BOTONES PEQUEÑOS */}
+              <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl p-6 border border-blue-200 shadow-lg animate-slide-in-right" style={{ animationDelay: '0.4s' }}>
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center shadow-lg">
+                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                  </div>
+                  <h3 className="text-xl font-bold text-blue-900">Renovación + Cambio de Plan</h3>
+                </div>
+                <p className="text-slate-700 mb-4 leading-relaxed">
+                  Sr/Sra. <span className="font-semibold text-blue-600">XXX</span> ahora pasará a tener el plan <span className="font-semibold text-blue-600">XXX</span> con un precio mensual de <span className="font-bold text-xl text-blue-700">S/ XXX</span>
+                </p>
+                <p className="text-slate-600 text-sm mb-5">Con este plan, obtendrá los siguientes beneficios:</p>
+
+                {/* ✅ FILA DE BOTONES PEQUEÑOS */}
+                <div className="flex flex-wrap gap-2 justify-center">
+                  {Object.entries(planesData).map(([key, plan]) => (
                     <button
-                      onClick={() => {
-                        const icon = document.getElementById('accept-icon');
-                        if (icon) {
-                          icon.classList.remove('animate-pulseAndSpin');
-                          void icon.offsetWidth;
-                          icon.classList.add('animate-pulseAndSpin');
-                        }
-                      }}
-                      className="group relative inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 rounded-full mb-4 transition-all duration-300 hover:scale-105 hover:shadow-xl"
+                      key={key}
+                      onClick={() => setPlanModalAbierto(key)}
+                      className={`px-2 py-1 text-[10px] font-bold text-white rounded shadow ${plan.gradient} hover:opacity-90 transition-opacity`}
+                      title={`${plan.nombre} - ${plan.precio}`}
                     >
-                      <div
-                        id="accept-icon"
-                        className="w-8 h-8 flex items-center justify-center text-white"
-                      >
-                        <svg
-                          className="w-6 h-6"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                          />
+                      {plan.precio} ({plan.tipo})
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Términos y condiciones */}
+              <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-lg animate-slide-in-right" style={{ animationDelay: '0.5s' }}>
+                <h3 className="text-lg font-bold text-slate-800 mb-4">📋 Términos del Plan | Así mismo</h3>
+                <ul className="space-y-2 text-sm text-slate-700">
+                  {[
+                    'Los beneficios del plan no son acumulables.',
+                    'Los mensajes de texto del cargo fijo no incluyen Premium ni internacionales.',
+                    'Los minutos todo destino no incluyen rurales.',
+                    'Los mensajes de texto incluidos en su plan solo podrán utilizarse para mensajes de uso personal. No podrán ser usados para los fines de los servicios “mensajes de notificaciones” y/o “mensajes de publicidad”',
+                    'Para llamar a USA y Canadá deberá marcar previamente 1911 antes del número internacional.'
+                  ].map((term, idx) => (
+                    <li key={idx} className="flex items-start gap-2 p-2 rounded-lg hover:bg-slate-50 transition-colors">
+                      <div className="w-5 h-5 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                         </svg>
                       </div>
-                    </button>
-                    <p className="text-slate-800 text-lg leading-relaxed font-medium">
-                      Habiendo sido informado de las características del contrato, le agradeceré decir <span className="font-bold text-indigo-700 text-xl">SÍ ACEPTO</span>.
+                      <span>{term}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Equipo Financiado */}
+              <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl p-6 border border-emerald-200 shadow-lg animate-slide-in-right" style={{ animationDelay: '0.6s' }}>
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-xl flex items-center justify-center shadow-lg">
+                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                    </svg>
+                  </div>
+                  <h3 className="text-xl font-bold text-emerald-900">💳 Equipo Financiado</h3>
+                </div>
+                <div className="space-y-3 text-sm text-slate-700">
+                  <p>Para finalizar la renovación, le detallo lo siguiente:</p>
+                  <ul className="space-y-2 ml-4">
+                    <li className="flex items-start gap-2"><span className="text-emerald-500 font-bold">•</span> Estamos procediendo a registrar la solicitud del equipo <span className="font-semibold text-emerald-700">XXX</span> (marca, modelo, capacidad, color)</li>
+                    <li className="flex items-start gap-2"><span className="text-emerald-500 font-bold">•</span> Cuota inicial de <span className="font-bold text-emerald-700">S/ XXX</span> y <span className="font-bold text-emerald-700">S/ XXX</span> por 12 meses</li>
+                    <li className="flex items-start gap-2"><span className="text-emerald-500 font-bold">•</span> El equipo adquirido tiene un contrato de permanencia de <span className="font-semibold">12 meses</span></li>
+                  </ul>
+                  <div className="bg-white/50 rounded-xl p-4 mt-4 border border-emerald-200">
+                    <p className="text-xs leading-relaxed">
+                      En caso realice la baja del servicio móvil, migra a prepago o realiza un cambio de plan a uno menor,
+                      Telefónica podrá resolver el financiamiento y cobrar todas las cuotas. Es obligación del cliente pagar la
+                      totalidad de las cuotas. Recuerde que en caso de no pagar una o mas cuotas del equipo o de la totalidad del
+                      precio del equipo, en caso de resolverse el financiamiento, Movistar podrá optar por bloquear el equipo de
+                      manera remota y reportarlo en las centrales de riesgo.
                     </p>
                   </div>
+                </div>
+              </div>
+
+              {/* Equipo al Contado */}
+              <div className="bg-gradient-to-br from-violet-50 to-purple-50 rounded-2xl p-6 border border-violet-200 shadow-lg animate-slide-in-right" style={{ animationDelay: '0.7s' }}>
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 bg-gradient-to-br from-violet-500 to-purple-500 rounded-xl flex items-center justify-center shadow-lg">
+                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                  </div>
+                  <h3 className="text-xl font-bold text-violet-900">💰 Equipo al Contado</h3>
+                </div>
+                <div className="space-y-3 text-sm text-slate-700">
+                  <p>Para finalizar la renovación, le detallo lo siguiente:</p>
+                  <ul className="space-y-2 ml-4">
+                    <li className="flex items-start gap-2"><span className="text-violet-500 font-bold">•</span> Estamos procediendo a registrar la solicitud del equipo <span className="font-semibold text-violet-700">XXX</span></li>
+                    <li className="flex items-start gap-2"><span className="text-violet-500 font-bold">•</span> Pago único de <span className="font-bold text-violet-700">S/ XXX</span></li>
+                    <li className="flex items-start gap-2"><span className="text-violet-500 font-bold">•</span> El equipo adquirido tiene un contrato de permanencia de <span className="font-semibold">12 meses</span></li>
+                  </ul>
+                  <div className="bg-white/50 rounded-xl p-4 mt-4 border border-violet-200">
+                    <p className="text-xs leading-relaxed">
+                      Nuestro delivery le efectuara el cobro correspondiente del equipo. Cabe recalcar que nuestro delivery no
+                      acepta efectivo por lo que el pago deberá efectuarse con tarjeta de débito o crédito Visa, MasterCard y
+                      Diners.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Autorización de Datos */}
+              <div className="bg-gradient-to-br from-pink-50 to-rose-50 rounded-2xl p-6 border border-pink-200 shadow-lg animate-slide-in-right" style={{ animationDelay: '0.8s' }}>
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 bg-gradient-to-br from-pink-500 to-rose-500 rounded-xl flex items-center justify-center shadow-lg">
+                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                  </div>
+                  <h3 className="text-xl font-bold text-pink-900">🔒 Tratamiento de Datos Personales</h3>
+                </div>
+                <p className="text-sm leading-relaxed">
+                  A fin de crear ofertas personalizadas y recibir anuncios comerciales, autoriza a Movistar a hacer uso y
+                  tratamiento de sus datos personales. Te agradeceré decir
+                  <span className="font-bold text-pink-700">SÍ ACEPTO</span>.
+                </p>
+                <div className="bg-white/50 rounded-xl p-4 mt-4 border border-red-200">
+                  <p className="text-xs leading-relaxed">
+                    Movistar resguardara tus datos personales según la legislación vigente. Para más información, consulta la
+                    política de privacidad en www.movistar.com.pe/privacidad
+                  </p>
+                </div>
+              </div>
+
+              {/* Aceptación Final */}
+              <div className="bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 rounded-2xl p-6 border-2 border-indigo-300 shadow-xl animate-slide-in-right" style={{ animationDelay: '0.9s' }}>
+                <div className="text-center">
+                  <button
+                    onClick={() => {
+                      const icon = document.getElementById('accept-icon');
+                      if (icon) {
+                        icon.classList.remove('animate-pulseAndSpin');
+                        void icon.offsetWidth;
+                        icon.classList.add('animate-pulseAndSpin');
+                      }
+                    }}
+                    className="group relative inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 rounded-full mb-4 transition-all duration-300 hover:scale-105 hover:shadow-xl"
+                  >
+                    <div
+                      id="accept-icon"
+                      className="w-8 h-8 flex items-center justify-center text-white"
+                    >
+                      <svg
+                        className="w-6 h-6"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
+                      </svg>
+                    </div>
+                  </button>
+                  <p className="text-slate-800 text-lg leading-relaxed font-medium">
+                    Habiendo sido informado de las características del contrato, le agradeceré decir <span className="font-bold text-indigo-700 text-xl">SÍ ACEPTO</span>.
+                  </p>
                 </div>
               </div>
             </div>
           </div>
         </div>
-
-        <PlanModal
-          plan={planesData[planModalAbierto]}
-          isOpen={!!planModalAbierto}
-          onClose={() => setPlanModalAbierto(null)}
-        />
       </div>
-    );
-  };
+
+      {/* Modal de Plan */}
+      <PlanModal
+        plan={planesData[planModalAbierto]}
+        isOpen={!!planModalAbierto}
+        onClose={() => setPlanModalAbierto(null)}
+      />
+    </div>
+  );
 
   if (mostrarContrato) {
     return renderContrato();
@@ -713,10 +657,10 @@ export default function App() {
                           r.stock_final === null || r.stock_final === undefined
                             ? "text-slate-400"
                             : r.stock_final === 0
-                            ? "text-red-600"
-                            : r.stock_final <= 5
-                            ? "text-amber-600"
-                            : "text-emerald-600"
+                              ? "text-red-600"
+                              : r.stock_final <= 5
+                                ? "text-amber-600"
+                                : "text-emerald-600"
                         }`}>
                           {r.stock_final ?? "-"}
                         </span>
@@ -728,15 +672,15 @@ export default function App() {
                             : r.status_equipo.toLowerCase().includes("activo") ||
                               r.status_equipo.toLowerCase().includes("disponible") ||
                               r.status_equipo.toLowerCase().includes("life")
-                            ? "bg-emerald-100 text-emerald-700"
-                            : r.status_equipo.toLowerCase().includes("inactivo") ||
-                              r.status_equipo.toLowerCase().includes("baja")
-                            ? "bg-red-100 text-red-700"
-                            : r.status_equipo.toLowerCase().includes("mantenimiento") ||
-                              r.status_equipo.toLowerCase().includes("reposo") ||
-                              r.status_equipo.toLowerCase().includes("phase")
-                            ? "bg-amber-100 text-amber-700"
-                            : "bg-blue-100 text-blue-700"
+                              ? "bg-emerald-100 text-emerald-700"
+                              : r.status_equipo.toLowerCase().includes("inactivo") ||
+                                r.status_equipo.toLowerCase().includes("baja")
+                                ? "bg-red-100 text-red-700"
+                                : r.status_equipo.toLowerCase().includes("mantenimiento") ||
+                                  r.status_equipo.toLowerCase().includes("reposo") ||
+                                  r.status_equipo.toLowerCase().includes("phase")
+                                  ? "bg-amber-100 text-amber-700"
+                                  : "bg-blue-100 text-blue-700"
                         }`}>
                           {r.status_equipo || "-"}
                         </span>
@@ -759,11 +703,13 @@ export default function App() {
                 </tbody>
               </table>
             </div>
-          ) : !loading && modelo ? (
+          ) : !loading && modelo && (
             <div className="bg-white rounded-xl p-8 text-center border-2 border-dashed border-slate-200">
               <p className="text-slate-600">No se encontraron resultados para "<span className="font-semibold">{modelo}</span>"</p>
             </div>
-          ) : (
+          )}
+
+          {!modelo && !loading && (
             <div className="bg-white rounded-xl p-8 text-center border border-slate-200">
               <p className="text-slate-800 text-lg font-medium mb-2">Comienza a buscar</p>
               <p className="text-slate-600">Ingresa el modelo o código SAP para comenzar</p>
@@ -774,38 +720,17 @@ export default function App() {
 
       {/* Modal PDF */}
       {selectedCodigoSap && (
-        <div
-          className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4"
-          onClick={() => {
-            setSelectedCodigoSap(null);
-            setEspecificaciones(null);
-          }}
-        >
-          <div
-            className="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[80vh]"
-            onClick={e => e.stopPropagation()}
-          >
+        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4" onClick={() => { setSelectedCodigoSap(null); setEspecificaciones(null); }}>
+          <div className="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[80vh]" onClick={e => e.stopPropagation()}>
             <div className="flex justify-between items-center px-4 py-2 bg-blue-600 text-white">
               <h2>Ficha Técnica</h2>
-              <button
-                onClick={() => {
-                  setSelectedCodigoSap(null);
-                  setEspecificaciones(null);
-                }}
-                className="text-white"
-              >
-                ✕
-              </button>
+              <button onClick={() => { setSelectedCodigoSap(null); setEspecificaciones(null); }} className="text-white">✕</button>
             </div>
             <div className="h-[60vh]">
               {loadingSpecs ? (
                 <div className="flex items-center justify-center h-full">Cargando...</div>
               ) : especificaciones?.url ? (
-                <iframe
-                  src={convertirDriveUrl(especificaciones.url)}
-                  title="PDF"
-                  className="w-full h-full border-0"
-                />
+                <iframe src={convertirDriveUrl(especificaciones.url)} title="PDF" className="w-full h-full border-0" />
               ) : (
                 <div className="flex items-center justify-center h-full">No disponible</div>
               )}
