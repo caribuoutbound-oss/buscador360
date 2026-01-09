@@ -38,6 +38,16 @@ const planesData = {
   plan9: { nombre: "Plan Ilimitado Mi Movistar", precio: "S/114.9", gradient: "from-indigo-500 via-purple-500 to-pink-500", tipo: "Ilimitado" }
 };
 
+// Agrupar planes en páginas de 3
+const getPlanPages = () => {
+  const planesArray = Object.entries(planesData).map(([key, value]) => ({ key, ...value }));
+  const pages = [];
+  for (let i = 0; i < planesArray.length; i += 3) {
+    pages.push(planesArray.slice(i, i + 3));
+  }
+  return pages; // [[p1,p2,p3], [p4,p5,p6], [p7,p8,p9]]
+};
+
 // Modal reutilizable de plan
 function PlanModal({ plan, isOpen, onClose }) {
   if (!isOpen || !plan) return null;
@@ -79,10 +89,10 @@ function PlanModal({ plan, isOpen, onClose }) {
             {plan.nombre.includes("Ilimitado") && (
               <div className="ml-6 mt-1 text-slate-700">
                 {plan.precio === "S/55.9" ? "66 GB en alta velocidad"
-                : plan.precio === "S/65.9" ? "80 GB en alta velocidad"
-                : plan.precio === "S/74.9" ? "110 GB en alta velocidad"
-                : plan.precio === "S/85.9" ? "125 GB en alta velocidad"
-                : "145 GB en alta velocidad + 500MB tethering"}
+                  : plan.precio === "S/65.9" ? "80 GB en alta velocidad"
+                    : plan.precio === "S/74.9" ? "110 GB en alta velocidad"
+                      : plan.precio === "S/85.9" ? "125 GB en alta velocidad"
+                        : "145 GB en alta velocidad + 500MB tethering"}
               </div>
             )}
           </div>
@@ -94,10 +104,10 @@ function PlanModal({ plan, isOpen, onClose }) {
               </svg>
               <span className="text-slate-700">
                 {plan.precio === "S/20.9" ? "+ 200 min LDI EE.UU./Canadá"
-                : plan.precio === "S/25.9" ? "+ 250 min LDI EE.UU./Canadá"
-                : plan.precio === "S/35.9" ? "+ 300 min LDI EE.UU./Canadá"
-                : plan.precio === "S/45.9" ? "+ 350 min LDI EE.UU./Canadá"
-                : "Llamadas Ilimitadas LDI"}
+                  : plan.precio === "S/25.9" ? "+ 250 min LDI EE.UU./Canadá"
+                    : plan.precio === "S/35.9" ? "+ 300 min LDI EE.UU./Canadá"
+                      : plan.precio === "S/45.9" ? "+ 350 min LDI EE.UU./Canadá"
+                        : "Llamadas Ilimitadas LDI"}
               </span>
             </div>
             {plan.nombre.includes("Ilimitado") && <div className="ml-6 mt-1 text-slate-700">EE.UU./Canadá</div>}
@@ -127,12 +137,12 @@ function PlanModal({ plan, isOpen, onClose }) {
             <div className="text-slate-700">
               <span className="font-bold text-green-700">🎁 Beneficios adicionales:</span>{" "}
               {plan.precio === "S/20.9" ? "50 MB promocionales (12 meses) para usarlos como datos internacionales en determinados países de América y Europa."
-              : plan.precio === "S/25.9" ? "50 MB promocionales (12 meses) para usarlos como datos internacionales en determinados países de América y Europa, así como WhatsApp de texto ilimitado."
-              : plan.precio === "S/35.9" ? "250 MB promocionales (12 meses) para usarlos como datos internacionales en determinados países de América y Europa, así como WhatsApp de texto ilimitado."
-              : plan.precio === "S/45.9" ? "1.25 GB promocionales (12 meses) para usarlos como datos internacionales en determinados países de América y Europa, así como WhatsApp de texto ilimitado."
-              : plan.precio === "S/55.9" || plan.precio === "S/65.9" ? "2 GB promocionales (12 meses) para usarlos como datos internacionales en determinados países de América y Europa, así como WhatsApp de texto ilimitado."
-              : plan.precio === "S/74.9" || plan.precio === "S/85.9" ? "3 GB promocionales (12 meses) para usarlos como datos internacionales en determinados países de América y Europa, así como WhatsApp de texto ilimitado."
-              : "8 GB promocionales (12 meses) para usarlos como datos internacionales en determinados países de América y Europa, así como WhatsApp de texto ilimitado."}
+                : plan.precio === "S/25.9" ? "50 MB promocionales (12 meses) para usarlos como datos internacionales en determinados países de América y Europa, así como WhatsApp de texto ilimitado."
+                  : plan.precio === "S/35.9" ? "250 MB promocionales (12 meses) para usarlos como datos internacionales en determinados países de América y Europa, así como WhatsApp de texto ilimitado."
+                    : plan.precio === "S/45.9" ? "1.25 GB promocionales (12 meses) para usarlos como datos internacionales en determinados países de América y Europa, así como WhatsApp de texto ilimitado."
+                      : plan.precio === "S/55.9" || plan.precio === "S/65.9" ? "2 GB promocionales (12 meses) para usarlos como datos internacionales en determinados países de América y Europa, así como WhatsApp de texto ilimitado."
+                        : plan.precio === "S/74.9" || plan.precio === "S/85.9" ? "3 GB promocionales (12 meses) para usarlos como datos internacionales en determinados países de América y Europa, así como WhatsApp de texto ilimitado."
+                          : "8 GB promocionales (12 meses) para usarlos como datos internacionales en determinados países de América y Europa, así como WhatsApp de texto ilimitado."}
             </div>
           </div>
         </div>
@@ -154,7 +164,10 @@ export default function App() {
   const [loadingSpecs, setLoadingSpecs] = useState(false);
   const [mostrarContrato, setMostrarContrato] = useState(false);
   const [planModalAbierto, setPlanModalAbierto] = useState(null);
-  const [currentIndex, setCurrentIndex] = useState(0); // Para el carrusel (0, 1, 2)
+  const [currentIndex, setCurrentIndex] = useState(0); // Solo 0, 1, 2 (3 páginas)
+
+  // Preparar las páginas de planes
+  const planPages = getPlanPages(); // 3 páginas con 3 planes cada una
 
   const buscarTiempoReal = useCallback(
     debounce(async (texto) => {
@@ -166,20 +179,26 @@ export default function App() {
           .select("id, hoja, codigo_sap, modelo, stock_final, status_equipo")
           .or(`modelo.ilike.%${texto}%,codigo_sap.ilike.%${texto}%`)
           .limit(50);
+
         if (equiposError) throw equiposError;
+
         const { data: accesoriosData, error: accesoriosError } = await supabase
           .from("accesorios")
           .select("id, codigo_sap, modelo, accesorio")
           .or(`modelo.ilike.%${texto}%,codigo_sap.ilike.%${texto}%`)
           .limit(50);
+
         if (accesoriosError) throw accesoriosError;
+
         const equiposLista = Array.isArray(equiposData) ? equiposData : [];
         const accesoriosLista = Array.isArray(accesoriosData) ? accesoriosData : [];
+
         const accMap = {};
         accesoriosLista.forEach(acc => {
           const c = normalizarCodigo(acc.codigo_sap);
           if (c) accMap[c] = acc;
         });
+
         const combinados = equiposLista.map(eq => {
           let acc = null;
           const c = normalizarCodigo(eq.codigo_sap);
@@ -193,6 +212,7 @@ export default function App() {
           }
           return { ...eq, accesorio: acc?.accesorio ?? "-" };
         });
+
         setResultados(combinados);
       } catch (err) {
         setError(err.message);
@@ -234,6 +254,7 @@ export default function App() {
         .select("*")
         .eq("codigo_sap", normalizarCodigo(codigoSap))
         .single();
+
       if (error && error.code !== "PGRST116") throw error;
       setEspecificaciones(data || null);
     } catch (err) {
@@ -264,14 +285,15 @@ export default function App() {
         @keyframes slideInRight { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
         @keyframes scaleIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
         @keyframes shimmer { 0% { background-position: -1000px 0; } 100% { background-position: 1000px 0; } }
-        @keyframes pulseAndSpin { 
-          0% { transform: scale(1) rotate(0deg); } 
+        @keyframes pulseAndSpin {
+          0% { transform: scale(1) rotate(0deg); }
           50% { transform: scale(1.2) rotate(180deg); }
-          100% { transform: scale(1) rotate(360deg); 
-        }}
+          100% { transform: scale(1) rotate(360deg); }
+        }
         .animate-slide-in-right { animation: slideInRight 0.5s ease-out forwards; }
         .shimmer-effect { background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent); background-size: 200% 100%; animation: shimmer 2s infinite; }
       `}</style>
+
       <header className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-slate-800 to-slate-900 text-white shadow-xl">
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex items-center justify-between h-16">
@@ -295,13 +317,14 @@ export default function App() {
           </div>
         </div>
       </header>
+
       <div className="pt-20 pb-12 px-6">
         <div className="max-w-5xl mx-auto">
           <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 overflow-hidden animate-scaleIn">
             <div className="h-2 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 shimmer-effect"></div>
             <div className="p-8 sm:p-10 space-y-8">
               {/* Introducción */}
-              <div className="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-2xl p-6 border border-indigo-100 shadow-lg animate-slide-in-right" style={{animationDelay: '0.1s'}}>
+              <div className="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-2xl p-6 border border-indigo-100 shadow-lg animate-slide-in-right" style={{ animationDelay: '0.1s' }}>
                 <div className="flex items-start gap-4">
                   <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-xl flex items-center justify-center shadow-lg">
                     <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -319,8 +342,9 @@ export default function App() {
                   </div>
                 </div>
               </div>
+
               {/* Datos a validar */}
-              <div className="bg-white rounded-2xl p-6 border-2 border-indigo-100 shadow-lg animate-slide-in-right" style={{animationDelay: '0.2s'}}>
+              <div className="bg-white rounded-2xl p-6 border-2 border-indigo-100 shadow-lg animate-slide-in-right" style={{ animationDelay: '0.2s' }}>
                 <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
                   <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-lg flex items-center justify-center">
                     <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -340,16 +364,18 @@ export default function App() {
                   ))}
                 </div>
               </div>
+
               {/* Advertencia dirección */}
-              <div className="bg-gradient-to-br from-amber-50 to-orange-50 border-l-4 border-amber-400 rounded-xl p-5 shadow-lg animate-slide-in-right" style={{animationDelay: '0.3s'}}>
+              <div className="bg-gradient-to-br from-amber-50 to-orange-50 border-l-4 border-amber-400 rounded-xl p-5 shadow-lg animate-slide-in-right" style={{ animationDelay: '0.3s' }}>
                 <p className="font-bold text-amber-900 mb-2">⚠️ Dirección Completa Requerida</p>
                 <ul className="space-y-1 text-sm text-amber-800">
                   <li className="flex items-start gap-2"><span className="text-amber-500 mt-0.5">•</span> Calle, número de puerta, distrito y referencias</li>
                   <li className="flex items-start gap-2"><span className="text-amber-500 mt-0.5">•</span> Manzana, lote, urbanización, distrito y referencias</li>
                 </ul>
               </div>
-              {/* Renovación + Cambio de Plan (CON CARRUSEL CORREGIDO) */}
-              <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl p-6 border border-blue-200 shadow-lg animate-slide-in-right" style={{animationDelay: '0.4s'}}>
+
+              {/* Renovación + Cambio de Plan (CARRUSEL CORREGIDO) */}
+              <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl p-6 border border-blue-200 shadow-lg animate-slide-in-right" style={{ animationDelay: '0.4s' }}>
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center shadow-lg">
                     <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -362,38 +388,41 @@ export default function App() {
                   Sr/Sra. <span className="font-semibold text-blue-600">XXX</span> ahora pasará a tener el plan <span className="font-semibold text-blue-600">XXX</span> con un precio mensual de <span className="font-bold text-xl text-blue-700">S/ XXX</span>
                 </p>
                 <p className="text-slate-600 text-sm mb-5">Con este plan, obtendrá los siguientes beneficios:</p>
-                {/* CARRUSEL COMPACTO PARA PC - CORREGIDO */}
+
+                {/* CARRUSEL COMPACTO CORREGIDO */}
                 <div className="relative">
                   <div className="overflow-hidden">
                     <div
                       className="flex transition-transform duration-300 ease-out"
                       style={{
-                        transform: `translateX(-${currentIndex * (100 / 3)}%)`,
-                        width: '300%',
-                        display: 'flex',
-                        flexWrap: 'nowrap'
+                        transform: `translateX(-${currentIndex * 100}%)`,
+                        width: `${planPages.length * 100}%`,
+                        display: 'flex'
                       }}
                     >
-                      {[...Array(3)].map((_, repeatIndex) =>
-                        Object.entries(planesData).map(([key, plan]) => (
-                          <div key={`${repeatIndex}-${key}`} className="w-1/3 flex-shrink-0 px-1">
-                            <button
-                              onClick={() => setPlanModalAbierto(key)}
-                              className={`group relative overflow-hidden text-white rounded-lg p-3 h-16 w-full shadow transition-all duration-200 ${plan.gradient}`}
-                            >
-                              <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                              <div className="relative text-center">
-                                <div className="text-sm font-black">{plan.precio}</div>
-                                <div className="text-[9px] font-semibold opacity-90 mt-0.5">{plan.tipo}</div>
-                              </div>
-                            </button>
-                          </div>
-                        ))
-                      )}
+                      {planPages.map((page, pageIndex) => (
+                        <div key={pageIndex} className="w-full flex-shrink-0 flex">
+                          {page.map(({ key, ...plan }) => (
+                            <div key={key} className="w-1/3 px-1">
+                              <button
+                                onClick={() => setPlanModalAbierto(key)}
+                                className={`group relative overflow-hidden text-white rounded-lg p-3 h-16 w-full shadow transition-all duration-200 ${plan.gradient}`}
+                              >
+                                <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                <div className="relative text-center">
+                                  <div className="text-sm font-black">{plan.precio}</div>
+                                  <div className="text-[9px] font-semibold opacity-90 mt-0.5">{plan.tipo}</div>
+                                </div>
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      ))}
                     </div>
                   </div>
+
                   <button
-                    onClick={() => setCurrentIndex(prev => (prev === 0 ? 2 : prev - 1))} // ✅ CORREGIDO: 0 → 2 (no 8)
+                    onClick={() => setCurrentIndex(prev => (prev === 0 ? planPages.length - 1 : prev - 1))}
                     className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-2 w-6 h-6 rounded-full bg-white shadow-md flex items-center justify-center"
                     aria-label="Plan anterior"
                   >
@@ -402,7 +431,7 @@ export default function App() {
                     </svg>
                   </button>
                   <button
-                    onClick={() => setCurrentIndex(prev => (prev === 2 ? 0 : prev + 1))} // ✅ CORREGIDO: 2 → 0 (no 8)
+                    onClick={() => setCurrentIndex(prev => (prev === planPages.length - 1 ? 0 : prev + 1))}
                     className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-2 w-6 h-6 rounded-full bg-white shadow-md flex items-center justify-center"
                     aria-label="Siguiente plan"
                   >
@@ -412,8 +441,9 @@ export default function App() {
                   </button>
                 </div>
               </div>
-              {/* Términos y condiciones */}
-              <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-lg animate-slide-in-right" style={{animationDelay: '0.5s'}}>
+
+              {/* Resto del contrato (sin cambios) */}
+              <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-lg animate-slide-in-right" style={{ animationDelay: '0.5s' }}>
                 <h3 className="text-lg font-bold text-slate-800 mb-4">📋 Términos del Plan | Así mismo</h3>
                 <ul className="space-y-2 text-sm text-slate-700">
                   {[
@@ -434,8 +464,8 @@ export default function App() {
                   ))}
                 </ul>
               </div>
-              {/* Equipo Financiado */}
-              <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl p-6 border border-emerald-200 shadow-lg animate-slide-in-right" style={{animationDelay: '0.6s'}}>
+
+              <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl p-6 border border-emerald-200 shadow-lg animate-slide-in-right" style={{ animationDelay: '0.6s' }}>
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-xl flex items-center justify-center shadow-lg">
                     <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -462,8 +492,8 @@ export default function App() {
                   </div>
                 </div>
               </div>
-              {/* Equipo al Contado */}
-              <div className="bg-gradient-to-br from-violet-50 to-purple-50 rounded-2xl p-6 border border-violet-200 shadow-lg animate-slide-in-right" style={{animationDelay: '0.7s'}}>
+
+              <div className="bg-gradient-to-br from-violet-50 to-purple-50 rounded-2xl p-6 border border-violet-200 shadow-lg animate-slide-in-right" style={{ animationDelay: '0.7s' }}>
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-10 h-10 bg-gradient-to-br from-violet-500 to-purple-500 rounded-xl flex items-center justify-center shadow-lg">
                     <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -488,8 +518,8 @@ export default function App() {
                   </div>
                 </div>
               </div>
-              {/* Autorización de Datos */}
-              <div className="bg-gradient-to-br from-pink-50 to-rose-50 rounded-2xl p-6 border border-pink-200 shadow-lg animate-slide-in-right" style={{animationDelay: '0.8s'}}>
+
+              <div className="bg-gradient-to-br from-pink-50 to-rose-50 rounded-2xl p-6 border border-pink-200 shadow-lg animate-slide-in-right" style={{ animationDelay: '0.8s' }}>
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-10 h-10 bg-gradient-to-br from-pink-500 to-rose-500 rounded-xl flex items-center justify-center shadow-lg">
                     <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -503,24 +533,22 @@ export default function App() {
                   tratamiento de sus datos personales. Te agradeceré decir
                   <span className="font-bold text-pink-700">SÍ ACEPTO</span>.
                 </p>
-                  <div className="bg-white/50 rounded-xl p-4 mt-4 border border-red-200">
-                    <p className="text-xs leading-relaxed">
+                <div className="bg-white/50 rounded-xl p-4 mt-4 border border-red-200">
+                  <p className="text-xs leading-relaxed">
                     Movistar resguardara tus datos personales según la legislación vigente. Para más información, consulta la
                     política de privacidad en www.movistar.com.pe/privacidad
-                    </p>
-                  </div>
+                  </p>
+                </div>
               </div>
-              {/* Aceptación Final - CORREGIDO */}
-              <div className="bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 rounded-2xl p-6 border-2 border-indigo-300 shadow-xl animate-slide-in-right" style={{animationDelay: '0.9s'}}>
+
+              <div className="bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 rounded-2xl p-6 border-2 border-indigo-300 shadow-xl animate-slide-in-right" style={{ animationDelay: '0.9s' }}>
                 <div className="text-center">
-                  {/* Ícono con efecto interactivo - CORREGIDO */}
                   <button
                     onClick={() => {
                       const icon = document.getElementById('accept-icon');
                       if (icon) {
-                        // ✅ CORREGIDO: Forzar reinicio de animación
                         icon.classList.remove('animate-pulseAndSpin');
-                        void icon.offsetWidth; // Trigger reflow
+                        void icon.offsetWidth;
                         icon.classList.add('animate-pulseAndSpin');
                       }
                     }}
@@ -554,6 +582,7 @@ export default function App() {
           </div>
         </div>
       </div>
+
       {/* Modal de Plan Reutilizable */}
       <PlanModal
         plan={planesData[planModalAbierto]}
@@ -592,6 +621,7 @@ export default function App() {
           </div>
         </div>
       </header>
+
       <div className="pt-16 px-6">
         <div className="max-w-7xl mx-auto py-6">
           <div className="bg-white rounded-xl shadow-lg border border-slate-200 p-4 mb-6 flex gap-4">
@@ -618,7 +648,7 @@ export default function App() {
               ))}
             </select>
           </div>
-          {/* ✅ ESTADÍSTICAS CON COLORES RESTAURADOS */}
+
           {modelo && resultadosFiltrados.length > 0 && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
               <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl shadow-sm border border-blue-200 p-4">
@@ -641,13 +671,14 @@ export default function App() {
               </div>
             </div>
           )}
+
           {error && (
             <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-6 rounded-xl shadow-sm">
               <p className="font-semibold text-red-800 text-sm">Error de conexión</p>
               <p className="text-red-700 text-xs">{error}</p>
             </div>
           )}
-          {/* ✅ TABLA CON COLORES RESTAURADOS */}
+
           {resultadosFiltrados.length > 0 ? (
             <div className="bg-white rounded-xl shadow overflow-x-auto">
               <table className="min-w-full divide-y">
@@ -673,10 +704,10 @@ export default function App() {
                           r.stock_final === null || r.stock_final === undefined
                             ? "text-slate-400"
                             : r.stock_final === 0
-                            ? "text-red-600"
-                            : r.stock_final <= 5
-                            ? "text-amber-600"
-                            : "text-emerald-600"
+                              ? "text-red-600"
+                              : r.stock_final <= 5
+                                ? "text-amber-600"
+                                : "text-emerald-600"
                         }`}>
                           {r.stock_final ?? "-"}
                         </span>
@@ -688,15 +719,15 @@ export default function App() {
                             : r.status_equipo.toLowerCase().includes("activo") ||
                               r.status_equipo.toLowerCase().includes("disponible") ||
                               r.status_equipo.toLowerCase().includes("life")
-                            ? "bg-emerald-100 text-emerald-700"
-                            : r.status_equipo.toLowerCase().includes("inactivo") ||
-                              r.status_equipo.toLowerCase().includes("baja")
-                            ? "bg-red-100 text-red-700"
-                            : r.status_equipo.toLowerCase().includes("mantenimiento") ||
-                              r.status_equipo.toLowerCase().includes("reposo") ||
-                              r.status_equipo.toLowerCase().includes("phase")
-                            ? "bg-amber-100 text-amber-700"
-                            : "bg-blue-100 text-blue-700"
+                              ? "bg-emerald-100 text-emerald-700"
+                              : r.status_equipo.toLowerCase().includes("inactivo") ||
+                                r.status_equipo.toLowerCase().includes("baja")
+                                ? "bg-red-100 text-red-700"
+                                : r.status_equipo.toLowerCase().includes("mantenimiento") ||
+                                  r.status_equipo.toLowerCase().includes("reposo") ||
+                                  r.status_equipo.toLowerCase().includes("phase")
+                                  ? "bg-amber-100 text-amber-700"
+                                  : "bg-blue-100 text-blue-700"
                         }`}>
                           {r.status_equipo || "-"}
                         </span>
@@ -724,6 +755,7 @@ export default function App() {
               <p className="text-slate-600">No se encontraron resultados para "<span className="font-semibold">{modelo}</span>"</p>
             </div>
           )}
+
           {!modelo && !loading && (
             <div className="bg-white rounded-xl p-8 text-center border border-slate-200">
               <p className="text-slate-800 text-lg font-medium mb-2">Comienza a buscar</p>
@@ -732,6 +764,7 @@ export default function App() {
           )}
         </div>
       </div>
+
       {/* Modal PDF */}
       {selectedCodigoSap && (
         <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4" onClick={() => { setSelectedCodigoSap(null); setEspecificaciones(null); }}>
