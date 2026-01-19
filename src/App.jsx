@@ -649,7 +649,15 @@ export default function App() {
                 <tbody className="divide-y">
                   {resultadosFiltrados.map(r => (
                     <tr key={r.id} className="hover:bg-slate-50">
-                      <td className="px-4 py-2"><span className="font-mono text-sm">{r.codigo_sap}</span></td>
+                      <td className="px-4 py-2">
+  <span className="font-mono text-sm">
+    {(() => {
+      const codigo = r.codigo_sap?.toString() || "";
+      if (codigo.length <= 4) return "•".repeat(codigo.length) || "-";
+      return "•".repeat(codigo.length - 4) + codigo.slice(-4);
+    })()}
+  </span>
+</td>
                       <td className="px-4 py-2">{r.modelo}</td>
                       <td className="px-4 py-2">{r.accesorio}</td>
                       <td className="px-4 py-2">
