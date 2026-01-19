@@ -62,7 +62,6 @@ function LoginForm({ onLogin }) {
 
 // ─── Tu App Principal (todo tu código actual) ──────────
 function MainContent({ user }) {
-  // 👇 PEGA AQUÍ TODO TU CÓDIGO ACTUAL (desde las funciones auxiliares hasta el return final)
   // Funciones auxiliares
   const normalizarCodigo = (codigo) => {
     if (!codigo) return "";
@@ -593,23 +592,46 @@ function MainContent({ user }) {
       <header className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-slate-800 to-slate-900 text-white shadow-xl">
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex items-center justify-between h-16">
+            {/* Logo + Título + Usuario */}
             <div className="flex items-center gap-3">
               <div className="w-9 h-9 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center shadow-lg">
                 <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                 </svg>
               </div>
-              <h1 className="text-xl font-bold">Inventario 360</h1>
+              <div>
+                <h1 className="text-xl font-bold">Inventario 360</h1>
+                <p className="text-xs text-slate-300 truncate max-w-[180px]">
+                  {user.nombre_completo || user.usuario}
+                </p>
+              </div>
             </div>
-            <button
-              onClick={() => setMostrarContrato(true)}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-white bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-lg shadow-md hover:from-emerald-600 hover:to-emerald-700 transition-all border border-emerald-400/30"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-              </svg>
-              Contrato
-            </button>
+
+            {/* Botones: Contrato + Cerrar sesión */}
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setMostrarContrato(true)}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-white bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-lg shadow-md hover:from-emerald-600 hover:to-emerald-700 transition-all border border-emerald-400/30"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                Contrato
+              </button>
+              <button
+                onClick={() => {
+                  localStorage.removeItem("user");
+                  window.location.reload();
+                }}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-white bg-gradient-to-r from-red-500 to-red-600 rounded-lg shadow-md hover:from-red-600 hover:to-red-700 transition-all border border-red-400/30"
+                title="Cerrar sesión"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
+                Salir
+              </button>
+            </div>
           </div>
         </div>
       </header>
@@ -724,7 +746,7 @@ function MainContent({ user }) {
                                   r.status_equipo.toLowerCase().includes("phase")
                                   ? "bg-amber-100 text-amber-700"
                                   : "bg-blue-100 text-blue-700"
-                          }`}>
+                        }`}>
                           {r.status_equipo || "-"}
                         </span>
                       </td>
