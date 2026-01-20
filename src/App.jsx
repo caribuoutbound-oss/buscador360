@@ -548,41 +548,7 @@ function MainContent({ user }) {
                 </div>
               </div>
 
-              {/* Validaciones antes de terminar la llamada */}
-              <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl p-6 border border-amber-200 shadow-lg animate-slide-in-right" style={{ animationDelay: '0.85s' }}>
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center shadow-lg">
-                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                  </div>
-                  <h3 className="text-xl font-bold text-amber-900">✅ Validaciones antes de finalizar la llamada</h3>
-                </div>
-                <div className="mb-4">
-                  <p className="font-bold text-amber-800 mb-2">Huella Biométrica</p>
-                  <ul className="space-y-1 text-sm text-amber-700 ml-4">
-                    <li className="flex items-start gap-2"><span className="text-amber-500">•</span> La entrega se realiza al titular de la línea, ¿Ha tenido algún percance con su huella biométrica?</li>
-                    <li className="flex items-start gap-2"><span className="text-amber-500">•</span> Cuando ha realizado alguna gestión en el banco o en una notaría, ¿su huella pasó sin problemas o demoró?</li>
-                    <li className="flex items-start gap-2"><span className="text-amber-500">•</span> Cuando ha solicitado algún chip o equipo, ¿tuvo percances con su huella?</li>
-                  </ul>
-                </div>
-                <div className="mb-4">
-                  <p className="font-bold text-amber-800 mb-2">Rango de Entrega</p>
-                  <ul className="space-y-1 text-sm text-amber-700 ml-4">
-                    <li className="flex items-start gap-2"><span className="text-amber-500">•</span> Recuerde que debe mantenerse en el lugar de la entrega durante todo el rango horario, ¿no tiene ningún pendiente por realizar en este tramo, verdad?</li>
-                    <li className="flex items-start gap-2"><span className="text-amber-500">•</span> El delivery lo va a llamar cuando ya esté en la puerta y lo esperará durante 5 minutos, ¿tiene facilidad de salir rápidamente, verdad?</li>
-                  </ul>
-                </div>
-                <div>
-                  <p className="font-bold text-amber-800 mb-2">Método de Pago</p>
-                  <ul className="space-y-1 text-sm text-amber-700 ml-4">
-                    <li className="flex items-start gap-2"><span className="text-amber-500">•</span> Recuerde que debe contar con el monto acordado en el momento de la entrega para que se pueda realizar el pago rápidamente.</li>
-                    <li className="flex items-start gap-2"><span className="text-amber-500">•</span> Recuerde que el delivery no acepta efectivo.</li>
-                  </ul>
-                </div>
-              </div>
-
-              {/* Aceptación Final */}
+                            {/* Aceptación Final */}
               <div className="bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 rounded-2xl p-6 border-2 border-indigo-300 shadow-xl animate-slide-in-right" style={{ animationDelay: '0.9s' }}>
                 <div className="text-center">
                   <button
@@ -620,6 +586,42 @@ function MainContent({ user }) {
                   </p>
                 </div>
               </div>
+
+              {/* Validaciones antes de terminar la llamada */}
+              <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl p-6 border border-amber-200 shadow-lg animate-slide-in-right" style={{ animationDelay: '0.85s' }}>
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center shadow-lg">
+                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                  <h3 className="text-xl font-bold text-amber-900">✅ Validaciones antes de finalizar la llamada</h3>
+                </div>
+                <div className="mb-4">
+                  <p className="font-bold text-amber-800 mb-2">Huella Biométrica</p>
+                  <ul className="space-y-1 text-sm text-amber-700 ml-4">
+                    <li className="flex items-start gap-2"><span className="text-amber-500">•</span> La entrega se realiza al titular de la línea, ¿Ha tenido algún percance con su huella biométrica?</li>
+                    <li className="flex items-start gap-2"><span className="text-amber-500">•</span> Cuando ha realizado alguna gestión en el banco o en una notaría, ¿su huella pasó sin problemas o demoró?</li>
+                    <li className="flex items-start gap-2"><span className="text-amber-500">•</span> Cuando ha solicitado algún chip o equipo, ¿tuvo percances con su huella?</li>
+                  </ul>
+                </div>
+                <div className="mb-4">
+                  <p className="font-bold text-amber-800 mb-2">Rango de Entrega</p>
+                  <ul className="space-y-1 text-sm text-amber-700 ml-4">
+                    <li className="flex items-start gap-2"><span className="text-amber-500">•</span> Recuerde que debe mantenerse en el lugar de la entrega durante todo el rango horario, ¿no tiene ningún pendiente por realizar en este tramo, verdad?</li>
+                    <li className="flex items-start gap-2"><span className="text-amber-500">•</span> El delivery lo va a llamar cuando ya esté en la puerta y lo esperará durante 5 minutos, ¿tiene facilidad de salir rápidamente, verdad?</li>
+                  </ul>
+                </div>
+                <div>
+                  <p className="font-bold text-amber-800 mb-2">Método de Pago</p>
+                  <ul className="space-y-1 text-sm text-amber-700 ml-4">
+                    <li className="flex items-start gap-2"><span className="text-amber-500">•</span> Recuerde que debe contar con el monto acordado en el momento de la entrega para que se pueda realizar el pago rápidamente.</li>
+                    <li className="flex items-start gap-2"><span className="text-amber-500">•</span> Recuerde que el delivery no acepta efectivo.</li>
+                  </ul>
+                </div>
+              </div>
+
+
 
             </div>
           </div>
