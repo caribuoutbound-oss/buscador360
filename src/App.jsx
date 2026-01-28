@@ -66,10 +66,12 @@ function MainContent({ user }) {
     if (!codigo) return "";
     return codigo.toString().trim().toUpperCase().replace(/\s+/g, "");
   };
+
   const normalizarTexto = (texto) => {
     if (!texto) return "";
     return texto.toString().trim().toUpperCase().replace(/\s+/g, " ");
   };
+
   const convertirDriveUrl = (url) => {
     if (!url) return null;
     try {
@@ -139,9 +141,9 @@ function MainContent({ user }) {
                 <div className="ml-6 mt-1 text-slate-700">
                   {plan.precio === "S/55.9" ? "66 GB en alta velocidad"
                     : plan.precio === "S/65.9" ? "80 GB en alta velocidad"
-                      : plan.precio === "S/74.9" ? "110 GB en alta velocidad"
-                        : plan.precio === "S/85.9" ? "125 GB en alta velocidad"
-                          : "145 GB en alta velocidad + 500MB tethering"}
+                    : plan.precio === "S/74.9" ? "110 GB en alta velocidad"
+                    : plan.precio === "S/85.9" ? "125 GB en alta velocidad"
+                    : "145 GB en alta velocidad + 500MB tethering"}
                 </div>
               )}
             </div>
@@ -154,9 +156,9 @@ function MainContent({ user }) {
                 <span className="text-slate-700">
                   {plan.precio === "S/20.9" ? "+ 200 min LDI EE.UU./Canadá"
                     : plan.precio === "S/25.9" ? "+ 250 min LDI EE.UU./Canadá"
-                      : plan.precio === "S/35.9" ? "+ 300 min LDI EE.UU./Canadá"
-                        : plan.precio === "S/45.9" ? "+ 350 min LDI EE.UU./Canadá"
-                          : "Llamadas Ilimitadas LDI"}
+                    : plan.precio === "S/35.9" ? "+ 300 min LDI EE.UU./Canadá"
+                    : plan.precio === "S/45.9" ? "+ 350 min LDI EE.UU./Canadá"
+                    : "Llamadas Ilimitadas LDI"}
                 </span>
               </div>
               {plan.nombre.includes("Ilimitado") && <div className="ml-6 mt-1 text-slate-700">EE.UU./Canadá</div>}
@@ -187,11 +189,11 @@ function MainContent({ user }) {
                 <span className="font-bold text-green-700">🎁 Beneficios adicionales:</span>{" "}
                 {plan.precio === "S/20.9" ? "50 MB promocionales (12 meses) para usarlos como datos internacionales en determinados países de América y Europa."
                   : plan.precio === "S/25.9" ? "50 MB promocionales (12 meses) para usarlos como datos internacionales en determinados países de América y Europa, así como WhatsApp de texto ilimitado."
-                    : plan.precio === "S/35.9" ? "250 MB promocionales (12 meses) para usarlos como datos internacionales en determinados países de América y Europa, así como WhatsApp de texto ilimitado."
-                      : plan.precio === "S/45.9" ? "1.25 GB promocionales (12 meses) para usarlos como datos internacionales en determinados países de América y Europa, así como WhatsApp de texto ilimitado."
-                        : plan.precio === "S/55.9" || plan.precio === "S/65.9" ? "2 GB promocionales (12 meses) para usarlos como datos internacionales en determinados países de América y Europa, así como WhatsApp de texto ilimitado."
-                          : plan.precio === "S/74.9" || plan.precio === "S/85.9" ? "3 GB promocionales (12 meses) para usarlos como datos internacionales en determinados países de América y Europa, así como WhatsApp de texto ilimitado."
-                            : "8 GB promocionales (12 meses) para usarlos como datos internacionales en determinados países de América y Europa, así como WhatsApp de texto ilimitado."}
+                  : plan.precio === "S/35.9" ? "250 MB promocionales (12 meses) para usarlos como datos internacionales en determinados países de América y Europa, así como WhatsApp de texto ilimitado."
+                  : plan.precio === "S/45.9" ? "1.25 GB promocionales (12 meses) para usarlos como datos internacionales en determinados países de América y Europa, así como WhatsApp de texto ilimitado."
+                  : plan.precio === "S/55.9" || plan.precio === "S/65.9" ? "2 GB promocionales (12 meses) para usarlos como datos internacionales en determinados países de América y Europa, así como WhatsApp de texto ilimitado."
+                  : plan.precio === "S/74.9" || plan.precio === "S/85.9" ? "3 GB promocionales (12 meses) para usarlos como datos internacionales en determinados países de América y Europa, así como WhatsApp de texto ilimitado."
+                  : "8 GB promocionales (12 meses) para usarlos como datos internacionales en determinados países de América y Europa, así como WhatsApp de texto ilimitado."}
               </div>
             </div>
           </div>
@@ -200,6 +202,7 @@ function MainContent({ user }) {
     );
   }
 
+  // Estados principales
   const [modelo, setModelo] = useState("");
   const [sedeFiltro, setSedeFiltro] = useState("");
   const [sedesDisponibles, setSedesDisponibles] = useState([]);
@@ -212,6 +215,61 @@ function MainContent({ user }) {
   const [loadingSpecs, setLoadingSpecs] = useState(false);
   const [mostrarContrato, setMostrarContrato] = useState(false);
   const [planModalAbierto, setPlanModalAbierto] = useState(null);
+  
+  // Estados para comparación de equipos
+  const [equiposSeleccionados, setEquiposSeleccionados] = useState([]);
+  const [modalComparacionAbierto, setModalComparacionAbierto] = useState(false);
+
+  // Función para toggle de selección de equipo
+  const toggleSeleccionEquipo = (equipo) => {
+    setEquiposSeleccionados(prev => {
+      const yaSeleccionado = prev.find(e => e.codigo_sap === equipo.codigo_sap);
+      
+      if (yaSeleccionado) {
+        // Deseleccionar
+        return prev.filter(e => e.codigo_sap !== equipo.codigo_sap);
+      } else if (prev.length < 2) {
+        // Seleccionar (si hay espacio)
+        return [...prev, equipo];
+      } else {
+        // Mostrar alerta si ya hay 2 seleccionados
+        alert('⚠️ Solo puedes comparar 2 equipos a la vez');
+        return prev;
+      }
+    });
+  };
+
+  // Función para cargar especificaciones de comparación
+  const cargarEspecificacionesComparacion = async () => {
+    if (equiposSeleccionados.length !== 2) return;
+    
+    setLoadingSpecs(true);
+    const specs = [];
+    
+    try {
+      for (const equipo of equiposSeleccionados) {
+        const { data, error } = await supabase
+          .from("especificaciones")
+          .select("*")
+          .eq("codigo_sap", normalizarCodigo(equipo.codigo_sap))
+          .single();
+        
+        specs.push({
+          equipo: equipo,
+          specs: data || null,
+          url: data?.url ? convertirDriveUrl(data.url) : null
+        });
+      }
+      
+      setEspecificaciones(specs);
+      setModalComparacionAbierto(true);
+    } catch (err) {
+      console.error("Error cargando especificaciones:", err);
+      setEspecificaciones(null);
+    } finally {
+      setLoadingSpecs(false);
+    }
+  };
 
   const buscarTiempoReal = useCallback(
     debounce(async (texto) => {
@@ -234,6 +292,7 @@ function MainContent({ user }) {
 
         const equiposLista = Array.isArray(equiposData) ? equiposData : [];
         const accesoriosLista = Array.isArray(accesoriosData) ? accesoriosData : [];
+
         const accMap = {};
         accesoriosLista.forEach(acc => {
           const c = normalizarCodigo(acc.codigo_sap);
@@ -315,6 +374,7 @@ function MainContent({ user }) {
         setEspecificaciones(null);
         setPlanModalAbierto(null);
         setMostrarContrato(false);
+        setModalComparacionAbierto(false);
       }
     };
     window.addEventListener("keydown", handleEsc);
@@ -336,7 +396,7 @@ function MainContent({ user }) {
         .animate-slide-in-right { animation: slideInRight 0.5s ease-out forwards; }
         .shimmer-effect { background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent); background-size: 200% 100%; animation: shimmer 2s infinite; }
       `}</style>
-
+      
       <header className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-slate-800 to-slate-900 text-white shadow-xl">
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex items-center justify-between h-16">
@@ -360,13 +420,12 @@ function MainContent({ user }) {
           </div>
         </div>
       </header>
-
+      
       <div className="pt-20 pb-12 px-6">
         <div className="max-w-5xl mx-auto">
           <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 overflow-hidden animate-scaleIn">
             <div className="h-2 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 shimmer-effect"></div>
             <div className="p-8 sm:p-10 space-y-8">
-
               {/* Introducción */}
               <div className="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-2xl p-6 border border-indigo-100 shadow-lg animate-slide-in-right" style={{ animationDelay: '0.1s' }}>
                 <div className="flex items-start gap-4">
@@ -386,7 +445,7 @@ function MainContent({ user }) {
                   </div>
                 </div>
               </div>
-
+              
               {/* Datos a validar */}
               <div className="bg-white rounded-2xl p-6 border-2 border-indigo-100 shadow-lg animate-slide-in-right" style={{ animationDelay: '0.2s' }}>
                 <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
@@ -408,7 +467,7 @@ function MainContent({ user }) {
                   ))}
                 </div>
               </div>
-
+              
               {/* Advertencia dirección */}
               <div className="bg-gradient-to-br from-amber-50 to-orange-50 border-l-4 border-amber-400 rounded-xl p-5 shadow-lg animate-slide-in-right" style={{ animationDelay: '0.3s' }}>
                 <p className="font-bold text-amber-900 mb-2">⚠️ Dirección Completa Requerida</p>
@@ -417,7 +476,7 @@ function MainContent({ user }) {
                   <li className="flex items-start gap-2"><span className="text-amber-500 mt-0.5">•</span> Manzana, lote, urbanización, distrito y referencias</li>
                 </ul>
               </div>
-
+              
               {/* ✅ PLANES: FILA COMPACTA DE 9 BOTONES PEQUEÑOS */}
               <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl p-6 border border-blue-200 shadow-lg animate-slide-in-right" style={{ animationDelay: '0.4s' }}>
                 <div className="flex items-center gap-3 mb-4">
@@ -445,7 +504,7 @@ function MainContent({ user }) {
                   ))}
                 </div>
               </div>
-
+              
               {/* Términos y condiciones */}
               <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-lg animate-slide-in-right" style={{ animationDelay: '0.5s' }}>
                 <h3 className="text-lg font-bold text-slate-800 mb-4">📋 Términos del Plan | Así mismo</h3>
@@ -454,7 +513,7 @@ function MainContent({ user }) {
                     'Los beneficios del plan no son acumulables.',
                     'Los mensajes de texto del cargo fijo no incluyen Premium ni internacionales.',
                     'Los minutos todo destino no incluyen rurales.',
-                    'Los mensajes de texto incluidos en su plan solo podrán utilizarse para mensajes de uso personal. No podrán ser usados para los fines de los servicios “mensajes de notificaciones” y/o “mensajes de publicidad”',
+                    'Los mensajes de texto incluidos en su plan solo podrán utilizarse para mensajes de uso personal. No podrán ser usados para los fines de los servicios "mensajes de notificaciones" y/o "mensajes de publicidad"',
                     'Para llamar a USA y Canadá deberá marcar previamente 1911 antes del número internacional.'
                   ].map((term, idx) => (
                     <li key={idx} className="flex items-start gap-2 p-2 rounded-lg hover:bg-slate-50 transition-colors">
@@ -468,7 +527,7 @@ function MainContent({ user }) {
                   ))}
                 </ul>
               </div>
-
+              
               {/* Equipo Financiado */}
               <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl p-6 border border-emerald-200 shadow-lg animate-slide-in-right" style={{ animationDelay: '0.6s' }}>
                 <div className="flex items-center gap-3 mb-4">
@@ -497,7 +556,7 @@ function MainContent({ user }) {
                   </div>
                 </div>
               </div>
-
+              
               {/* Equipo al Contado */}
               <div className="bg-gradient-to-br from-violet-50 to-purple-50 rounded-2xl p-6 border border-violet-200 shadow-lg animate-slide-in-right" style={{ animationDelay: '0.7s' }}>
                 <div className="flex items-center gap-3 mb-4">
@@ -524,7 +583,7 @@ function MainContent({ user }) {
                   </div>
                 </div>
               </div>
-
+              
               {/* Autorización de Datos */}
               <div className="bg-gradient-to-br from-pink-50 to-rose-50 rounded-2xl p-6 border border-pink-200 shadow-lg animate-slide-in-right" style={{ animationDelay: '0.8s' }}>
                 <div className="flex items-center gap-3 mb-4">
@@ -547,8 +606,8 @@ function MainContent({ user }) {
                   </p>
                 </div>
               </div>
-
-                            {/* Aceptación Final */}
+              
+              {/* Aceptación Final */}
               <div className="bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 rounded-2xl p-6 border-2 border-indigo-300 shadow-xl animate-slide-in-right" style={{ animationDelay: '0.9s' }}>
                 <div className="text-center">
                   <button
@@ -586,7 +645,7 @@ function MainContent({ user }) {
                   </p>
                 </div>
               </div>
-
+              
               {/* Validaciones antes de terminar la llamada */}
               <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl p-6 border border-amber-200 shadow-lg animate-slide-in-right" style={{ animationDelay: '0.85s' }}>
                 <div className="flex items-center gap-3 mb-4">
@@ -620,14 +679,11 @@ function MainContent({ user }) {
                   </ul>
                 </div>
               </div>
-
-
-
             </div>
           </div>
         </div>
       </div>
-
+      
       {/* Modal de Plan */}
       <PlanModal
         plan={planesData[planModalAbierto]}
@@ -659,6 +715,43 @@ function MainContent({ user }) {
                 </p>
               </div>
             </div>
+            
+            {/* Botón de Comparación */}
+            {equiposSeleccionados.length > 0 && (
+              <div className="flex items-center gap-3">
+                <div className="bg-gradient-to-r from-amber-500 to-orange-500 text-white px-3 py-1.5 rounded-lg text-sm font-medium shadow-md">
+                  {equiposSeleccionados.length}/2 seleccionados
+                </div>
+                <button
+                  onClick={cargarEspecificacionesComparacion}
+                  disabled={equiposSeleccionados.length !== 2}
+                  className={`inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg shadow-md transition-all ${
+                    equiposSeleccionados.length === 2
+                      ? "bg-gradient-to-r from-emerald-500 to-emerald-600 text-white hover:from-emerald-600 hover:to-emerald-700"
+                      : "bg-slate-400 text-slate-200 cursor-not-allowed"
+                  }`}
+                  title={equiposSeleccionados.length !== 2 ? "Selecciona exactamente 2 equipos" : "Comparar equipos"}
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  </svg>
+                  Comparar ({equiposSeleccionados.length}/2)
+                </button>
+                <button
+                  onClick={() => {
+                    setEquiposSeleccionados([]);
+                    setEspecificaciones(null);
+                  }}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-white bg-gradient-to-r from-red-500 to-red-600 rounded-lg shadow-md hover:from-red-600 hover:to-red-700 transition-all border border-red-400/30"
+                  title="Limpiar selección"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+            )}
+            
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setMostrarContrato(true)}
@@ -686,7 +779,7 @@ function MainContent({ user }) {
           </div>
         </div>
       </header>
-
+      
       <div className="pt-16 px-6">
         <div className="max-w-7xl mx-auto py-6">
           <div className="bg-white rounded-xl shadow-lg border border-slate-200 p-4 mb-6 flex gap-4">
@@ -713,7 +806,7 @@ function MainContent({ user }) {
               ))}
             </select>
           </div>
-
+          
           {modelo && resultadosFiltrados.length > 0 && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
               <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl shadow-sm border border-blue-200 p-4">
@@ -736,19 +829,32 @@ function MainContent({ user }) {
               </div>
             </div>
           )}
-
+          
           {error && (
             <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-6 rounded-xl shadow-sm">
               <p className="font-semibold text-red-800 text-sm">Error de conexión</p>
               <p className="text-red-700 text-xs">{error}</p>
             </div>
           )}
-
+          
           {resultadosFiltrados.length > 0 ? (
             <div className="bg-white rounded-xl shadow overflow-x-auto">
               <table className="min-w-full divide-y">
                 <thead className="bg-slate-50">
                   <tr>
+                    <th className="px-4 py-2 text-center text-xs font-medium text-slate-700 uppercase w-12">
+                      <input
+                        type="checkbox"
+                        checked={equiposSeleccionados.length === 2}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            alert("⚠️ Solo puedes seleccionar 2 equipos para comparar");
+                          }
+                        }}
+                        className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
+                        disabled
+                      />
+                    </th>
                     <th className="px-4 py-2 text-left text-xs font-medium text-slate-700 uppercase">Código SAP</th>
                     <th className="px-4 py-2 text-left text-xs font-medium text-slate-700 uppercase">Modelo</th>
                     <th className="px-4 py-2 text-left text-xs font-medium text-slate-700 uppercase">Accesorio</th>
@@ -759,67 +865,86 @@ function MainContent({ user }) {
                   </tr>
                 </thead>
                 <tbody className="divide-y">
-                  {resultadosFiltrados.map(r => (
-                    <tr key={r.id} className="hover:bg-slate-50">
-                      <td className="px-4 py-2">
-                        <span className="font-mono text-sm">
-                          {(() => {
-                            const codigo = r.codigo_sap?.toString() || "";
-                            if (codigo.length <= 4) return "•".repeat(codigo.length) || "-";
-                            return "•".repeat(codigo.length - 4) + codigo.slice(-4);
-                          })()}
-                        </span>
-                      </td>
-                      <td className="px-4 py-2">{r.modelo}</td>
-                      <td className="px-4 py-2">{r.accesorio}</td>
-                      <td className="px-4 py-2">
-                        <span className={`font-bold ${
-                          r.stock_final === null || r.stock_final === undefined
-                            ? "text-slate-400"
-                            : r.stock_final === 0
+                  {resultadosFiltrados.map(r => {
+                    const estaSeleccionado = equiposSeleccionados.some(e => e.codigo_sap === r.codigo_sap);
+                    
+                    return (
+                      <tr 
+                        key={r.id} 
+                        className={`hover:bg-slate-50 transition-colors ${
+                          estaSeleccionado ? 'bg-blue-50/50 border-l-4 border-blue-500' : ''
+                        }`}
+                      >
+                        <td className="px-4 py-2 text-center">
+                          <input
+                            type="checkbox"
+                            checked={estaSeleccionado}
+                            onChange={() => toggleSeleccionEquipo(r)}
+                            disabled={!estaSeleccionado && equiposSeleccionados.length >= 2}
+                            className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500 cursor-pointer"
+                            title={estaSeleccionado ? "Deseleccionar" : equiposSeleccionados.length >= 2 ? "Máximo 2 equipos" : "Seleccionar para comparar"}
+                          />
+                        </td>
+                        <td className="px-4 py-2">
+                          <span className="font-mono text-sm">
+                            {(() => {
+                              const codigo = r.codigo_sap?.toString() || "";
+                              if (codigo.length <= 4) return "•".repeat(codigo.length) || "-";
+                              return "•".repeat(codigo.length - 4) + codigo.slice(-4);
+                            })()}
+                          </span>
+                        </td>
+                        <td className="px-4 py-2">{r.modelo}</td>
+                        <td className="px-4 py-2">{r.accesorio}</td>
+                        <td className="px-4 py-2">
+                          <span className={`font-bold ${
+                            r.stock_final === null || r.stock_final === undefined
+                              ? "text-slate-400"
+                              : r.stock_final === 0
                               ? "text-red-600"
                               : r.stock_final <= 5
-                                ? "text-amber-600"
-                                : "text-emerald-600"
-                        }`}>
-                          {r.stock_final ?? "-"}
-                        </span>
-                      </td>
-                      <td className="px-4 py-2 whitespace-nowrap">
-                        <span className={`inline-flex items-center px-2.5 py-0.5 text-xs font-medium rounded-full ${
-                          !r.status_equipo
-                            ? "bg-slate-100 text-slate-600"
-                            : r.status_equipo.toLowerCase().includes("activo") ||
-                              r.status_equipo.toLowerCase().includes("disponible") ||
-                              r.status_equipo.toLowerCase().includes("life")
+                              ? "text-amber-600"
+                              : "text-emerald-600"
+                          }`}>
+                            {r.stock_final ?? "-"}
+                          </span>
+                        </td>
+                        <td className="px-4 py-2 whitespace-nowrap">
+                          <span className={`inline-flex items-center px-2.5 py-0.5 text-xs font-medium rounded-full ${
+                            !r.status_equipo
+                              ? "bg-slate-100 text-slate-600"
+                              : r.status_equipo.toLowerCase().includes("activo") ||
+                                r.status_equipo.toLowerCase().includes("disponible") ||
+                                r.status_equipo.toLowerCase().includes("life")
                               ? "bg-emerald-100 text-emerald-700"
                               : r.status_equipo.toLowerCase().includes("inactivo") ||
                                 r.status_equipo.toLowerCase().includes("baja")
-                                ? "bg-red-100 text-red-700"
-                                : r.status_equipo.toLowerCase().includes("mantenimiento") ||
-                                  r.status_equipo.toLowerCase().includes("reposo") ||
-                                  r.status_equipo.toLowerCase().includes("phase")
-                                  ? "bg-amber-100 text-amber-700"
-                                  : "bg-blue-100 text-blue-700"
-                        }`}>
-                          {r.status_equipo || "-"}
-                        </span>
-                      </td>
-                      <td className="px-4 py-2">{r.hoja}</td>
-                      <td className="px-4 py-2">
-                        <button
-                          onClick={e => {
-                            e.stopPropagation();
-                            setSelectedCodigoSap(r.codigo_sap);
-                            cargarEspecificaciones(r.codigo_sap);
-                          }}
-                          className="px-3 py-1 bg-blue-500 text-white rounded text-sm hover:bg-blue-600"
-                        >
-                          Ver
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
+                              ? "bg-red-100 text-red-700"
+                              : r.status_equipo.toLowerCase().includes("mantenimiento") ||
+                                r.status_equipo.toLowerCase().includes("reposo") ||
+                                r.status_equipo.toLowerCase().includes("phase")
+                              ? "bg-amber-100 text-amber-700"
+                              : "bg-blue-100 text-blue-700"
+                          }`}>
+                            {r.status_equipo || "-"}
+                          </span>
+                        </td>
+                        <td className="px-4 py-2">{r.hoja}</td>
+                        <td className="px-4 py-2">
+                          <button
+                            onClick={e => {
+                              e.stopPropagation();
+                              setSelectedCodigoSap(r.codigo_sap);
+                              cargarEspecificaciones(r.codigo_sap);
+                            }}
+                            className="px-3 py-1 bg-blue-500 text-white rounded text-sm hover:bg-blue-600"
+                          >
+                            Ver
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
@@ -828,7 +953,7 @@ function MainContent({ user }) {
               <p className="text-slate-600">No se encontraron resultados para "<span className="font-semibold">{modelo}</span>"</p>
             </div>
           )}
-
+          
           {!modelo && !loading && (
             <div className="bg-white rounded-xl p-8 text-center border border-slate-200">
               <p className="text-slate-800 text-lg font-medium mb-2">Comienza a buscar</p>
@@ -837,7 +962,7 @@ function MainContent({ user }) {
           )}
         </div>
       </div>
-
+      
       {/* Modal PDF */}
       {selectedCodigoSap && (
         <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4" onClick={() => { setSelectedCodigoSap(null); setEspecificaciones(null); }}>
@@ -858,6 +983,146 @@ function MainContent({ user }) {
           </div>
         </div>
       )}
+      
+      {/* Modal Comparación */}
+      {modalComparacionAbierto && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4" onClick={() => { setModalComparacionAbierto(false); setEspecificaciones(null); }}>
+          <div className="bg-white rounded-2xl shadow-2xl max-w-6xl w-full max-h-[85vh] overflow-hidden" onClick={e => e.stopPropagation()}>
+            <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-4 flex justify-between items-center">
+              <div>
+                <h2 className="text-xl font-bold flex items-center gap-2">
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  </svg>
+                  Comparación de Equipos
+                </h2>
+                <p className="text-sm text-blue-100 mt-1">Vista lado a lado de especificaciones</p>
+              </div>
+              <button
+                onClick={() => { setModalComparacionAbierto(false); setEspecificaciones(null); }}
+                className="text-white hover:bg-white/20 p-2 rounded-full transition-colors"
+                title="Cerrar"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            <div className="h-[70vh] overflow-y-auto">
+              {loadingSpecs ? (
+                <div className="flex items-center justify-center h-full">
+                  <div className="text-center">
+                    <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mb-4"></div>
+                    <p className="text-slate-600">Cargando especificaciones...</p>
+                  </div>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 lg:grid-cols-2 divide-y lg:divide-y-0 lg:divide-x divide-slate-200">
+                  {/* Equipo 1 */}
+                  {especificaciones && especificaciones[0] && (
+                    <div className="p-6">
+                      <div className="text-center mb-6">
+                        <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center mx-auto mb-3 shadow-lg">
+                          <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                          </svg>
+                        </div>
+                        <h3 className="text-lg font-bold text-slate-800">{especificaciones[0].equipo.modelo}</h3>
+                        <p className="text-sm text-slate-600 mt-1">Código: {especificaciones[0].equipo.codigo_sap}</p>
+                        <div className="mt-3 flex justify-center gap-3">
+                          <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
+                            Stock: {especificaciones[0].equipo.stock_final ?? 0}
+                          </span>
+                          <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                            especificaciones[0].equipo.status_equipo?.toLowerCase().includes('activo') ||
+                            especificaciones[0].equipo.status_equipo?.toLowerCase().includes('disponible')
+                              ? 'bg-emerald-100 text-emerald-700'
+                              : 'bg-amber-100 text-amber-700'
+                          }`}>
+                            {especificaciones[0].equipo.status_equipo || 'N/A'}
+                          </span>
+                        </div>
+                      </div>
+
+                      {especificaciones[0].url ? (
+                        <div className="border rounded-lg overflow-hidden shadow-sm">
+                          <div className="bg-slate-100 px-4 py-2 text-sm font-medium text-slate-700 border-b">
+                            Ficha Técnica
+                          </div>
+                          <iframe 
+                            src={especificaciones[0].url} 
+                            title="PDF Equipo 1" 
+                            className="w-full h-64 border-0" 
+                          />
+                        </div>
+                      ) : (
+                        <div className="border-2 border-dashed border-slate-300 rounded-lg p-8 text-center">
+                          <p className="text-slate-500">No hay ficha técnica disponible</p>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Equipo 2 */}
+                  {especificaciones && especificaciones[1] && (
+                    <div className="p-6">
+                      <div className="text-center mb-6">
+                        <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center mx-auto mb-3 shadow-lg">
+                          <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                          </svg>
+                        </div>
+                        <h3 className="text-lg font-bold text-slate-800">{especificaciones[1].equipo.modelo}</h3>
+                        <p className="text-sm text-slate-600 mt-1">Código: {especificaciones[1].equipo.codigo_sap}</p>
+                        <div className="mt-3 flex justify-center gap-3">
+                          <span className="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-medium">
+                            Stock: {especificaciones[1].equipo.stock_final ?? 0}
+                          </span>
+                          <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                            especificaciones[1].equipo.status_equipo?.toLowerCase().includes('activo') ||
+                            especificaciones[1].equipo.status_equipo?.toLowerCase().includes('disponible')
+                              ? 'bg-emerald-100 text-emerald-700'
+                              : 'bg-amber-100 text-amber-700'
+                          }`}>
+                            {especificaciones[1].equipo.status_equipo || 'N/A'}
+                          </span>
+                        </div>
+                      </div>
+
+                      {especificaciones[1].url ? (
+                        <div className="border rounded-lg overflow-hidden shadow-sm">
+                          <div className="bg-slate-100 px-4 py-2 text-sm font-medium text-slate-700 border-b">
+                            Ficha Técnica
+                          </div>
+                          <iframe 
+                            src={especificaciones[1].url} 
+                            title="PDF Equipo 2" 
+                            className="w-full h-64 border-0" 
+                          />
+                        </div>
+                      ) : (
+                        <div className="border-2 border-dashed border-slate-300 rounded-lg p-8 text-center">
+                          <p className="text-slate-500">No hay ficha técnica disponible</p>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+
+            <div className="bg-slate-50 px-6 py-4 flex justify-end gap-3 border-t">
+              <button
+                onClick={() => { setModalComparacionAbierto(false); setEspecificaciones(null); }}
+                className="px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors"
+              >
+                Cerrar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -865,15 +1130,15 @@ function MainContent({ user }) {
 // ─── Componente Raíz ───────────────────────────────────
 export default function App() {
   const [user, setUser] = useState(null);
-
+  
   useEffect(() => {
     const saved = localStorage.getItem("user");
     if (saved) setUser(JSON.parse(saved));
   }, []);
-
+  
   if (!user) {
     return <LoginForm onLogin={setUser} />;
   }
-
+  
   return <MainContent user={user} />;
 }
