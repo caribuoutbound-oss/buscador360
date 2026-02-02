@@ -205,9 +205,9 @@ function MainContent({ user }) {
   // Estados principales
   const [modelo, setModelo] = useState("");
   const [sedeFiltro, setSedeFiltro] = useState("");
-  const [marcaFiltro, setMarcaFiltro] = useState(""); // ← NUEVO: Filtro por marca
+  const [marcaFiltro, setMarcaFiltro] = useState("");
   const [sedesDisponibles, setSedesDisponibles] = useState([]);
-  const [marcasDisponibles, setMarcasDisponibles] = useState([]); // ← NUEVO: Marcas disponibles
+  const [marcasDisponibles, setMarcasDisponibles] = useState([]);
   const [resultados, setResultados] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -222,9 +222,62 @@ function MainContent({ user }) {
   const [equiposSeleccionados, setEquiposSeleccionados] = useState([]);
   const [modalComparacionAbierto, setModalComparacionAbierto] = useState(false);
 
-  // Estados para paginación ← NUEVO
+  // Estados para paginación
   const [paginaActual, setPaginaActual] = useState(1);
   const [resultadosPorPagina] = useState(20);
+
+  // Cargar todos los equipos al inicio
+  useEffect(() => {
+    const cargarTodosLosEquipos = async () => {
+      setLoading(true);
+      try {
+        const { data: equiposData, error: equiposError } = await supabase
+          .from("equipos")
+          .select("id, hoja, codigo_sap, modelo, stock_final, status_equipo")
+          .order('modelo', { ascending: true });
+
+        if (equiposError) throw equiposError;
+
+        const { data: accesoriosData, error: accesoriosError } = await supabase
+          .from("accesorios")
+          .select("id, codigo_sap, modelo, accesorio");
+
+        if (accesoriosError) throw accesoriosError;
+
+        const equiposLista = Array.isArray(equiposData) ? equiposData : [];
+        const accesoriosLista = Array.isArray(accesoriosData) ? accesoriosData : [];
+
+        const accMap = {};
+        accesoriosLista.forEach(acc => {
+          const c = normalizarCodigo(acc.codigo_sap);
+          if (c) accMap[c] = acc;
+        });
+
+        const combinados = equiposLista.map(eq => {
+          let acc = null;
+          const c = normalizarCodigo(eq.codigo_sap);
+          if (c && accMap[c]) acc = accMap[c];
+          if (!acc) {
+            const modeloEq = normalizarTexto(eq.modelo);
+            for (const a of accesoriosLista) {
+              const modeloAcc = normalizarTexto(a.modelo);
+              if (modeloAcc && modeloEq.includes(modeloAcc)) { acc = a; break; }
+            }
+          }
+          return { ...eq, accesorio: acc?.accesorio ?? "-" };
+        });
+
+        setResultados(combinados);
+      } catch (err) {
+        setError(err.message);
+        setResultados([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    cargarTodosLosEquipos();
+  }, []);
 
   // Función para toggle de selección de equipo
   const toggleSeleccionEquipo = (equipo) => {
@@ -274,7 +327,48 @@ function MainContent({ user }) {
 
   const buscarTiempoReal = useCallback(
     debounce(async (texto) => {
-      if (!texto.trim()) { setResultados([]); return; }
+      if (!texto.trim()) {
+        // Si el campo está vacío, recargar todos los equipos
+        const { data: equiposData, error: equiposError } = await supabase
+          .from("equipos")
+          .select("id, hoja, codigo_sap, modelo, stock_final, status_equipo")
+          .order('modelo', { ascending: true });
+
+        if (equiposError) throw equiposError;
+
+        const { data: accesoriosData, error: accesoriosError } = await supabase
+          .from("accesorios")
+          .select("id, codigo_sap, modelo, accesorio");
+
+        if (accesoriosError) throw accesoriosError;
+
+        const equiposLista = Array.isArray(equiposData) ? equiposData : [];
+        const accesoriosLista = Array.isArray(accesoriosData) ? accesoriosData : [];
+
+        const accMap = {};
+        accesoriosLista.forEach(acc => {
+          const c = normalizarCodigo(acc.codigo_sap);
+          if (c) accMap[c] = acc;
+        });
+
+        const combinados = equiposLista.map(eq => {
+          let acc = null;
+          const c = normalizarCodigo(eq.codigo_sap);
+          if (c && accMap[c]) acc = accMap[c];
+          if (!acc) {
+            const modeloEq = normalizarTexto(eq.modelo);
+            for (const a of accesoriosLista) {
+              const modeloAcc = normalizarTexto(a.modelo);
+              if (modeloAcc && modeloEq.includes(modeloAcc)) { acc = a; break; }
+            }
+          }
+          return { ...eq, accesorio: acc?.accesorio ?? "-" };
+        });
+
+        setResultados(combinados);
+        return;
+      }
+
       setLoading(true); setError(null);
       try {
         const { data: equiposData, error: equiposError } = await supabase
@@ -337,7 +431,7 @@ function MainContent({ user }) {
     setSedesDisponibles(sedes);
     if (sedeFiltro && !sedes.includes(sedeFiltro)) setSedeFiltro("");
 
-    // ← NUEVO: Obtener marcas disponibles
+    // Obtener marcas disponibles
     const marcas = Array.from(new Set(
       resultados
         .map(r => {
@@ -361,7 +455,7 @@ function MainContent({ user }) {
     })
     .sort((a, b) => (sortStockDesc ? (b.stock_final || 0) - (a.stock_final || 0) : (a.stock_final || 0) - (b.stock_final || 0)));
 
-  // ← NUEVO: Paginación
+  // Paginación
   const totalResultados = resultadosFiltrados.length;
   const totalPages = Math.ceil(totalResultados / resultadosPorPagina);
   const resultadosPaginados = resultadosFiltrados.slice(
@@ -842,7 +936,7 @@ function MainContent({ user }) {
                 ))}
               </select>
 
-              {/* Filtro Marca ← NUEVO */}
+              {/* Filtro Marca */}
               <select
                 value={marcaFiltro}
                 onChange={e => { setMarcaFiltro(e.target.value); setPaginaActual(1); }}
@@ -854,7 +948,7 @@ function MainContent({ user }) {
                 ))}
               </select>
 
-              {/* Limpiar filtros ← NUEVO */}
+              {/* Limpiar filtros */}
               <button
                 onClick={() => { setSedeFiltro(""); setMarcaFiltro(""); setPaginaActual(1); }}
                 className="bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2.5 rounded-lg font-medium transition-colors"
@@ -887,7 +981,6 @@ function MainContent({ user }) {
                   {resultadosFiltrados.length > 0 ? Math.round((itemsActivos / resultadosFiltrados.length) * 100) : 0}%
                 </p>
               </div>
-              {/* ← NUEVO: Página actual */}
               <div className="bg-gradient-to-br from-amber-50 to-amber-100 rounded-xl shadow-sm border border-amber-200 p-4">
                 <p className="text-xs font-medium text-amber-600 mb-1">Página</p>
                 <p className="text-lg font-bold text-slate-800">{paginaActual} de {totalPages}</p>
@@ -1018,14 +1111,15 @@ function MainContent({ user }) {
             </div>
           )}
 
-          {!modelo && !loading && (
-            <div className="bg-white rounded-xl p-8 text-center border border-slate-200">
-              <p className="text-slate-800 text-lg font-medium mb-2">Comienza a buscar</p>
-              <p className="text-slate-600">Ingresa el modelo o código SAP para comenzar</p>
+          {/* Mostrar mensaje cuando no hay búsqueda ni filtros */}
+          {!modelo && !sedeFiltro && !marcaFiltro && !loading && resultados.length > 0 && (
+            <div className="bg-white rounded-xl p-6 text-center border border-slate-200 mb-6">
+              <p className="text-slate-800 text-lg font-medium mb-2">📋 Lista completa de equipos</p>
+              <p className="text-slate-600">Total: <span className="font-bold text-slate-800">{resultados.length}</span> equipos disponibles</p>
             </div>
           )}
 
-          {/* Controles de Paginación ← NUEVO */}
+          {/* Controles de Paginación */}
           {totalPages > 1 && (
             <div className="mt-6 flex items-center justify-between">
               {/* Información */}
