@@ -141,9 +141,9 @@ function MainContent({ user }) {
                 <div className="ml-6 mt-1 text-slate-700">
                   {plan.precio === "S/55.9" ? "66 GB en alta velocidad"
                     : plan.precio === "S/65.9" ? "80 GB en alta velocidad"
-                    : plan.precio === "S/74.9" ? "110 GB en alta velocidad"
-                    : plan.precio === "S/85.9" ? "125 GB en alta velocidad"
-                    : "145 GB en alta velocidad + 500MB tethering"}
+                      : plan.precio === "S/74.9" ? "110 GB en alta velocidad"
+                        : plan.precio === "S/85.9" ? "125 GB en alta velocidad"
+                          : "145 GB en alta velocidad + 500MB tethering"}
                 </div>
               )}
             </div>
@@ -156,9 +156,9 @@ function MainContent({ user }) {
                 <span className="text-slate-700">
                   {plan.precio === "S/20.9" ? "+ 200 min LDI EE.UU./Canadá"
                     : plan.precio === "S/25.9" ? "+ 250 min LDI EE.UU./Canadá"
-                    : plan.precio === "S/35.9" ? "+ 300 min LDI EE.UU./Canadá"
-                    : plan.precio === "S/45.9" ? "+ 350 min LDI EE.UU./Canadá"
-                    : "Llamadas Ilimitadas LDI"}
+                      : plan.precio === "S/35.9" ? "+ 300 min LDI EE.UU./Canadá"
+                        : plan.precio === "S/45.9" ? "+ 350 min LDI EE.UU./Canadá"
+                          : "Llamadas Ilimitadas LDI"}
                 </span>
               </div>
               {plan.nombre.includes("Ilimitado") && <div className="ml-6 mt-1 text-slate-700">EE.UU./Canadá</div>}
@@ -189,11 +189,11 @@ function MainContent({ user }) {
                 <span className="font-bold text-green-700">🎁 Beneficios adicionales:</span>{" "}
                 {plan.precio === "S/20.9" ? "50 MB promocionales (12 meses) para usarlos como datos internacionales en determinados países de América y Europa."
                   : plan.precio === "S/25.9" ? "50 MB promocionales (12 meses) para usarlos como datos internacionales en determinados países de América y Europa, así como WhatsApp de texto ilimitado."
-                  : plan.precio === "S/35.9" ? "250 MB promocionales (12 meses) para usarlos como datos internacionales en determinados países de América y Europa, así como WhatsApp de texto ilimitado."
-                  : plan.precio === "S/45.9" ? "1.25 GB promocionales (12 meses) para usarlos como datos internacionales en determinados países de América y Europa, así como WhatsApp de texto ilimitado."
-                  : plan.precio === "S/55.9" || plan.precio === "S/65.9" ? "2 GB promocionales (12 meses) para usarlos como datos internacionales en determinados países de América y Europa, así como WhatsApp de texto ilimitado."
-                  : plan.precio === "S/74.9" || plan.precio === "S/85.9" ? "3 GB promocionales (12 meses) para usarlos como datos internacionales en determinados países de América y Europa, así como WhatsApp de texto ilimitado."
-                  : "8 GB promocionales (12 meses) para usarlos como datos internacionales en determinados países de América y Europa, así como WhatsApp de texto ilimitado."}
+                    : plan.precio === "S/35.9" ? "250 MB promocionales (12 meses) para usarlos como datos internacionales en determinados países de América y Europa, así como WhatsApp de texto ilimitado."
+                      : plan.precio === "S/45.9" ? "1.25 GB promocionales (12 meses) para usarlos como datos internacionales en determinados países de América y Europa, así como WhatsApp de texto ilimitado."
+                        : plan.precio === "S/55.9" || plan.precio === "S/65.9" ? "2 GB promocionales (12 meses) para usarlos como datos internacionales en determinados países de América y Europa, así como WhatsApp de texto ilimitado."
+                          : plan.precio === "S/74.9" || plan.precio === "S/85.9" ? "3 GB promocionales (12 meses) para usarlos como datos internacionales en determinados países de América y Europa, así como WhatsApp de texto ilimitado."
+                            : "8 GB promocionales (12 meses) para usarlos como datos internacionales en determinados países de América y Europa, así como WhatsApp de texto ilimitado."}
               </div>
             </div>
           </div>
@@ -205,7 +205,9 @@ function MainContent({ user }) {
   // Estados principales
   const [modelo, setModelo] = useState("");
   const [sedeFiltro, setSedeFiltro] = useState("");
+  const [marcaFiltro, setMarcaFiltro] = useState(""); // ← NUEVO: Filtro por marca
   const [sedesDisponibles, setSedesDisponibles] = useState([]);
+  const [marcasDisponibles, setMarcasDisponibles] = useState([]); // ← NUEVO: Marcas disponibles
   const [resultados, setResultados] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -215,16 +217,19 @@ function MainContent({ user }) {
   const [loadingSpecs, setLoadingSpecs] = useState(false);
   const [mostrarContrato, setMostrarContrato] = useState(false);
   const [planModalAbierto, setPlanModalAbierto] = useState(null);
-  
+
   // Estados para comparación de equipos
   const [equiposSeleccionados, setEquiposSeleccionados] = useState([]);
   const [modalComparacionAbierto, setModalComparacionAbierto] = useState(false);
+
+  // Estados para paginación ← NUEVO
+  const [paginaActual, setPaginaActual] = useState(1);
+  const [resultadosPorPagina] = useState(20);
 
   // Función para toggle de selección de equipo
   const toggleSeleccionEquipo = (equipo) => {
     setEquiposSeleccionados(prev => {
       const yaSeleccionado = prev.find(e => e.codigo_sap === equipo.codigo_sap);
-      
       if (yaSeleccionado) {
         // Deseleccionar
         return prev.filter(e => e.codigo_sap !== equipo.codigo_sap);
@@ -242,10 +247,8 @@ function MainContent({ user }) {
   // Función para cargar especificaciones de comparación
   const cargarEspecificacionesComparacion = async () => {
     if (equiposSeleccionados.length !== 2) return;
-    
     setLoadingSpecs(true);
     const specs = [];
-    
     try {
       for (const equipo of equiposSeleccionados) {
         const { data, error } = await supabase
@@ -253,14 +256,12 @@ function MainContent({ user }) {
           .select("*")
           .eq("codigo_sap", normalizarCodigo(equipo.codigo_sap))
           .single();
-        
         specs.push({
           equipo: equipo,
           specs: data || null,
           url: data?.url ? convertirDriveUrl(data.url) : null
         });
       }
-      
       setEspecificaciones(specs);
       setModalComparacionAbierto(true);
     } catch (err) {
@@ -281,6 +282,7 @@ function MainContent({ user }) {
           .select("id, hoja, codigo_sap, modelo, stock_final, status_equipo")
           .or(`modelo.ilike.%${texto}%,codigo_sap.ilike.%${texto}%`)
           .limit(50);
+
         if (equiposError) throw equiposError;
 
         const { data: accesoriosData, error: accesoriosError } = await supabase
@@ -288,6 +290,7 @@ function MainContent({ user }) {
           .select("id, codigo_sap, modelo, accesorio")
           .or(`modelo.ilike.%${texto}%,codigo_sap.ilike.%${texto}%`)
           .limit(50);
+
         if (accesoriosError) throw accesoriosError;
 
         const equiposLista = Array.isArray(equiposData) ? equiposData : [];
@@ -333,11 +336,38 @@ function MainContent({ user }) {
     const sedes = Array.from(new Set(resultados.map(r => r.hoja).filter(Boolean)));
     setSedesDisponibles(sedes);
     if (sedeFiltro && !sedes.includes(sedeFiltro)) setSedeFiltro("");
+
+    // ← NUEVO: Obtener marcas disponibles
+    const marcas = Array.from(new Set(
+      resultados
+        .map(r => {
+          // Extraer marca del modelo (primera palabra)
+          const marca = r.modelo?.split(' ')[0];
+          return marca;
+        })
+        .filter(Boolean)
+    ));
+    setMarcasDisponibles(marcas);
+    if (marcaFiltro && !marcas.includes(marcaFiltro)) setMarcaFiltro("");
   }, [resultados]);
 
+  // Filtrar y ordenar resultados
   const resultadosFiltrados = resultados
     .filter(r => (sedeFiltro ? r.hoja === sedeFiltro : true))
+    .filter(r => {
+      if (!marcaFiltro) return true;
+      const marcaDelModelo = r.modelo?.split(' ')[0];
+      return marcaDelModelo === marcaFiltro;
+    })
     .sort((a, b) => (sortStockDesc ? (b.stock_final || 0) - (a.stock_final || 0) : (a.stock_final || 0) - (b.stock_final || 0)));
+
+  // ← NUEVO: Paginación
+  const totalResultados = resultadosFiltrados.length;
+  const totalPages = Math.ceil(totalResultados / resultadosPorPagina);
+  const resultadosPaginados = resultadosFiltrados.slice(
+    (paginaActual - 1) * resultadosPorPagina,
+    paginaActual * resultadosPorPagina
+  );
 
   const totalStock = resultadosFiltrados.reduce((sum, r) => sum + (r.stock_final || 0), 0);
   const itemsActivos = resultadosFiltrados.filter(
@@ -357,6 +387,7 @@ function MainContent({ user }) {
         .select("*")
         .eq("codigo_sap", normalizarCodigo(codigoSap))
         .single();
+
       if (error && error.code !== "PGRST116") throw error;
       setEspecificaciones(data || null);
     } catch (err) {
@@ -396,7 +427,7 @@ function MainContent({ user }) {
         .animate-slide-in-right { animation: slideInRight 0.5s ease-out forwards; }
         .shimmer-effect { background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent); background-size: 200% 100%; animation: shimmer 2s infinite; }
       `}</style>
-      
+
       <header className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-slate-800 to-slate-900 text-white shadow-xl">
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex items-center justify-between h-16">
@@ -420,7 +451,7 @@ function MainContent({ user }) {
           </div>
         </div>
       </header>
-      
+
       <div className="pt-20 pb-12 px-6">
         <div className="max-w-5xl mx-auto">
           <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 overflow-hidden animate-scaleIn">
@@ -445,7 +476,7 @@ function MainContent({ user }) {
                   </div>
                 </div>
               </div>
-              
+
               {/* Datos a validar */}
               <div className="bg-white rounded-2xl p-6 border-2 border-indigo-100 shadow-lg animate-slide-in-right" style={{ animationDelay: '0.2s' }}>
                 <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
@@ -467,7 +498,7 @@ function MainContent({ user }) {
                   ))}
                 </div>
               </div>
-              
+
               {/* Advertencia dirección */}
               <div className="bg-gradient-to-br from-amber-50 to-orange-50 border-l-4 border-amber-400 rounded-xl p-5 shadow-lg animate-slide-in-right" style={{ animationDelay: '0.3s' }}>
                 <p className="font-bold text-amber-900 mb-2">⚠️ Dirección Completa Requerida</p>
@@ -476,7 +507,7 @@ function MainContent({ user }) {
                   <li className="flex items-start gap-2"><span className="text-amber-500 mt-0.5">•</span> Manzana, lote, urbanización, distrito y referencias</li>
                 </ul>
               </div>
-              
+
               {/* ✅ PLANES: FILA COMPACTA DE 9 BOTONES PEQUEÑOS */}
               <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl p-6 border border-blue-200 shadow-lg animate-slide-in-right" style={{ animationDelay: '0.4s' }}>
                 <div className="flex items-center gap-3 mb-4">
@@ -504,7 +535,7 @@ function MainContent({ user }) {
                   ))}
                 </div>
               </div>
-              
+
               {/* Términos y condiciones */}
               <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-lg animate-slide-in-right" style={{ animationDelay: '0.5s' }}>
                 <h3 className="text-lg font-bold text-slate-800 mb-4">📋 Términos del Plan | Así mismo</h3>
@@ -527,7 +558,7 @@ function MainContent({ user }) {
                   ))}
                 </ul>
               </div>
-              
+
               {/* Equipo Financiado */}
               <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl p-6 border border-emerald-200 shadow-lg animate-slide-in-right" style={{ animationDelay: '0.6s' }}>
                 <div className="flex items-center gap-3 mb-4">
@@ -556,7 +587,7 @@ function MainContent({ user }) {
                   </div>
                 </div>
               </div>
-              
+
               {/* Equipo al Contado */}
               <div className="bg-gradient-to-br from-violet-50 to-purple-50 rounded-2xl p-6 border border-violet-200 shadow-lg animate-slide-in-right" style={{ animationDelay: '0.7s' }}>
                 <div className="flex items-center gap-3 mb-4">
@@ -583,7 +614,7 @@ function MainContent({ user }) {
                   </div>
                 </div>
               </div>
-              
+
               {/* Autorización de Datos */}
               <div className="bg-gradient-to-br from-pink-50 to-rose-50 rounded-2xl p-6 border border-pink-200 shadow-lg animate-slide-in-right" style={{ animationDelay: '0.8s' }}>
                 <div className="flex items-center gap-3 mb-4">
@@ -606,7 +637,7 @@ function MainContent({ user }) {
                   </p>
                 </div>
               </div>
-              
+
               {/* Aceptación Final */}
               <div className="bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 rounded-2xl p-6 border-2 border-indigo-300 shadow-xl animate-slide-in-right" style={{ animationDelay: '0.9s' }}>
                 <div className="text-center">
@@ -645,7 +676,7 @@ function MainContent({ user }) {
                   </p>
                 </div>
               </div>
-              
+
               {/* Validaciones antes de terminar la llamada */}
               <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl p-6 border border-amber-200 shadow-lg animate-slide-in-right" style={{ animationDelay: '0.85s' }}>
                 <div className="flex items-center gap-3 mb-4">
@@ -683,7 +714,7 @@ function MainContent({ user }) {
           </div>
         </div>
       </div>
-      
+
       {/* Modal de Plan */}
       <PlanModal
         plan={planesData[planModalAbierto]}
@@ -715,7 +746,7 @@ function MainContent({ user }) {
                 </p>
               </div>
             </div>
-            
+
             {/* Botón de Comparación */}
             {equiposSeleccionados.length > 0 && (
               <div className="flex items-center gap-3">
@@ -729,7 +760,7 @@ function MainContent({ user }) {
                     equiposSeleccionados.length === 2
                       ? "bg-gradient-to-r from-emerald-500 to-emerald-600 text-white hover:from-emerald-600 hover:to-emerald-700"
                       : "bg-slate-400 text-slate-200 cursor-not-allowed"
-                  }`}
+                    }`}
                   title={equiposSeleccionados.length !== 2 ? "Selecciona exactamente 2 equipos" : "Comparar equipos"}
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -751,7 +782,7 @@ function MainContent({ user }) {
                 </button>
               </div>
             )}
-            
+
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setMostrarContrato(true)}
@@ -779,36 +810,65 @@ function MainContent({ user }) {
           </div>
         </div>
       </header>
-      
+
       <div className="pt-16 px-6">
         <div className="max-w-7xl mx-auto py-6">
-          <div className="bg-white rounded-xl shadow-lg border border-slate-200 p-4 mb-6 flex gap-4">
-            <div className="flex-1 relative">
-              <svg className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-              <input
-                type="text"
-                placeholder="Buscar por modelo o código SAP..."
-                value={modelo}
-                onChange={e => setModelo(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
+          {/* Filtros */}
+          <div className="bg-white rounded-xl shadow-lg border border-slate-200 p-4 mb-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              {/* Buscador */}
+              <div className="relative">
+                <svg className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+                <input
+                  type="text"
+                  placeholder="Buscar por modelo o código SAP..."
+                  value={modelo}
+                  onChange={e => setModelo(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              {/* Filtro Sede */}
+              <select
+                value={sedeFiltro}
+                onChange={e => { setSedeFiltro(e.target.value); setPaginaActual(1); }}
+                className="border rounded-lg py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">Todas las sedes</option>
+                {sedesDisponibles.map(sede => (
+                  <option key={sede} value={sede}>{sede}</option>
+                ))}
+              </select>
+
+              {/* Filtro Marca ← NUEVO */}
+              <select
+                value={marcaFiltro}
+                onChange={e => { setMarcaFiltro(e.target.value); setPaginaActual(1); }}
+                className="border rounded-lg py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">Todas las marcas</option>
+                {marcasDisponibles.map(marca => (
+                  <option key={marca} value={marca}>{marca}</option>
+                ))}
+              </select>
+
+              {/* Limpiar filtros ← NUEVO */}
+              <button
+                onClick={() => { setSedeFiltro(""); setMarcaFiltro(""); setPaginaActual(1); }}
+                className="bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2.5 rounded-lg font-medium transition-colors"
+              >
+                <svg className="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                Limpiar filtros
+              </button>
             </div>
-            <select
-              value={sedeFiltro}
-              onChange={e => setSedeFiltro(e.target.value)}
-              className="w-48 border rounded-lg py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="">Todas las sedes</option>
-              {sedesDisponibles.map(sede => (
-                <option key={sede} value={sede}>{sede}</option>
-              ))}
-            </select>
           </div>
-          
+
           {modelo && resultadosFiltrados.length > 0 && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
               <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl shadow-sm border border-blue-200 p-4">
                 <p className="text-xs font-medium text-blue-600 mb-1">Resultados</p>
                 <p className="text-lg font-bold text-slate-800">{resultadosFiltrados.length}</p>
@@ -827,17 +887,22 @@ function MainContent({ user }) {
                   {resultadosFiltrados.length > 0 ? Math.round((itemsActivos / resultadosFiltrados.length) * 100) : 0}%
                 </p>
               </div>
+              {/* ← NUEVO: Página actual */}
+              <div className="bg-gradient-to-br from-amber-50 to-amber-100 rounded-xl shadow-sm border border-amber-200 p-4">
+                <p className="text-xs font-medium text-amber-600 mb-1">Página</p>
+                <p className="text-lg font-bold text-slate-800">{paginaActual} de {totalPages}</p>
+              </div>
             </div>
           )}
-          
+
           {error && (
             <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-6 rounded-xl shadow-sm">
               <p className="font-semibold text-red-800 text-sm">Error de conexión</p>
               <p className="text-red-700 text-xs">{error}</p>
             </div>
           )}
-          
-          {resultadosFiltrados.length > 0 ? (
+
+          {resultadosPaginados.length > 0 ? (
             <div className="bg-white rounded-xl shadow overflow-x-auto">
               <table className="min-w-full divide-y">
                 <thead className="bg-slate-50">
@@ -865,15 +930,14 @@ function MainContent({ user }) {
                   </tr>
                 </thead>
                 <tbody className="divide-y">
-                  {resultadosFiltrados.map(r => {
+                  {resultadosPaginados.map(r => {
                     const estaSeleccionado = equiposSeleccionados.some(e => e.codigo_sap === r.codigo_sap);
-                    
                     return (
-                      <tr 
-                        key={r.id} 
+                      <tr
+                        key={r.id}
                         className={`hover:bg-slate-50 transition-colors ${
                           estaSeleccionado ? 'bg-blue-50/50 border-l-4 border-blue-500' : ''
-                        }`}
+                          }`}
                       >
                         <td className="px-4 py-2 text-center">
                           <input
@@ -901,11 +965,11 @@ function MainContent({ user }) {
                             r.stock_final === null || r.stock_final === undefined
                               ? "text-slate-400"
                               : r.stock_final === 0
-                              ? "text-red-600"
-                              : r.stock_final <= 5
-                              ? "text-amber-600"
-                              : "text-emerald-600"
-                          }`}>
+                                ? "text-red-600"
+                                : r.stock_final <= 5
+                                  ? "text-amber-600"
+                                  : "text-emerald-600"
+                            }`}>
                             {r.stock_final ?? "-"}
                           </span>
                         </td>
@@ -916,16 +980,16 @@ function MainContent({ user }) {
                               : r.status_equipo.toLowerCase().includes("activo") ||
                                 r.status_equipo.toLowerCase().includes("disponible") ||
                                 r.status_equipo.toLowerCase().includes("life")
-                              ? "bg-emerald-100 text-emerald-700"
-                              : r.status_equipo.toLowerCase().includes("inactivo") ||
-                                r.status_equipo.toLowerCase().includes("baja")
-                              ? "bg-red-100 text-red-700"
-                              : r.status_equipo.toLowerCase().includes("mantenimiento") ||
-                                r.status_equipo.toLowerCase().includes("reposo") ||
-                                r.status_equipo.toLowerCase().includes("phase")
-                              ? "bg-amber-100 text-amber-700"
-                              : "bg-blue-100 text-blue-700"
-                          }`}>
+                                ? "bg-emerald-100 text-emerald-700"
+                                : r.status_equipo.toLowerCase().includes("inactivo") ||
+                                  r.status_equipo.toLowerCase().includes("baja")
+                                  ? "bg-red-100 text-red-700"
+                                  : r.status_equipo.toLowerCase().includes("mantenimiento") ||
+                                    r.status_equipo.toLowerCase().includes("reposo") ||
+                                    r.status_equipo.toLowerCase().includes("phase")
+                                    ? "bg-amber-100 text-amber-700"
+                                    : "bg-blue-100 text-blue-700"
+                            }`}>
                             {r.status_equipo || "-"}
                           </span>
                         </td>
@@ -953,16 +1017,110 @@ function MainContent({ user }) {
               <p className="text-slate-600">No se encontraron resultados para "<span className="font-semibold">{modelo}</span>"</p>
             </div>
           )}
-          
+
           {!modelo && !loading && (
             <div className="bg-white rounded-xl p-8 text-center border border-slate-200">
               <p className="text-slate-800 text-lg font-medium mb-2">Comienza a buscar</p>
               <p className="text-slate-600">Ingresa el modelo o código SAP para comenzar</p>
             </div>
           )}
+
+          {/* Controles de Paginación ← NUEVO */}
+          {totalPages > 1 && (
+            <div className="mt-6 flex items-center justify-between">
+              {/* Información */}
+              <div className="text-sm text-slate-600">
+                Mostrando {((paginaActual - 1) * resultadosPorPagina) + 1} - {Math.min(paginaActual * resultadosPorPagina, totalResultados)} de {totalResultados} resultados
+              </div>
+
+              {/* Botones de navegación */}
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setPaginaActual(p => Math.max(1, p - 1))}
+                  disabled={paginaActual === 1}
+                  className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                    paginaActual === 1
+                      ? 'bg-slate-100 text-slate-400 cursor-not-allowed'
+                      : 'bg-white text-slate-700 hover:bg-blue-50 hover:text-blue-600 border border-slate-300'
+                    }`}
+                >
+                  <svg className="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  </svg>
+                  Anterior
+                </button>
+
+                {/* Números de página (máximo 5 visibles) */}
+                <div className="flex items-center gap-1">
+                  {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                    let pageNum;
+                    if (totalPages <= 5) {
+                      pageNum = i + 1;
+                    } else if (paginaActual <= 3) {
+                      pageNum = i + 1;
+                    } else if (paginaActual >= totalPages - 2) {
+                      pageNum = totalPages - 4 + i;
+                    } else {
+                      pageNum = paginaActual - 2 + i;
+                    }
+
+                    return (
+                      <button
+                        key={pageNum}
+                        onClick={() => setPaginaActual(pageNum)}
+                        className={`w-9 h-9 rounded-lg font-medium transition-colors ${
+                          paginaActual === pageNum
+                            ? 'bg-blue-600 text-white'
+                            : 'bg-white text-slate-700 hover:bg-blue-50 hover:text-blue-600 border border-slate-300'
+                          }`}
+                      >
+                        {pageNum}
+                      </button>
+                    );
+                  })}
+
+                  {/* Puntos suspensivos si hay más páginas */}
+                  {totalPages > 5 && paginaActual > 3 && paginaActual < totalPages - 2 && (
+                    <span className="w-9 h-9 flex items-center justify-center text-slate-400">...</span>
+                  )}
+                </div>
+
+                <button
+                  onClick={() => setPaginaActual(p => Math.min(totalPages, p + 1))}
+                  disabled={paginaActual === totalPages}
+                  className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                    paginaActual === totalPages
+                      ? 'bg-slate-100 text-slate-400 cursor-not-allowed'
+                      : 'bg-white text-slate-700 hover:bg-blue-50 hover:text-blue-600 border border-slate-300'
+                    }`}
+                >
+                  Siguiente
+                  <svg className="w-4 h-4 inline ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
+              </div>
+
+              {/* Ir a página específica */}
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-slate-600">Ir a página:</span>
+                <input
+                  type="number"
+                  min="1"
+                  max={totalPages}
+                  value={paginaActual}
+                  onChange={e => {
+                    const num = parseInt(e.target.value);
+                    if (num >= 1 && num <= totalPages) setPaginaActual(num);
+                  }}
+                  className="w-16 px-2 py-1 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+            </div>
+          )}
         </div>
       </div>
-      
+
       {/* Modal PDF */}
       {selectedCodigoSap && (
         <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4" onClick={() => { setSelectedCodigoSap(null); setEspecificaciones(null); }}>
@@ -983,7 +1141,7 @@ function MainContent({ user }) {
           </div>
         </div>
       )}
-      
+
       {/* Modal Comparación */}
       {modalComparacionAbierto && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4" onClick={() => { setModalComparacionAbierto(false); setEspecificaciones(null); }}>
@@ -1008,7 +1166,6 @@ function MainContent({ user }) {
                 </svg>
               </button>
             </div>
-
             <div className="h-[70vh] overflow-y-auto">
               {loadingSpecs ? (
                 <div className="flex items-center justify-center h-full">
@@ -1036,24 +1193,23 @@ function MainContent({ user }) {
                           </span>
                           <span className={`px-3 py-1 rounded-full text-xs font-medium ${
                             especificaciones[0].equipo.status_equipo?.toLowerCase().includes('activo') ||
-                            especificaciones[0].equipo.status_equipo?.toLowerCase().includes('disponible')
+                              especificaciones[0].equipo.status_equipo?.toLowerCase().includes('disponible')
                               ? 'bg-emerald-100 text-emerald-700'
                               : 'bg-amber-100 text-amber-700'
-                          }`}>
+                            }`}>
                             {especificaciones[0].equipo.status_equipo || 'N/A'}
                           </span>
                         </div>
                       </div>
-
                       {especificaciones[0].url ? (
                         <div className="border rounded-lg overflow-hidden shadow-sm">
                           <div className="bg-slate-100 px-4 py-2 text-sm font-medium text-slate-700 border-b">
                             Ficha Técnica
                           </div>
-                          <iframe 
-                            src={especificaciones[0].url} 
-                            title="PDF Equipo 1" 
-                            className="w-full h-64 border-0" 
+                          <iframe
+                            src={especificaciones[0].url}
+                            title="PDF Equipo 1"
+                            className="w-full h-64 border-0"
                           />
                         </div>
                       ) : (
@@ -1081,24 +1237,23 @@ function MainContent({ user }) {
                           </span>
                           <span className={`px-3 py-1 rounded-full text-xs font-medium ${
                             especificaciones[1].equipo.status_equipo?.toLowerCase().includes('activo') ||
-                            especificaciones[1].equipo.status_equipo?.toLowerCase().includes('disponible')
+                              especificaciones[1].equipo.status_equipo?.toLowerCase().includes('disponible')
                               ? 'bg-emerald-100 text-emerald-700'
                               : 'bg-amber-100 text-amber-700'
-                          }`}>
+                            }`}>
                             {especificaciones[1].equipo.status_equipo || 'N/A'}
                           </span>
                         </div>
                       </div>
-
                       {especificaciones[1].url ? (
                         <div className="border rounded-lg overflow-hidden shadow-sm">
                           <div className="bg-slate-100 px-4 py-2 text-sm font-medium text-slate-700 border-b">
                             Ficha Técnica
                           </div>
-                          <iframe 
-                            src={especificaciones[1].url} 
-                            title="PDF Equipo 2" 
-                            className="w-full h-64 border-0" 
+                          <iframe
+                            src={especificaciones[1].url}
+                            title="PDF Equipo 2"
+                            className="w-full h-64 border-0"
                           />
                         </div>
                       ) : (
@@ -1111,7 +1266,6 @@ function MainContent({ user }) {
                 </div>
               )}
             </div>
-
             <div className="bg-slate-50 px-6 py-4 flex justify-end gap-3 border-t">
               <button
                 onClick={() => { setModalComparacionAbierto(false); setEspecificaciones(null); }}
@@ -1130,15 +1284,15 @@ function MainContent({ user }) {
 // ─── Componente Raíz ───────────────────────────────────
 export default function App() {
   const [user, setUser] = useState(null);
-  
+
   useEffect(() => {
     const saved = localStorage.getItem("user");
     if (saved) setUser(JSON.parse(saved));
   }, []);
-  
+
   if (!user) {
     return <LoginForm onLogin={setUser} />;
   }
-  
+
   return <MainContent user={user} />;
 }
