@@ -961,32 +961,7 @@ function MainContent({ user }) {
             </div>
           </div>
 
-          {modelo && resultadosFiltrados.length > 0 && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
-              <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl shadow-sm border border-blue-200 p-4">
-                <p className="text-xs font-medium text-blue-600 mb-1">Resultados</p>
-                <p className="text-lg font-bold text-slate-800">{resultadosFiltrados.length}</p>
-              </div>
-              <div className="bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-xl shadow-sm border border-emerald-200 p-4">
-                <p className="text-xs font-medium text-emerald-600 mb-1">Stock Total</p>
-                <p className="text-lg font-bold text-slate-800">{totalStock.toLocaleString()}</p>
-              </div>
-              <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl shadow-sm border border-green-200 p-4">
-                <p className="text-xs font-medium text-green-600 mb-1">Activos</p>
-                <p className="text-lg font-bold text-slate-800">{itemsActivos}</p>
-              </div>
-              <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl shadow-sm border border-purple-200 p-4">
-                <p className="text-xs font-medium text-purple-600 mb-1">Tasa Activos</p>
-                <p className="text-lg font-bold text-slate-800">
-                  {resultadosFiltrados.length > 0 ? Math.round((itemsActivos / resultadosFiltrados.length) * 100) : 0}%
-                </p>
-              </div>
-              <div className="bg-gradient-to-br from-amber-50 to-amber-100 rounded-xl shadow-sm border border-amber-200 p-4">
-                <p className="text-xs font-medium text-amber-600 mb-1">Página</p>
-                <p className="text-lg font-bold text-slate-800">{paginaActual} de {totalPages}</p>
-              </div>
-            </div>
-          )}
+
 
           {error && (
             <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-6 rounded-xl shadow-sm">
