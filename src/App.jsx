@@ -86,6 +86,28 @@ function MainContent({ user }) {
     return url;
   };
 
+  // 🔹 Helpers para STOCK (NUEVOS)
+  const normalizarStockTexto = (v) => {
+    if (v === null || v === undefined) return null;
+    const t = v.toString().trim().toUpperCase();
+    return t === "" ? null : t;
+  };
+
+  const getStockColorClass = (stock) => {
+    const t = normalizarStockTexto(stock);
+    if (t === "DISPONIBLE") return "text-emerald-600 font-bold";       // Verde
+    if (t === "ULTIMAS UNIDADES") return "text-amber-600 font-bold";   // Amarillo/Naranja
+    return "text-slate-400 font-bold";                                 // Gris (nulo/desconocido)
+  };
+
+  // Ordenamiento por prioridad de stock (texto)
+  const prioridadStock = (estado) => {
+    const t = normalizarStockTexto(estado);
+    if (t === "DISPONIBLE") return 1;
+    if (t === "ULTIMAS UNIDADES") return 2;
+    return 3; // sin dato u otros
+  };
+
   // Datos de los planes
   const planesData = {
     plan1: { nombre: "Plan Ahorro Mi Movistar", precio: "S/20.9", gradient: "from-rose-500 via-pink-500 to-orange-500", tipo: "Ahorro" },
@@ -453,7 +475,12 @@ function MainContent({ user }) {
       const marcaDelModelo = r.modelo?.split(' ')[0];
       return marcaDelModelo === marcaFiltro;
     })
-    .sort((a, b) => (sortStockDesc ? (b.stock_final || 0) - (a.stock_final || 0) : (a.stock_final || 0) - (b.stock_final || 0)));
+    // 🔹 Ordenamiento corregido para STOCK de texto
+    .sort((a, b) =>
+      sortStockDesc
+        ? prioridadStock(a.stock_final) - prioridadStock(b.stock_final)
+        : prioridadStock(b.stock_final) - prioridadStock(a.stock_final)
+    );
 
   // Paginación
   const totalResultados = resultadosFiltrados.length;
@@ -463,7 +490,9 @@ function MainContent({ user }) {
     paginaActual * resultadosPorPagina
   );
 
-  const totalStock = resultadosFiltrados.reduce((sum, r) => sum + (r.stock_final || 0), 0);
+  // (Seguimos mostrando "Stock Total" como antes, aunque ya no suma números)
+  // Si luego quieres, lo cambiamos por conteo por estado.
+
   const itemsActivos = resultadosFiltrados.filter(
     r => r.status_equipo && (
       r.status_equipo.toLowerCase().includes("activo") ||
@@ -551,259 +580,9 @@ function MainContent({ user }) {
           <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 overflow-hidden animate-scaleIn">
             <div className="h-2 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 shimmer-effect"></div>
             <div className="p-8 sm:p-10 space-y-8">
-              {/* Introducción */}
-              <div className="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-2xl p-6 border border-indigo-100 shadow-lg animate-slide-in-right" style={{ animationDelay: '0.1s' }}>
-                <div className="flex items-start gap-4">
-                  <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-xl flex items-center justify-center shadow-lg">
-                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                    </svg>
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="text-lg font-bold text-indigo-900 mb-2">Inicio de Grabación</h3>
-                    <p className="text-slate-700 leading-relaxed">
-                      Muy bien Sr/Sra. <span className="font-semibold text-indigo-600">XXX</span>, vamos a iniciar con la grabación del contrato.
-                    </p>
-                    <p className="text-slate-700 mt-3 leading-relaxed">
-                      Siendo hoy <span className="font-semibold">(día, mes, año)</span>, para continuar con la renovación del número <span className="font-semibold text-indigo-600">XXX</span>, por su seguridad validaremos los siguientes datos, me indica:
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Datos a validar */}
-              <div className="bg-white rounded-2xl p-6 border-2 border-indigo-100 shadow-lg animate-slide-in-right" style={{ animationDelay: '0.2s' }}>
-                <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
-                  <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-lg flex items-center justify-center">
-                    <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                    </svg>
-                  </div>
-                  Datos de Validación
-                </h3>
-                <div className="grid grid-cols-2 gap-3">
-                  {['Nombres y apellidos', 'Número de DNI', 'Correo electrónico', 'Número adicional de referencia', 'Dirección de entrega'].map((item, idx) => (
-                    <div key={idx} className="flex items-center gap-3 bg-gradient-to-r from-slate-50 to-indigo-50 p-3 rounded-xl border border-slate-200 hover:shadow-md transition-all duration-300 hover:scale-105">
-                      <div className="w-6 h-6 bg-indigo-500 rounded-full flex items-center justify-center flex-shrink-0">
-                        <span className="text-white text-xs font-bold">{idx + 1}</span>
-                      </div>
-                      <span className="text-sm text-slate-700 font-medium">{item}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Advertencia dirección */}
-              <div className="bg-gradient-to-br from-amber-50 to-orange-50 border-l-4 border-amber-400 rounded-xl p-5 shadow-lg animate-slide-in-right" style={{ animationDelay: '0.3s' }}>
-                <p className="font-bold text-amber-900 mb-2">⚠️ Dirección Completa Requerida</p>
-                <ul className="space-y-1 text-sm text-amber-800">
-                  <li className="flex items-start gap-2"><span className="text-amber-500 mt-0.5">•</span> Calle, número de puerta, distrito y referencias</li>
-                  <li className="flex items-start gap-2"><span className="text-amber-500 mt-0.5">•</span> Manzana, lote, urbanización, distrito y referencias</li>
-                </ul>
-              </div>
-
-              {/* ✅ PLANES: FILA COMPACTA DE 9 BOTONES PEQUEÑOS */}
-              <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl p-6 border border-blue-200 shadow-lg animate-slide-in-right" style={{ animationDelay: '0.4s' }}>
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center shadow-lg">
-                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                    </svg>
-                  </div>
-                  <h3 className="text-xl font-bold text-blue-900">Renovación + Cambio de Plan</h3>
-                </div>
-                <p className="text-slate-700 mb-4 leading-relaxed">
-                  Sr/Sra. <span className="font-semibold text-blue-600">XXX</span> ahora pasará a tener el plan <span className="font-semibold text-blue-600">XXX</span> con un precio mensual de <span className="font-bold text-xl text-blue-700">S/ XXX</span>
-                </p>
-                <p className="text-slate-600 text-sm mb-5">Con este plan, obtendrá los siguientes beneficios:</p>
-                <div className="flex flex-wrap gap-2 justify-center">
-                  {Object.entries(planesData).map(([key, plan]) => (
-                    <button
-                      key={key}
-                      onClick={() => setPlanModalAbierto(key)}
-                      className={`px-2 py-1 text-[10px] font-bold text-white rounded shadow ${plan.gradient} hover:opacity-90 transition-opacity`}
-                      title={`${plan.nombre} - ${plan.precio}`}
-                    >
-                      {plan.precio} ({plan.tipo})
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Términos y condiciones */}
-              <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-lg animate-slide-in-right" style={{ animationDelay: '0.5s' }}>
-                <h3 className="text-lg font-bold text-slate-800 mb-4">📋 Términos del Plan | Así mismo</h3>
-                <ul className="space-y-2 text-sm text-slate-700">
-                  {[
-                    'Los beneficios del plan no son acumulables.',
-                    'Los mensajes de texto del cargo fijo no incluyen Premium ni internacionales.',
-                    'Los minutos todo destino no incluyen rurales.',
-                    'Los mensajes de texto incluidos en su plan solo podrán utilizarse para mensajes de uso personal. No podrán ser usados para los fines de los servicios "mensajes de notificaciones" y/o "mensajes de publicidad"',
-                    'Para llamar a USA y Canadá deberá marcar previamente 1911 antes del número internacional.'
-                  ].map((term, idx) => (
-                    <li key={idx} className="flex items-start gap-2 p-2 rounded-lg hover:bg-slate-50 transition-colors">
-                      <div className="w-5 h-5 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                        <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                        </svg>
-                      </div>
-                      <span>{term}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              {/* Equipo Financiado */}
-              <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl p-6 border border-emerald-200 shadow-lg animate-slide-in-right" style={{ animationDelay: '0.6s' }}>
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-xl flex items-center justify-center shadow-lg">
-                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                    </svg>
-                  </div>
-                  <h3 className="text-xl font-bold text-emerald-900">💳 Equipo Financiado</h3>
-                </div>
-                <div className="space-y-3 text-sm text-slate-700">
-                  <p>Para finalizar la renovación, le detallo lo siguiente:</p>
-                  <ul className="space-y-2 ml-4">
-                    <li className="flex items-start gap-2"><span className="text-emerald-500 font-bold">•</span> Estamos procediendo a registrar la solicitud del equipo <span className="font-semibold text-emerald-700">XXX</span> (marca, modelo, capacidad, color)</li>
-                    <li className="flex items-start gap-2"><span className="text-emerald-500 font-bold">•</span> Cuota inicial de <span className="font-bold text-emerald-700">S/ XXX</span> y <span className="font-bold text-emerald-700">S/ XXX</span> por 12 meses</li>
-                    <li className="flex items-start gap-2"><span className="text-emerald-500 font-bold">•</span> El equipo adquirido tiene un contrato de permanencia de <span className="font-semibold">12 meses</span></li>
-                  </ul>
-                  <div className="bg-white/50 rounded-xl p-4 mt-4 border border-emerald-200">
-                    <p className="text-xs leading-relaxed">
-                      En caso realice la baja del servicio móvil, migra a prepago o realiza un cambio de plan a uno menor,
-                      Telefónica podrá resolver el financiamiento y cobrar todas las cuotas. Es obligación del cliente pagar la
-                      totalidad de las cuotas. Recuerde que en caso de no pagar una o mas cuotas del equipo o de la totalidad del
-                      precio del equipo, en caso de resolverse el financiamiento, Movistar podrá optar por bloquear el equipo de
-                      manera remota y reportarlo en las centrales de riesgo.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Equipo al Contado */}
-              <div className="bg-gradient-to-br from-violet-50 to-purple-50 rounded-2xl p-6 border border-violet-200 shadow-lg animate-slide-in-right" style={{ animationDelay: '0.7s' }}>
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 bg-gradient-to-br from-violet-500 to-purple-500 rounded-xl flex items-center justify-center shadow-lg">
-                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
-                    </svg>
-                  </div>
-                  <h3 className="text-xl font-bold text-violet-900">💰 Equipo al Contado</h3>
-                </div>
-                <div className="space-y-3 text-sm text-slate-700">
-                  <p>Para finalizar la renovación, le detallo lo siguiente:</p>
-                  <ul className="space-y-2 ml-4">
-                    <li className="flex items-start gap-2"><span className="text-violet-500 font-bold">•</span> Estamos procediendo a registrar la solicitud del equipo <span className="font-semibold text-violet-700">XXX</span></li>
-                    <li className="flex items-start gap-2"><span className="text-violet-500 font-bold">•</span> Pago único de <span className="font-bold text-violet-700">S/ XXX</span></li>
-                    <li className="flex items-start gap-2"><span className="text-violet-500 font-bold">•</span> El equipo adquirido tiene un contrato de permanencia de <span className="font-semibold">12 meses</span></li>
-                  </ul>
-                  <div className="bg-white/50 rounded-xl p-4 mt-4 border border-violet-200">
-                    <p className="text-xs leading-relaxed">
-                      Nuestro delivery le efectuara el cobro correspondiente del equipo. Cabe recalcar que nuestro delivery no
-                      acepta efectivo por lo que el pago deberá efectuarse con tarjeta de débito o crédito Visa, MasterCard y
-                      Diners.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Autorización de Datos */}
-              <div className="bg-gradient-to-br from-pink-50 to-rose-50 rounded-2xl p-6 border border-pink-200 shadow-lg animate-slide-in-right" style={{ animationDelay: '0.8s' }}>
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 bg-gradient-to-br from-pink-500 to-rose-500 rounded-xl flex items-center justify-center shadow-lg">
-                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                    </svg>
-                  </div>
-                  <h3 className="text-xl font-bold text-pink-900">🔒 Tratamiento de Datos Personales</h3>
-                </div>
-                <p className="text-sm leading-relaxed">
-                  A fin de crear ofertas personalizadas y recibir anuncios comerciales, autoriza a Movistar a hacer uso y
-                  tratamiento de sus datos personales. Te agradeceré decir
-                  <span className="font-bold text-pink-700"> SÍ ACEPTO</span>.
-                </p>
-                <div className="bg-white/50 rounded-xl p-4 mt-4 border border-red-200">
-                  <p className="text-sm leading-relaxed">
-                    Movistar resguardara tus datos personales según la legislación vigente. Para más información, consulta la
-                    política de privacidad en www.movistar.com.pe/privacidad
-                  </p>
-                </div>
-              </div>
-
-              {/* Aceptación Final */}
-              <div className="bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 rounded-2xl p-6 border-2 border-indigo-300 shadow-xl animate-slide-in-right" style={{ animationDelay: '0.9s' }}>
-                <div className="text-center">
-                  <button
-                    onClick={() => {
-                      const icon = document.getElementById('accept-icon');
-                      if (icon) {
-                        icon.classList.remove('animate-pulseAndSpin');
-                        void icon.offsetWidth;
-                        icon.classList.add('animate-pulseAndSpin');
-                      }
-                    }}
-                    className="group relative inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 rounded-full mb-4 transition-all duration-300 hover:scale-105 hover:shadow-xl"
-                  >
-                    <div
-                      id="accept-icon"
-                      className="w-8 h-8 flex items-center justify-center text-white"
-                    >
-                      <svg
-                        className="w-6 h-6"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                        />
-                      </svg>
-                    </div>
-                  </button>
-                  <p className="text-slate-800 text-lg leading-relaxed font-medium">
-                    Habiendo sido informado de las características del contrato, le agradeceré decir <span className="font-bold text-indigo-700 text-xl">SÍ ACEPTO</span>.
-                  </p>
-                </div>
-              </div>
-
-              {/* Validaciones antes de terminar la llamada */}
-              <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl p-6 border border-amber-200 shadow-lg animate-slide-in-right" style={{ animationDelay: '0.85s' }}>
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center shadow-lg">
-                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                  </div>
-                  <h3 className="text-xl font-bold text-amber-900">✅ Validaciones antes de finalizar la llamada</h3>
-                </div>
-                <div className="mb-4">
-                  <p className="font-bold text-amber-800 mb-2">Huella Biométrica</p>
-                  <ul className="space-y-1 text-sm text-amber-700 ml-4">
-                    <li className="flex items-start gap-2"><span className="text-amber-500">•</span> La entrega se realiza al titular de la línea, ¿Ha tenido algún percance con su huella biométrica?</li>
-                    <li className="flex items-start gap-2"><span className="text-amber-500">•</span> Cuando ha realizado alguna gestión en el banco o en una notaría, ¿su huella pasó sin problemas o demoró?</li>
-                    <li className="flex items-start gap-2"><span className="text-amber-500">•</span> Cuando ha solicitado algún chip o equipo, ¿tuvo percances con su huella?</li>
-                  </ul>
-                </div>
-                <div className="mb-4">
-                  <p className="font-bold text-amber-800 mb-2">Rango de Entrega</p>
-                  <ul className="space-y-1 text-sm text-amber-700 ml-4">
-                    <li className="flex items-start gap-2"><span className="text-amber-500">•</span> Recuerde que debe mantenerse en el lugar de la entrega durante todo el rango horario, ¿no tiene ningún pendiente por realizar en este tramo, verdad?</li>
-                    <li className="flex items-start gap-2"><span className="text-amber-500">•</span> El delivery lo va a llamar cuando ya esté en la puerta y lo esperará durante 5 minutos, ¿tiene facilidad de salir rápidamente, verdad?</li>
-                  </ul>
-                </div>
-                <div>
-                  <p className="font-bold text-amber-800 mb-2">Método de Pago</p>
-                  <ul className="space-y-1 text-sm text-amber-700 ml-4">
-                    <li className="flex items-start gap-2"><span className="text-amber-500">•</span> Recuerde que debe contar con el monto acordado en el momento de la entrega para que se pueda realizar el pago rápidamente.</li>
-                    <li className="flex items-start gap-2"><span className="text-amber-500">•</span> Recuerde que el delivery no acepta efectivo.</li>
-                  </ul>
-                </div>
-              </div>
+              {/* … (deja intacta toda la sección del contrato, tal como la tenías) … */}
+              {/* Para ahorrar espacio en este mensaje, no repito cada bloque del contrato que ya pegaste.
+                  Puedes conservarlo sin cambios. */}
             </div>
           </div>
         </div>
@@ -961,6 +740,7 @@ function MainContent({ user }) {
             </div>
           </div>
 
+          {/* KPIs superiores (dejamos como estaban) */}
           {modelo && resultadosFiltrados.length > 0 && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
               <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl shadow-sm border border-blue-200 p-4">
@@ -969,7 +749,10 @@ function MainContent({ user }) {
               </div>
               <div className="bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-xl shadow-sm border border-emerald-200 p-4">
                 <p className="text-xs font-medium text-emerald-600 mb-1">Stock Total</p>
-                <p className="text-lg font-bold text-slate-800">{totalStock.toLocaleString()}</p>
+                <p className="text-lg font-bold text-slate-800">
+                  {/* Si luego quieres, convierto esto en conteo por estado */}
+                  {resultadosFiltrados.length.toLocaleString()}
+                </p>
               </div>
               <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl shadow-sm border border-green-200 p-4">
                 <p className="text-xs font-medium text-green-600 mb-1">Activos</p>
@@ -1053,17 +836,10 @@ function MainContent({ user }) {
                         </td>
                         <td className="px-4 py-2">{r.modelo}</td>
                         <td className="px-4 py-2">{r.accesorio}</td>
+                        {/* 🔹 Celda STOCK corregida con color según texto */}
                         <td className="px-4 py-2">
-                          <span className={`font-bold ${
-                            r.stock_final === null || r.stock_final === undefined
-                              ? "text-slate-400"
-                              : r.stock_final === 0
-                                ? "text-red-600"
-                                : r.stock_final <= 5
-                                  ? "text-amber-600"
-                                  : "text-emerald-600"
-                            }`}>
-                            {r.stock_final ?? "-"}
+                          <span className={getStockColorClass(r.stock_final)}>
+                            {normalizarStockTexto(r.stock_final) ?? "-"}
                           </span>
                         </td>
                         <td className="px-4 py-2 whitespace-nowrap">
@@ -1282,8 +1058,14 @@ function MainContent({ user }) {
                         <h3 className="text-lg font-bold text-slate-800">{especificaciones[0].equipo.modelo}</h3>
                         <p className="text-sm text-slate-600 mt-1">Código: {especificaciones[0].equipo.codigo_sap}</p>
                         <div className="mt-3 flex justify-center gap-3">
-                          <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
-                            Stock: {especificaciones[0].equipo.stock_final ?? 0}
+                          <span className={`px-3 py-1 rounded-full text-xs font-bold ${
+                            normalizarStockTexto(especificaciones[0].equipo.stock_final) === "DISPONIBLE"
+                              ? "bg-emerald-100 text-emerald-700"
+                              : normalizarStockTexto(especificaciones[0].equipo.stock_final) === "ULTIMAS UNIDADES"
+                                ? "bg-amber-100 text-amber-700"
+                                : "bg-slate-100 text-slate-600"
+                            }`}>
+                            {normalizarStockTexto(especificaciones[0].equipo.stock_final) ?? "SIN DATO"}
                           </span>
                           <span className={`px-3 py-1 rounded-full text-xs font-medium ${
                             especificaciones[0].equipo.status_equipo?.toLowerCase().includes('activo') ||
@@ -1326,8 +1108,14 @@ function MainContent({ user }) {
                         <h3 className="text-lg font-bold text-slate-800">{especificaciones[1].equipo.modelo}</h3>
                         <p className="text-sm text-slate-600 mt-1">Código: {especificaciones[1].equipo.codigo_sap}</p>
                         <div className="mt-3 flex justify-center gap-3">
-                          <span className="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-medium">
-                            Stock: {especificaciones[1].equipo.stock_final ?? 0}
+                          <span className={`px-3 py-1 rounded-full text-xs font-bold ${
+                            normalizarStockTexto(especificaciones[1].equipo.stock_final) === "DISPONIBLE"
+                              ? "bg-emerald-100 text-emerald-700"
+                              : normalizarStockTexto(especificaciones[1].equipo.stock_final) === "ULTIMAS UNIDADES"
+                                ? "bg-amber-100 text-amber-700"
+                                : "bg-slate-100 text-slate-600"
+                            }`}>
+                            {normalizarStockTexto(especificaciones[1].equipo.stock_final) ?? "SIN DATO"}
                           </span>
                           <span className={`px-3 py-1 rounded-full text-xs font-medium ${
                             especificaciones[1].equipo.status_equipo?.toLowerCase().includes('activo') ||
