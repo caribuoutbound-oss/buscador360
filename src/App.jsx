@@ -804,7 +804,7 @@ function MainContent({ user }) {
                   </ul>
                 </div>
                 
-                <div>
+                <div className="mb-4">
                   <p className="font-bold text-amber-800 mb-2">Fidelización </p>
                   <ul className="space-y-1 text-sm text-amber-700 ml-4">
                     <li className="flex items-start gap-2"><span className="text-amber-500">•</span> 
