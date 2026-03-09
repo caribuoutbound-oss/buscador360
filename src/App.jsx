@@ -803,6 +803,20 @@ function MainContent({ user }) {
                     <li className="flex items-start gap-2"><span className="text-amber-500">•</span> Recuerde que el delivery no acepta efectivo.</li>
                   </ul>
                 </div>
+                
+                <div>
+                  <p className="font-bold text-amber-800 mb-2">Fidelización </p>
+                  <ul className="space-y-1 text-sm text-amber-700 ml-4">
+                    <li className="flex items-start gap-2"><span className="text-amber-500">•</span> 
+                      Dentro de 5 a 10 minutos, mi área de validación, 
+                      se estará comunicando nuevamente con usted para confirmar el precio del equipo que le estamos dando y así, 
+                      vea que todo esta conforme a lo que hemos conversado. Por favor, super atento a las llamadas, ya que, es de suma importancia que conteste.
+      
+                    </li>
+
+                  </ul>
+                </div>
+                
               </div>
             </div>
           </div>
