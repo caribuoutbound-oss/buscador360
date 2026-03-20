@@ -2,6 +2,23 @@ import { useState, useEffect, useCallback } from "react";
 import debounce from "lodash.debounce";
 import { supabase } from "./supabase";
 
+// ──────────────────────────────────────────────────────────────────────────────
+// 📋 MARCAS PREDETERMINADAS (FILTRO PRINCIPAL)
+// ──────────────────────────────────────────────────────────────────────────────
+const MARCAS_PREDETERMINADAS = [
+  'ESIM',
+  'HONOR',
+  'IPHONE',
+  'MOTOROLA',
+  'OPPO',
+  'PACK',
+  'PACK-IPHONE',
+  'SAMSUNG',
+  'USIM',
+  'XIAOMI',
+  'ZTE'
+].sort();
+
 // ─── Componente de Login ───────────────────────────────
 function LoginForm({ onLogin }) {
   const [usuario, setUsuario] = useState("");
@@ -207,7 +224,7 @@ function MainContent({ user }) {
   const [sedeFiltro, setSedeFiltro] = useState("");
   const [marcaFiltro, setMarcaFiltro] = useState("");
   const [sedesDisponibles, setSedesDisponibles] = useState([]);
-  const [marcasDisponibles, setMarcasDisponibles] = useState([]);
+  const [marcasDisponibles, setMarcasDisponibles] = useState(MARCAS_PREDETERMINADAS);
   const [resultados, setResultados] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -224,16 +241,17 @@ function MainContent({ user }) {
 
   // Estados para paginación
   const [paginaActual, setPaginaActual] = useState(1);
-  const [resultadosPorPagina] = useState(20);
+  const [resultadosPorPagina] = useState(50); // ✅ Aumentado para 2k+ registros
 
-  // Cargar todos los equipos al inicio
+  // ✅ NUEVO: Cargar todos los equipos desde la VIEW
   useEffect(() => {
     const cargarTodosLosEquipos = async () => {
       setLoading(true);
       try {
+        // ✅ Usar la VIEW en lugar de la tabla directa
         const { data: equiposData, error: equiposError } = await supabase
-          .from("equipos")
-          .select("id, hoja, codigo_sap, modelo, stock_final, status_equipo")
+          .from("v_equipos_marcas")
+          .select("id, hoja, codigo_sap, modelo, stock_final, status_equipo, marca")
           .order('modelo', { ascending: true });
 
         if (equiposError) throw equiposError;
@@ -268,6 +286,7 @@ function MainContent({ user }) {
         });
 
         setResultados(combinados);
+        console.log(`✅ Cargados ${combinados.length} equipos desde v_equipos_marcas`);
       } catch (err) {
         setError(err.message);
         setResultados([]);
@@ -324,9 +343,10 @@ function MainContent({ user }) {
   const buscarTiempoReal = useCallback(
     debounce(async (texto) => {
       if (!texto.trim()) {
+        // ✅ Si el campo está vacío, recargar desde la VIEW
         const { data: equiposData, error: equiposError } = await supabase
-          .from("equipos")
-          .select("id, hoja, codigo_sap, modelo, stock_final, status_equipo")
+          .from("v_equipos_marcas")
+          .select("id, hoja, codigo_sap, modelo, stock_final, status_equipo, marca")
           .order('modelo', { ascending: true });
 
         if (equiposError) throw equiposError;
@@ -367,11 +387,18 @@ function MainContent({ user }) {
       setLoading(true);
       setError(null);
       try {
-        const { data: equiposData, error: equiposError } = await supabase
-          .from("equipos")
-          .select("id, hoja, codigo_sap, modelo, stock_final, status_equipo")
+        // ✅ Buscar en la VIEW con filtro de marca si está seleccionado
+        let query = supabase
+          .from("v_equipos_marcas")
+          .select("id, hoja, codigo_sap, modelo, stock_final, status_equipo, marca")
           .or(`modelo.ilike.%${texto}%,codigo_sap.ilike.%${texto}%`)
-          .limit(50);
+          .limit(100); // ✅ Aumentado límite
+
+        if (marcaFiltro) {
+          query = query.eq("marca", marcaFiltro);
+        }
+
+        const { data: equiposData, error: equiposError } = await query;
 
         if (equiposError) throw equiposError;
 
@@ -379,7 +406,7 @@ function MainContent({ user }) {
           .from("accesorios")
           .select("id, codigo_sap, modelo, accesorio")
           .or(`modelo.ilike.%${texto}%,codigo_sap.ilike.%${texto}%`)
-          .limit(50);
+          .limit(100);
 
         if (accesoriosError) throw accesoriosError;
 
@@ -414,40 +441,26 @@ function MainContent({ user }) {
         setLoading(false);
       }
     }, 300),
-    []
+    [marcaFiltro]
   );
 
   useEffect(() => {
     buscarTiempoReal(modelo);
     return () => buscarTiempoReal.cancel();
-  }, [modelo]);
+  }, [modelo, marcaFiltro]);
 
   useEffect(() => {
     const sedes = Array.from(new Set(resultados.map(r => r.hoja).filter(Boolean)));
     setSedesDisponibles(sedes);
     if (sedeFiltro && !sedes.includes(sedeFiltro)) setSedeFiltro("");
-
-    // Obtener marcas disponibles
-    const marcas = Array.from(new Set(
-      resultados
-        .map(r => {
-          const marca = r.modelo?.split(' ')[0];
-          return marca;
-        })
-        .filter(Boolean)
-    ));
-    setMarcasDisponibles(marcas);
-    if (marcaFiltro && !marcas.includes(marcaFiltro)) setMarcaFiltro("");
+    
+    // ✅ Las marcas ya están predeterminadas en MARCAS_PREDETERMINADAS
   }, [resultados]);
 
-  // Filtrar y ordenar resultados
+  // ✅ Filtrar y ordenar resultados (CON FILTRO DE MARCA)
   const resultadosFiltrados = resultados
     .filter(r => (sedeFiltro ? r.hoja === sedeFiltro : true))
-    .filter(r => {
-      if (!marcaFiltro) return true;
-      const marcaDelModelo = r.modelo?.split(' ')[0];
-      return marcaDelModelo === marcaFiltro;
-    })
+    .filter(r => (marcaFiltro ? r.marca === marcaFiltro : true))
     .sort((a, b) => (sortStockDesc ? (b.stock_final || 0) - (a.stock_final || 0) : (a.stock_final || 0) - (b.stock_final || 0)));
 
   // Paginación
@@ -458,7 +471,7 @@ function MainContent({ user }) {
     paginaActual * resultadosPorPagina
   );
 
-  const totalStock = resultadosFiltrados.reduce((sum, r) => sum + (r.stock_final || 0), 0);
+  const totalStock = resultadosFiltrados.reduce((sum, r) => sum + (parseInt(r.stock_final) || 0), 0);
   const itemsActivos = resultadosFiltrados.filter(
     r => r.status_equipo && (
       r.status_equipo.toLowerCase().includes("activo") ||
@@ -592,7 +605,7 @@ function MainContent({ user }) {
                   <li className="flex items-start gap-2"><span className="text-amber-500 mt-0.5">•</span> Manzana, lote, urbanización, distrito y referencias</li>
                 </ul>
               </div>
-              {/* PLANES: FILA COMPACTA DE 9 BOTONES PEQUEÑOS */}
+              {/* PLANES */}
               <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl p-6 border border-blue-200 shadow-lg animate-slide-in-right" style={{ animationDelay: '0.4s' }}>
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center shadow-lg">
@@ -914,6 +927,17 @@ function MainContent({ user }) {
                   className="w-full pl-10 pr-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
+              {/* Filtro Marca - ✅ AHORA USA MARCAS PREDETERMINADAS */}
+              <select
+                value={marcaFiltro}
+                onChange={e => { setMarcaFiltro(e.target.value); setPaginaActual(1); }}
+                className="border rounded-lg py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">Todas las marcas</option>
+                {MARCAS_PREDETERMINADAS.map(marca => (
+                  <option key={marca} value={marca}>{marca}</option>
+                ))}
+              </select>
               {/* Filtro Sede */}
               <select
                 value={sedeFiltro}
@@ -923,17 +947,6 @@ function MainContent({ user }) {
                 <option value="">Todas las sedes</option>
                 {sedesDisponibles.map(sede => (
                   <option key={sede} value={sede}>{sede}</option>
-                ))}
-              </select>
-              {/* Filtro Marca */}
-              <select
-                value={marcaFiltro}
-                onChange={e => { setMarcaFiltro(e.target.value); setPaginaActual(1); }}
-                className="border rounded-lg py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="">Todas las marcas</option>
-                {marcasDisponibles.map(marca => (
-                  <option key={marca} value={marca}>{marca}</option>
                 ))}
               </select>
               {/* Limpiar filtros */}
@@ -975,6 +988,7 @@ function MainContent({ user }) {
                       />
                     </th>
                     <th className="px-4 py-2 text-left text-xs font-medium text-slate-700 uppercase">Código SAP</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-slate-700 uppercase">Marca</th>
                     <th className="px-4 py-2 text-left text-xs font-medium text-slate-700 uppercase">Modelo</th>
                     <th className="px-4 py-2 text-left text-xs font-medium text-slate-700 uppercase">Accesorio</th>
                     <th className="px-4 py-2 text-left text-xs font-medium text-slate-700 uppercase">Stock</th>
@@ -1003,10 +1017,14 @@ function MainContent({ user }) {
                             title={estaSeleccionado ? "Deseleccionar" : equiposSeleccionados.length >= 2 ? "Máximo 2 equipos" : "Seleccionar para comparar"}
                           />
                         </td>
-                        {/* ✅ CAMBIO: Mostrar código SAP COMPLETO sin máscara */}
                         <td className="px-4 py-2">
                           <span className="font-mono text-sm">
                             {r.codigo_sap?.toString() || "-"}
+                          </span>
+                        </td>
+                        <td className="px-4 py-2">
+                          <span className="px-2 py-0.5 inline-flex text-xs font-medium rounded-full bg-blue-100 text-blue-800">
+                            {r.marca || "-"}
                           </span>
                         </td>
                         <td className="px-4 py-2">{r.modelo}</td>
@@ -1015,9 +1033,9 @@ function MainContent({ user }) {
                           <span className={`font-bold ${
                             r.stock_final === null || r.stock_final === undefined
                               ? "text-slate-400"
-                              : r.stock_final === 0
+                              : parseInt(r.stock_final) === 0
                                 ? "text-red-600"
-                                : r.stock_final <= 5
+                                : parseInt(r.stock_final) <= 5
                                   ? "text-amber-600"
                                   : "text-emerald-600"
                           }`}>
@@ -1329,15 +1347,12 @@ function MainContent({ user }) {
 // ─── Componente Raíz ───────────────────────────────────
 export default function App() {
   const [user, setUser] = useState(null);
-
   useEffect(() => {
     const saved = localStorage.getItem("user");
     if (saved) setUser(JSON.parse(saved));
   }, []);
-
   if (!user) {
     return <LoginForm onLogin={setUser} />;
   }
-
   return <MainContent user={user} />;
 }
