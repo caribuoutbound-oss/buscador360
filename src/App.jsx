@@ -5,6 +5,33 @@ import { supabase } from "./supabase";
 // ──────────────────────────────────────────────────────────────────────────────
 // 📋 MARCAS PREDETERMINADAS (FILTRO PRINCIPAL)
 // ──────────────────────────────────────────────────────────────────────────────
+
+// ──────────────────────────────────────────────────────────────────────────────
+// 📱 DATOS DE EQUIOS Y PRECIOS DIGITALES
+// ──────────────────────────────────────────────────────────────────────────────
+const EQUIPOS_DATA = [
+  { equipo: 'IPHONE 16 PRO MAX 256GB', precio: 4899, marca: 'IPHONE' },
+  { equipo: 'IPHONE 16 PRO 128GB', precio: 4199, marca: 'IPHONE' },
+  { equipo: 'IPHONE 17 256GB', precio: 3569, marca: 'IPHONE' },
+  { equipo: 'IPHONE 16 128GB', precio: 2939, marca: 'IPHONE' },
+  { equipo: 'XIAOMI 15T PRO 512GB 5G', precio: 2659, marca: 'XIAOMI' },
+  { equipo: 'SAMSUNG GXY S25 FE SM-S731B 256GB 5G', precio: 2599, marca: 'SAMSUNG' },
+  { equipo: 'XIAOMI 15T 512GB 5G', precio: 2039, marca: 'XIAOMI' },
+  { equipo: 'IPHONE 13 128GB', precio: 1809, marca: 'IPHONE' },
+  { equipo: 'XIAOMI REDMI NOTE 15 PRO+ 512GB 5G', precio: 1729, marca: 'XIAOMI' },
+  { equipo: 'OPPO A6 PRO 256GB 5G', precio: 1299, marca: 'OPPO' },
+  { equipo: 'XIAOMI REDMI NOTE 15 PRO 512GB 5G', precio: 1259, marca: 'XIAOMI' },
+  { equipo: 'HONOR X8C 256GB 5G', precio: 999, marca: 'HONOR' },
+  { equipo: 'MOTOROLA EDGE 60 FUSION 256GB 5G', precio: 999, marca: 'MOTOROLA' },
+  { equipo: 'ZTE NUBIA AIR 256GB 5G', precio: 899, marca: 'ZTE' },
+  { equipo: 'XIAOMI REDMI NOTE 15 256GB LTE', precio: 849, marca: 'XIAOMI' },
+  { equipo: 'SAMSUNG GXY A26 SM-A266M 128GB 5G', precio: 819, marca: 'SAMSUNG' },
+  { equipo: 'MOTOROLA G56 XT2527 256GB 5G', precio: 739, marca: 'MOTOROLA' },
+  { equipo: 'HONOR X6C NIC-LX3 256GB LTE', precio: 549, marca: 'HONOR' },
+  { equipo: 'SAMSUNG GXY A16 SM-A165M 128GB LTE', precio: 529, marca: 'SAMSUNG' },
+  { equipo: 'SAMSUNG GXY A07 SM-A075M 128GB LTE', precio: 429, marca: 'SAMSUNG' },
+  { equipo: 'ZTE BLADE A56 PRO 128GB LTE', precio: 329, marca: 'ZTE' },
+];
 const MARCAS_PREDETERMINADAS = [
   'ESIM',
   'HONOR',
@@ -1340,6 +1367,150 @@ function MainContent({ user }) {
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+function BannerPrecios() {
+  const [filtroMarca, setFiltroMarca] = useState('TODAS');
+  
+  const marcas = ['TODAS', ...new Set(EQUIPOS_DATA.map(e => e.marca))];
+  
+  const equiposFiltrados = filtroMarca === 'TODAS' 
+    ? EQUIPOS_DATA 
+    : EQUIPOS_DATA.filter(e => e.marca === filtroMarca);
+
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat('es-PE', {
+      style: 'currency',
+      currency: 'PEN',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(price);
+  };
+
+  const getMarcaColor = (marca) => {
+    const colors = {
+      'IPHONE': 'bg-gray-800',
+      'SAMSUNG': 'bg-blue-600',
+      'XIAOMI': 'bg-orange-500',
+      'HONOR': 'bg-cyan-600',
+      'MOTOROLA': 'bg-red-600',
+      'OPPO': 'bg-green-600',
+      'ZTE': 'bg-purple-600',
+    };
+    return colors[marca] || 'bg-gray-600';
+  };
+
+  return (
+    <div className="w-full max-w-6xl mx-auto p-4">
+      {/* Header del Banner */}
+      <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 rounded-t-2xl p-6 text-white shadow-2xl">
+        <div className="flex items-center justify-between flex-wrap gap-4">
+          <div>
+            <h2 className="text-3xl font-bold mb-2">📱 Equipos Digitales</h2>
+            <p className="text-indigo-100">Precios especiales en equipos tecnológicos</p>
+          </div>
+          <div className="text-right">
+            <div className="text-4xl font-bold">{EQUIPOS_DATA.length}</div>
+            <div className="text-indigo-200 text-sm">Equipos disponibles</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Filtros de Marca */}
+      <div className="bg-white border-x border-gray-200 p-4 shadow-sm">
+        <div className="flex items-center gap-2 flex-wrap">
+          <span className="text-sm font-semibold text-gray-700 mr-2">Filtrar por marca:</span>
+          {marcas.map(marca => (
+            <button
+              key={marca}
+              onClick={() => setFiltroMarca(marca)}
+              className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
+                filtroMarca === marca
+                  ? 'bg-indigo-600 text-white shadow-lg scale-105'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              {marca}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Tabla de Precios */}
+      <div className="bg-white rounded-b-2xl shadow-xl overflow-hidden border border-gray-200">
+        <div className="overflow-x-auto max-h-[600px] overflow-y-auto">
+          <table className="w-full">
+            <thead className="bg-gray-50 sticky top-0 z-10">
+              <tr>
+                <th className="px-4 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider w-16">
+                  #
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">
+                  Equipo
+                </th>
+                <th className="px-4 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider w-32">
+                  Marca
+                </th>
+                <th className="px-4 py-3 text-right text-xs font-bold text-gray-600 uppercase tracking-wider w-40">
+                  Precio Digital
+                </th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-200">
+              {equiposFiltrados.map((item, index) => (
+                <tr
+                  key={index}
+                  className={`transition-all hover:scale-[1.01] ${
+                    item.marca === 'SAMSUNG'
+                      ? 'bg-yellow-100 hover:bg-yellow-200'
+                      : 'hover:bg-indigo-50'
+                  }`}
+                >
+                  <td className="px-4 py-3 text-sm font-bold text-gray-500">
+                    {index + 1}
+                  </td>
+                  <td className="px-4 py-3">
+                    <div className="text-sm font-semibold text-gray-900">
+                      {item.equipo}
+                    </div>
+                  </td>
+                  <td className="px-4 py-3 text-center">
+                    <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold text-white ${getMarcaColor(item.marca)}`}>
+                      {item.marca}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3 text-right">
+                    <div className="text-lg font-bold text-indigo-600">
+                      {formatPrice(item.precio)}
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        
+        {/* Footer con resumen */}
+        <div className="bg-gray-50 border-t border-gray-200 p-4">
+          <div className="flex items-center justify-between flex-wrap gap-4">
+            <div className="text-sm text-gray-600">
+              Mostrando <span className="font-bold text-gray-900">{equiposFiltrados.length}</span> de <span className="font-bold text-gray-900">{EQUIPOS_DATA.length}</span> equipos
+            </div>
+            <div className="flex items-center gap-4 text-sm">
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-4 bg-yellow-400 rounded"></div>
+                <span className="text-gray-600">Samsung</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-4 bg-indigo-100 rounded"></div>
+                <span className="text-gray-600">Otros</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
