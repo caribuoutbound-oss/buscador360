@@ -780,6 +780,7 @@ function MainContent({ user }) {
           </div>
         </div>
       </header>
+
       <div className="pt-20 pb-12 px-6">
         <div className="max-w-5xl mx-auto">
           <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 overflow-hidden animate-scaleIn">
@@ -804,6 +805,7 @@ function MainContent({ user }) {
                   </div>
                 </div>
               </div>
+
               {/* Datos a validar */}
               <div className="bg-white rounded-2xl p-6 border-2 border-indigo-100 shadow-lg animate-slide-in-right" style={{ animationDelay: '0.2s' }}>
                 <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
@@ -825,6 +827,7 @@ function MainContent({ user }) {
                   ))}
                 </div>
               </div>
+
               {/* Advertencia dirección */}
               <div className="bg-gradient-to-br from-amber-50 to-orange-50 border-l-4 border-amber-400 rounded-xl p-5 shadow-lg animate-slide-in-right" style={{ animationDelay: '0.3s' }}>
                 <p className="font-bold text-amber-900 mb-2">⚠️ Dirección Completa Requerida</p>
@@ -833,7 +836,8 @@ function MainContent({ user }) {
                   <li className="flex items-start gap-2"><span className="text-amber-500 mt-0.5">•</span> Manzana, lote, urbanización, distrito y referencias</li>
                 </ul>
               </div>
-              {/* PLANES */}
+
+              {/* ✅ PLANES: FILA COMPACTA DE 9 BOTONES PEQUEÑOS */}
               <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl p-6 border border-blue-200 shadow-lg animate-slide-in-right" style={{ animationDelay: '0.4s' }}>
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center shadow-lg">
@@ -860,6 +864,7 @@ function MainContent({ user }) {
                   ))}
                 </div>
               </div>
+
               {/* Términos y condiciones */}
               <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-lg animate-slide-in-right" style={{ animationDelay: '0.5s' }}>
                 <h3 className="text-lg font-bold text-slate-800 mb-4">📋 Términos del Plan | Así mismo</h3>
@@ -882,6 +887,7 @@ function MainContent({ user }) {
                   ))}
                 </ul>
               </div>
+
               {/* Equipo Financiado */}
               <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl p-6 border border-emerald-200 shadow-lg animate-slide-in-right" style={{ animationDelay: '0.6s' }}>
                 <div className="flex items-center gap-3 mb-4">
@@ -910,6 +916,7 @@ function MainContent({ user }) {
                   </div>
                 </div>
               </div>
+
               {/* Equipo al Contado */}
               <div className="bg-gradient-to-br from-violet-50 to-purple-50 rounded-2xl p-6 border border-violet-200 shadow-lg animate-slide-in-right" style={{ animationDelay: '0.7s' }}>
                 <div className="flex items-center gap-3 mb-4">
@@ -936,6 +943,7 @@ function MainContent({ user }) {
                   </div>
                 </div>
               </div>
+
               {/* Autorización de Datos */}
               <div className="bg-gradient-to-br from-pink-50 to-rose-50 rounded-2xl p-6 border border-pink-200 shadow-lg animate-slide-in-right" style={{ animationDelay: '0.8s' }}>
                 <div className="flex items-center gap-3 mb-4">
@@ -958,6 +966,7 @@ function MainContent({ user }) {
                   </p>
                 </div>
               </div>
+
               {/* Aceptación Final */}
               <div className="bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 rounded-2xl p-6 border-2 border-indigo-300 shadow-xl animate-slide-in-right" style={{ animationDelay: '0.9s' }}>
                 <div className="text-center">
@@ -996,6 +1005,7 @@ function MainContent({ user }) {
                   </p>
                 </div>
               </div>
+
               {/* Validaciones antes de terminar la llamada */}
               <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl p-6 border border-amber-200 shadow-lg animate-slide-in-right" style={{ animationDelay: '0.85s' }}>
                 <div className="flex items-center gap-3 mb-4">
@@ -1028,21 +1038,26 @@ function MainContent({ user }) {
                     <li className="flex items-start gap-2"><span className="text-amber-500">•</span> Recuerde que el delivery no acepta efectivo.</li>
                   </ul>
                 </div>
+                
                 <div className="mb-4">
                   <p className="font-bold text-amber-800 mb-2">Fidelización </p>
                   <ul className="space-y-1 text-sm text-amber-700 ml-4">
-                    <li className="flex items-start gap-2"><span className="text-amber-500">•</span>
-                      Dentro de 5 a 10 minutos, mi área de validación,
-                      se estará comunicando nuevamente con usted para confirmar el precio del equipo que le estamos dando y así,
+                    <li className="flex items-start gap-2"><span className="text-amber-500">•</span> 
+                      Dentro de 5 a 10 minutos, mi área de validación, 
+                      se estará comunicando nuevamente con usted para confirmar el precio del equipo que le estamos dando y así, 
                       vea que todo esta conforme a lo que hemos conversado. Por favor, super atento a las llamadas, ya que, es de suma importancia que conteste.
+      
                     </li>
+
                   </ul>
                 </div>
+                
               </div>
             </div>
           </div>
         </div>
       </div>
+
       {/* Modal de Plan */}
       <PlanModal
         plan={planesData[planModalAbierto]}
@@ -1074,6 +1089,7 @@ function MainContent({ user }) {
                 </p>
               </div>
             </div>
+
             {/* Botón de Comparación */}
             {equiposSeleccionados.length > 0 && (
               <div className="flex items-center gap-3">
@@ -1087,7 +1103,7 @@ function MainContent({ user }) {
                     equiposSeleccionados.length === 2
                       ? "bg-gradient-to-r from-emerald-500 to-emerald-600 text-white hover:from-emerald-600 hover:to-emerald-700"
                       : "bg-slate-400 text-slate-200 cursor-not-allowed"
-                  }`}
+                    }`}
                   title={equiposSeleccionados.length !== 2 ? "Selecciona exactamente 2 equipos" : "Comparar equipos"}
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1109,6 +1125,7 @@ function MainContent({ user }) {
                 </button>
               </div>
             )}
+
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setMostrarContrato(true)}
@@ -1155,17 +1172,7 @@ function MainContent({ user }) {
                   className="w-full pl-10 pr-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
-              {/* Filtro Marca - ✅ AHORA USA MARCAS PREDETERMINADAS */}
-              <select
-                value={marcaFiltro}
-                onChange={e => { setMarcaFiltro(e.target.value); setPaginaActual(1); }}
-                className="border rounded-lg py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="">Todas las marcas</option>
-                {MARCAS_PREDETERMINADAS.map(marca => (
-                  <option key={marca} value={marca}>{marca}</option>
-                ))}
-              </select>
+
               {/* Filtro Sede */}
               <select
                 value={sedeFiltro}
@@ -1177,6 +1184,19 @@ function MainContent({ user }) {
                   <option key={sede} value={sede}>{sede}</option>
                 ))}
               </select>
+
+              {/* Filtro Marca */}
+              <select
+                value={marcaFiltro}
+                onChange={e => { setMarcaFiltro(e.target.value); setPaginaActual(1); }}
+                className="border rounded-lg py-2.5 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">Todas las marcas</option>
+                {marcasDisponibles.map(marca => (
+                  <option key={marca} value={marca}>{marca}</option>
+                ))}
+              </select>
+
               {/* Limpiar filtros */}
               <button
                 onClick={() => { setSedeFiltro(""); setMarcaFiltro(""); setPaginaActual(1); }}
@@ -1189,6 +1209,8 @@ function MainContent({ user }) {
               </button>
             </div>
           </div>
+
+
 
           {error && (
             <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-6 rounded-xl shadow-sm">
@@ -1216,7 +1238,6 @@ function MainContent({ user }) {
                       />
                     </th>
                     <th className="px-4 py-2 text-left text-xs font-medium text-slate-700 uppercase">Código SAP</th>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-slate-700 uppercase">Marca</th>
                     <th className="px-4 py-2 text-left text-xs font-medium text-slate-700 uppercase">Modelo</th>
                     <th className="px-4 py-2 text-left text-xs font-medium text-slate-700 uppercase">Accesorio</th>
                     <th className="px-4 py-2 text-left text-xs font-medium text-slate-700 uppercase">Stock</th>
@@ -1233,7 +1254,7 @@ function MainContent({ user }) {
                         key={r.id}
                         className={`hover:bg-slate-50 transition-colors ${
                           estaSeleccionado ? 'bg-blue-50/50 border-l-4 border-blue-500' : ''
-                        }`}
+                          }`}
                       >
                         <td className="px-4 py-2 text-center">
                           <input
@@ -1247,12 +1268,11 @@ function MainContent({ user }) {
                         </td>
                         <td className="px-4 py-2">
                           <span className="font-mono text-sm">
-                            {r.codigo_sap?.toString() || "-"}
-                          </span>
-                        </td>
-                        <td className="px-4 py-2">
-                          <span className="px-2 py-0.5 inline-flex text-xs font-medium rounded-full bg-blue-100 text-blue-800">
-                            {r.marca || "-"}
+                            {(() => {
+                              const codigo = r.codigo_sap?.toString() || "";
+                              if (codigo.length <= 4) return "•".repeat(codigo.length) || "-";
+                              return "•".repeat(codigo.length - 4) + codigo.slice(-4);
+                            })()}
                           </span>
                         </td>
                         <td className="px-4 py-2">{r.modelo}</td>
@@ -1261,12 +1281,12 @@ function MainContent({ user }) {
                           <span className={`font-bold ${
                             r.stock_final === null || r.stock_final === undefined
                               ? "text-slate-400"
-                              : parseInt(r.stock_final) === 0
+                              : r.stock_final === 0
                                 ? "text-red-600"
-                                : parseInt(r.stock_final) <= 5
+                                : r.stock_final <= 5
                                   ? "text-amber-600"
                                   : "text-emerald-600"
-                          }`}>
+                            }`}>
                             {r.stock_final ?? "-"}
                           </span>
                         </td>
@@ -1286,7 +1306,7 @@ function MainContent({ user }) {
                                     r.status_equipo.toLowerCase().includes("phase")
                                     ? "bg-amber-100 text-amber-700"
                                     : "bg-blue-100 text-blue-700"
-                          }`}>
+                            }`}>
                             {r.status_equipo || "-"}
                           </span>
                         </td>
@@ -1330,6 +1350,7 @@ function MainContent({ user }) {
               <div className="text-sm text-slate-600">
                 Mostrando {((paginaActual - 1) * resultadosPorPagina) + 1} - {Math.min(paginaActual * resultadosPorPagina, totalResultados)} de {totalResultados} resultados
               </div>
+
               {/* Botones de navegación */}
               <div className="flex items-center gap-2">
                 <button
@@ -1339,13 +1360,14 @@ function MainContent({ user }) {
                     paginaActual === 1
                       ? 'bg-slate-100 text-slate-400 cursor-not-allowed'
                       : 'bg-white text-slate-700 hover:bg-blue-50 hover:text-blue-600 border border-slate-300'
-                  }`}
+                    }`}
                 >
                   <svg className="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                   </svg>
                   Anterior
                 </button>
+
                 {/* Números de página (máximo 5 visibles) */}
                 <div className="flex items-center gap-1">
                   {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
@@ -1359,6 +1381,7 @@ function MainContent({ user }) {
                     } else {
                       pageNum = paginaActual - 2 + i;
                     }
+
                     return (
                       <button
                         key={pageNum}
@@ -1367,17 +1390,19 @@ function MainContent({ user }) {
                           paginaActual === pageNum
                             ? 'bg-blue-600 text-white'
                             : 'bg-white text-slate-700 hover:bg-blue-50 hover:text-blue-600 border border-slate-300'
-                        }`}
+                          }`}
                       >
                         {pageNum}
                       </button>
                     );
                   })}
+
                   {/* Puntos suspensivos si hay más páginas */}
                   {totalPages > 5 && paginaActual > 3 && paginaActual < totalPages - 2 && (
                     <span className="w-9 h-9 flex items-center justify-center text-slate-400">...</span>
                   )}
                 </div>
+
                 <button
                   onClick={() => setPaginaActual(p => Math.min(totalPages, p + 1))}
                   disabled={paginaActual === totalPages}
@@ -1385,7 +1410,7 @@ function MainContent({ user }) {
                     paginaActual === totalPages
                       ? 'bg-slate-100 text-slate-400 cursor-not-allowed'
                       : 'bg-white text-slate-700 hover:bg-blue-50 hover:text-blue-600 border border-slate-300'
-                  }`}
+                    }`}
                 >
                   Siguiente
                   <svg className="w-4 h-4 inline ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1393,6 +1418,7 @@ function MainContent({ user }) {
                   </svg>
                 </button>
               </div>
+
               {/* Ir a página específica */}
               <div className="flex items-center gap-2">
                 <span className="text-sm text-slate-600">Ir a página:</span>
@@ -1485,10 +1511,10 @@ function MainContent({ user }) {
                           </span>
                           <span className={`px-3 py-1 rounded-full text-xs font-medium ${
                             especificaciones[0].equipo.status_equipo?.toLowerCase().includes('activo') ||
-                            especificaciones[0].equipo.status_equipo?.toLowerCase().includes('disponible')
+                              especificaciones[0].equipo.status_equipo?.toLowerCase().includes('disponible')
                               ? 'bg-emerald-100 text-emerald-700'
                               : 'bg-amber-100 text-amber-700'
-                          }`}>
+                            }`}>
                             {especificaciones[0].equipo.status_equipo || 'N/A'}
                           </span>
                         </div>
@@ -1511,6 +1537,7 @@ function MainContent({ user }) {
                       )}
                     </div>
                   )}
+
                   {/* Equipo 2 */}
                   {especificaciones && especificaciones[1] && (
                     <div className="p-6">
@@ -1528,10 +1555,10 @@ function MainContent({ user }) {
                           </span>
                           <span className={`px-3 py-1 rounded-full text-xs font-medium ${
                             especificaciones[1].equipo.status_equipo?.toLowerCase().includes('activo') ||
-                            especificaciones[1].equipo.status_equipo?.toLowerCase().includes('disponible')
+                              especificaciones[1].equipo.status_equipo?.toLowerCase().includes('disponible')
                               ? 'bg-emerald-100 text-emerald-700'
                               : 'bg-amber-100 text-amber-700'
-                          }`}>
+                            }`}>
                             {especificaciones[1].equipo.status_equipo || 'N/A'}
                           </span>
                         </div>
@@ -1568,150 +1595,6 @@ function MainContent({ user }) {
           </div>
         </div>
       )}
-    </div>
-  );
-}
-
-function BannerPrecios() {
-  const [filtroMarca, setFiltroMarca] = useState('TODAS');
-  
-  const marcas = ['TODAS', ...new Set(EQUIPOS_DATA.map(e => e.marca))];
-  
-  const equiposFiltrados = filtroMarca === 'TODAS' 
-    ? EQUIPOS_DATA 
-    : EQUIPOS_DATA.filter(e => e.marca === filtroMarca);
-
-  const formatPrice = (price) => {
-    return new Intl.NumberFormat('es-PE', {
-      style: 'currency',
-      currency: 'PEN',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(price);
-  };
-
-  const getMarcaColor = (marca) => {
-    const colors = {
-      'IPHONE': 'bg-gray-800',
-      'SAMSUNG': 'bg-blue-600',
-      'XIAOMI': 'bg-orange-500',
-      'HONOR': 'bg-cyan-600',
-      'MOTOROLA': 'bg-red-600',
-      'OPPO': 'bg-green-600',
-      'ZTE': 'bg-purple-600',
-    };
-    return colors[marca] || 'bg-gray-600';
-  };
-
-  return (
-    <div className="w-full max-w-6xl mx-auto p-4">
-      {/* Header del Banner */}
-      <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 rounded-t-2xl p-6 text-white shadow-2xl">
-        <div className="flex items-center justify-between flex-wrap gap-4">
-          <div>
-            <h2 className="text-3xl font-bold mb-2">📱 Equipos Digitales</h2>
-            <p className="text-indigo-100">Precios especiales en equipos tecnológicos</p>
-          </div>
-          <div className="text-right">
-            <div className="text-4xl font-bold">{EQUIPOS_DATA.length}</div>
-            <div className="text-indigo-200 text-sm">Equipos disponibles</div>
-          </div>
-        </div>
-      </div>
-
-      {/* Filtros de Marca */}
-      <div className="bg-white border-x border-gray-200 p-4 shadow-sm">
-        <div className="flex items-center gap-2 flex-wrap">
-          <span className="text-sm font-semibold text-gray-700 mr-2">Filtrar por marca:</span>
-          {marcas.map(marca => (
-            <button
-              key={marca}
-              onClick={() => setFiltroMarca(marca)}
-              className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
-                filtroMarca === marca
-                  ? 'bg-indigo-600 text-white shadow-lg scale-105'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
-            >
-              {marca}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Tabla de Precios */}
-      <div className="bg-white rounded-b-2xl shadow-xl overflow-hidden border border-gray-200">
-        <div className="overflow-x-auto max-h-[600px] overflow-y-auto">
-          <table className="w-full">
-            <thead className="bg-gray-50 sticky top-0 z-10">
-              <tr>
-                <th className="px-4 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider w-16">
-                  #
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">
-                  Equipo
-                </th>
-                <th className="px-4 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider w-32">
-                  Marca
-                </th>
-                <th className="px-4 py-3 text-right text-xs font-bold text-gray-600 uppercase tracking-wider w-40">
-                  Precio Digital
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200">
-              {equiposFiltrados.map((item, index) => (
-                <tr
-                  key={index}
-                  className={`transition-all hover:scale-[1.01] ${
-                    item.marca === 'SAMSUNG'
-                      ? 'bg-yellow-100 hover:bg-yellow-200'
-                      : 'hover:bg-indigo-50'
-                  }`}
-                >
-                  <td className="px-4 py-3 text-sm font-bold text-gray-500">
-                    {index + 1}
-                  </td>
-                  <td className="px-4 py-3">
-                    <div className="text-sm font-semibold text-gray-900">
-                      {item.equipo}
-                    </div>
-                  </td>
-                  <td className="px-4 py-3 text-center">
-                    <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold text-white ${getMarcaColor(item.marca)}`}>
-                      {item.marca}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3 text-right">
-                    <div className="text-lg font-bold text-indigo-600">
-                      {formatPrice(item.precio)}
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        
-        {/* Footer con resumen */}
-        <div className="bg-gray-50 border-t border-gray-200 p-4">
-          <div className="flex items-center justify-between flex-wrap gap-4">
-            <div className="text-sm text-gray-600">
-              Mostrando <span className="font-bold text-gray-900">{equiposFiltrados.length}</span> de <span className="font-bold text-gray-900">{EQUIPOS_DATA.length}</span> equipos
-            </div>
-            <div className="flex items-center gap-4 text-sm">
-              <div className="flex items-center gap-2">
-                <div className="w-4 h-4 bg-yellow-400 rounded"></div>
-                <span className="text-gray-600">Samsung</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-4 h-4 bg-indigo-100 rounded"></div>
-                <span className="text-gray-600">Otros</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   );
 }
