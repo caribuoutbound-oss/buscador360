@@ -275,7 +275,6 @@ function MainContent({ user }) {
         setLoading(false);
       }
     };
-
     cargarTodosLosEquipos();
   }, []);
 
@@ -284,13 +283,10 @@ function MainContent({ user }) {
     setEquiposSeleccionados(prev => {
       const yaSeleccionado = prev.find(e => e.codigo_sap === equipo.codigo_sap);
       if (yaSeleccionado) {
-        // Deseleccionar
         return prev.filter(e => e.codigo_sap !== equipo.codigo_sap);
       } else if (prev.length < 2) {
-        // Seleccionar (si hay espacio)
         return [...prev, equipo];
       } else {
-        // Mostrar alerta si ya hay 2 seleccionados
         alert('⚠️ Solo puedes comparar 2 equipos a la vez');
         return prev;
       }
@@ -328,7 +324,6 @@ function MainContent({ user }) {
   const buscarTiempoReal = useCallback(
     debounce(async (texto) => {
       if (!texto.trim()) {
-        // Si el campo está vacío, recargar todos los equipos
         const { data: equiposData, error: equiposError } = await supabase
           .from("equipos")
           .select("id, hoja, codigo_sap, modelo, stock_final, status_equipo")
@@ -369,7 +364,8 @@ function MainContent({ user }) {
         return;
       }
 
-      setLoading(true); setError(null);
+      setLoading(true);
+      setError(null);
       try {
         const { data: equiposData, error: equiposError } = await supabase
           .from("equipos")
@@ -435,7 +431,6 @@ function MainContent({ user }) {
     const marcas = Array.from(new Set(
       resultados
         .map(r => {
-          // Extraer marca del modelo (primera palabra)
           const marca = r.modelo?.split(' ')[0];
           return marca;
         })
@@ -521,7 +516,6 @@ function MainContent({ user }) {
         .animate-slide-in-right { animation: slideInRight 0.5s ease-out forwards; }
         .shimmer-effect { background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent); background-size: 200% 100%; animation: shimmer 2s infinite; }
       `}</style>
-
       <header className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-slate-800 to-slate-900 text-white shadow-xl">
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex items-center justify-between h-16">
@@ -545,7 +539,6 @@ function MainContent({ user }) {
           </div>
         </div>
       </header>
-
       <div className="pt-20 pb-12 px-6">
         <div className="max-w-5xl mx-auto">
           <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 overflow-hidden animate-scaleIn">
@@ -570,7 +563,6 @@ function MainContent({ user }) {
                   </div>
                 </div>
               </div>
-
               {/* Datos a validar */}
               <div className="bg-white rounded-2xl p-6 border-2 border-indigo-100 shadow-lg animate-slide-in-right" style={{ animationDelay: '0.2s' }}>
                 <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
@@ -592,7 +584,6 @@ function MainContent({ user }) {
                   ))}
                 </div>
               </div>
-
               {/* Advertencia dirección */}
               <div className="bg-gradient-to-br from-amber-50 to-orange-50 border-l-4 border-amber-400 rounded-xl p-5 shadow-lg animate-slide-in-right" style={{ animationDelay: '0.3s' }}>
                 <p className="font-bold text-amber-900 mb-2">⚠️ Dirección Completa Requerida</p>
@@ -601,8 +592,7 @@ function MainContent({ user }) {
                   <li className="flex items-start gap-2"><span className="text-amber-500 mt-0.5">•</span> Manzana, lote, urbanización, distrito y referencias</li>
                 </ul>
               </div>
-
-              {/* ✅ PLANES: FILA COMPACTA DE 9 BOTONES PEQUEÑOS */}
+              {/* PLANES: FILA COMPACTA DE 9 BOTONES PEQUEÑOS */}
               <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl p-6 border border-blue-200 shadow-lg animate-slide-in-right" style={{ animationDelay: '0.4s' }}>
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center shadow-lg">
@@ -629,7 +619,6 @@ function MainContent({ user }) {
                   ))}
                 </div>
               </div>
-
               {/* Términos y condiciones */}
               <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-lg animate-slide-in-right" style={{ animationDelay: '0.5s' }}>
                 <h3 className="text-lg font-bold text-slate-800 mb-4">📋 Términos del Plan | Así mismo</h3>
@@ -652,7 +641,6 @@ function MainContent({ user }) {
                   ))}
                 </ul>
               </div>
-
               {/* Equipo Financiado */}
               <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl p-6 border border-emerald-200 shadow-lg animate-slide-in-right" style={{ animationDelay: '0.6s' }}>
                 <div className="flex items-center gap-3 mb-4">
@@ -681,7 +669,6 @@ function MainContent({ user }) {
                   </div>
                 </div>
               </div>
-
               {/* Equipo al Contado */}
               <div className="bg-gradient-to-br from-violet-50 to-purple-50 rounded-2xl p-6 border border-violet-200 shadow-lg animate-slide-in-right" style={{ animationDelay: '0.7s' }}>
                 <div className="flex items-center gap-3 mb-4">
@@ -708,7 +695,6 @@ function MainContent({ user }) {
                   </div>
                 </div>
               </div>
-
               {/* Autorización de Datos */}
               <div className="bg-gradient-to-br from-pink-50 to-rose-50 rounded-2xl p-6 border border-pink-200 shadow-lg animate-slide-in-right" style={{ animationDelay: '0.8s' }}>
                 <div className="flex items-center gap-3 mb-4">
@@ -731,7 +717,6 @@ function MainContent({ user }) {
                   </p>
                 </div>
               </div>
-
               {/* Aceptación Final */}
               <div className="bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 rounded-2xl p-6 border-2 border-indigo-300 shadow-xl animate-slide-in-right" style={{ animationDelay: '0.9s' }}>
                 <div className="text-center">
@@ -770,7 +755,6 @@ function MainContent({ user }) {
                   </p>
                 </div>
               </div>
-
               {/* Validaciones antes de terminar la llamada */}
               <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl p-6 border border-amber-200 shadow-lg animate-slide-in-right" style={{ animationDelay: '0.85s' }}>
                 <div className="flex items-center gap-3 mb-4">
@@ -803,26 +787,21 @@ function MainContent({ user }) {
                     <li className="flex items-start gap-2"><span className="text-amber-500">•</span> Recuerde que el delivery no acepta efectivo.</li>
                   </ul>
                 </div>
-                
                 <div className="mb-4">
                   <p className="font-bold text-amber-800 mb-2">Fidelización </p>
                   <ul className="space-y-1 text-sm text-amber-700 ml-4">
-                    <li className="flex items-start gap-2"><span className="text-amber-500">•</span> 
-                      Dentro de 5 a 10 minutos, mi área de validación, 
-                      se estará comunicando nuevamente con usted para confirmar el precio del equipo que le estamos dando y así, 
+                    <li className="flex items-start gap-2"><span className="text-amber-500">•</span>
+                      Dentro de 5 a 10 minutos, mi área de validación,
+                      se estará comunicando nuevamente con usted para confirmar el precio del equipo que le estamos dando y así,
                       vea que todo esta conforme a lo que hemos conversado. Por favor, super atento a las llamadas, ya que, es de suma importancia que conteste.
-      
                     </li>
-
                   </ul>
                 </div>
-                
               </div>
             </div>
           </div>
         </div>
       </div>
-
       {/* Modal de Plan */}
       <PlanModal
         plan={planesData[planModalAbierto]}
@@ -854,7 +833,6 @@ function MainContent({ user }) {
                 </p>
               </div>
             </div>
-
             {/* Botón de Comparación */}
             {equiposSeleccionados.length > 0 && (
               <div className="flex items-center gap-3">
@@ -868,7 +846,7 @@ function MainContent({ user }) {
                     equiposSeleccionados.length === 2
                       ? "bg-gradient-to-r from-emerald-500 to-emerald-600 text-white hover:from-emerald-600 hover:to-emerald-700"
                       : "bg-slate-400 text-slate-200 cursor-not-allowed"
-                    }`}
+                  }`}
                   title={equiposSeleccionados.length !== 2 ? "Selecciona exactamente 2 equipos" : "Comparar equipos"}
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -890,7 +868,6 @@ function MainContent({ user }) {
                 </button>
               </div>
             )}
-
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setMostrarContrato(true)}
@@ -937,7 +914,6 @@ function MainContent({ user }) {
                   className="w-full pl-10 pr-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
-
               {/* Filtro Sede */}
               <select
                 value={sedeFiltro}
@@ -949,7 +925,6 @@ function MainContent({ user }) {
                   <option key={sede} value={sede}>{sede}</option>
                 ))}
               </select>
-
               {/* Filtro Marca */}
               <select
                 value={marcaFiltro}
@@ -961,7 +936,6 @@ function MainContent({ user }) {
                   <option key={marca} value={marca}>{marca}</option>
                 ))}
               </select>
-
               {/* Limpiar filtros */}
               <button
                 onClick={() => { setSedeFiltro(""); setMarcaFiltro(""); setPaginaActual(1); }}
@@ -974,8 +948,6 @@ function MainContent({ user }) {
               </button>
             </div>
           </div>
-
-
 
           {error && (
             <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-6 rounded-xl shadow-sm">
@@ -1019,7 +991,7 @@ function MainContent({ user }) {
                         key={r.id}
                         className={`hover:bg-slate-50 transition-colors ${
                           estaSeleccionado ? 'bg-blue-50/50 border-l-4 border-blue-500' : ''
-                          }`}
+                        }`}
                       >
                         <td className="px-4 py-2 text-center">
                           <input
@@ -1031,13 +1003,10 @@ function MainContent({ user }) {
                             title={estaSeleccionado ? "Deseleccionar" : equiposSeleccionados.length >= 2 ? "Máximo 2 equipos" : "Seleccionar para comparar"}
                           />
                         </td>
+                        {/* ✅ CAMBIO: Mostrar código SAP COMPLETO sin máscara */}
                         <td className="px-4 py-2">
                           <span className="font-mono text-sm">
-                            {(() => {
-                              const codigo = r.codigo_sap?.toString() || "";
-                              if (codigo.length <= 4) return "•".repeat(codigo.length) || "-";
-                              return "•".repeat(codigo.length - 4) + codigo.slice(-4);
-                            })()}
+                            {r.codigo_sap?.toString() || "-"}
                           </span>
                         </td>
                         <td className="px-4 py-2">{r.modelo}</td>
@@ -1051,7 +1020,7 @@ function MainContent({ user }) {
                                 : r.stock_final <= 5
                                   ? "text-amber-600"
                                   : "text-emerald-600"
-                            }`}>
+                          }`}>
                             {r.stock_final ?? "-"}
                           </span>
                         </td>
@@ -1071,7 +1040,7 @@ function MainContent({ user }) {
                                     r.status_equipo.toLowerCase().includes("phase")
                                     ? "bg-amber-100 text-amber-700"
                                     : "bg-blue-100 text-blue-700"
-                            }`}>
+                          }`}>
                             {r.status_equipo || "-"}
                           </span>
                         </td>
@@ -1115,7 +1084,6 @@ function MainContent({ user }) {
               <div className="text-sm text-slate-600">
                 Mostrando {((paginaActual - 1) * resultadosPorPagina) + 1} - {Math.min(paginaActual * resultadosPorPagina, totalResultados)} de {totalResultados} resultados
               </div>
-
               {/* Botones de navegación */}
               <div className="flex items-center gap-2">
                 <button
@@ -1125,14 +1093,13 @@ function MainContent({ user }) {
                     paginaActual === 1
                       ? 'bg-slate-100 text-slate-400 cursor-not-allowed'
                       : 'bg-white text-slate-700 hover:bg-blue-50 hover:text-blue-600 border border-slate-300'
-                    }`}
+                  }`}
                 >
                   <svg className="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                   </svg>
                   Anterior
                 </button>
-
                 {/* Números de página (máximo 5 visibles) */}
                 <div className="flex items-center gap-1">
                   {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
@@ -1146,7 +1113,6 @@ function MainContent({ user }) {
                     } else {
                       pageNum = paginaActual - 2 + i;
                     }
-
                     return (
                       <button
                         key={pageNum}
@@ -1155,19 +1121,17 @@ function MainContent({ user }) {
                           paginaActual === pageNum
                             ? 'bg-blue-600 text-white'
                             : 'bg-white text-slate-700 hover:bg-blue-50 hover:text-blue-600 border border-slate-300'
-                          }`}
+                        }`}
                       >
                         {pageNum}
                       </button>
                     );
                   })}
-
                   {/* Puntos suspensivos si hay más páginas */}
                   {totalPages > 5 && paginaActual > 3 && paginaActual < totalPages - 2 && (
                     <span className="w-9 h-9 flex items-center justify-center text-slate-400">...</span>
                   )}
                 </div>
-
                 <button
                   onClick={() => setPaginaActual(p => Math.min(totalPages, p + 1))}
                   disabled={paginaActual === totalPages}
@@ -1175,7 +1139,7 @@ function MainContent({ user }) {
                     paginaActual === totalPages
                       ? 'bg-slate-100 text-slate-400 cursor-not-allowed'
                       : 'bg-white text-slate-700 hover:bg-blue-50 hover:text-blue-600 border border-slate-300'
-                    }`}
+                  }`}
                 >
                   Siguiente
                   <svg className="w-4 h-4 inline ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1183,7 +1147,6 @@ function MainContent({ user }) {
                   </svg>
                 </button>
               </div>
-
               {/* Ir a página específica */}
               <div className="flex items-center gap-2">
                 <span className="text-sm text-slate-600">Ir a página:</span>
@@ -1276,10 +1239,10 @@ function MainContent({ user }) {
                           </span>
                           <span className={`px-3 py-1 rounded-full text-xs font-medium ${
                             especificaciones[0].equipo.status_equipo?.toLowerCase().includes('activo') ||
-                              especificaciones[0].equipo.status_equipo?.toLowerCase().includes('disponible')
+                            especificaciones[0].equipo.status_equipo?.toLowerCase().includes('disponible')
                               ? 'bg-emerald-100 text-emerald-700'
                               : 'bg-amber-100 text-amber-700'
-                            }`}>
+                          }`}>
                             {especificaciones[0].equipo.status_equipo || 'N/A'}
                           </span>
                         </div>
@@ -1302,7 +1265,6 @@ function MainContent({ user }) {
                       )}
                     </div>
                   )}
-
                   {/* Equipo 2 */}
                   {especificaciones && especificaciones[1] && (
                     <div className="p-6">
@@ -1320,10 +1282,10 @@ function MainContent({ user }) {
                           </span>
                           <span className={`px-3 py-1 rounded-full text-xs font-medium ${
                             especificaciones[1].equipo.status_equipo?.toLowerCase().includes('activo') ||
-                              especificaciones[1].equipo.status_equipo?.toLowerCase().includes('disponible')
+                            especificaciones[1].equipo.status_equipo?.toLowerCase().includes('disponible')
                               ? 'bg-emerald-100 text-emerald-700'
                               : 'bg-amber-100 text-amber-700'
-                            }`}>
+                          }`}>
                             {especificaciones[1].equipo.status_equipo || 'N/A'}
                           </span>
                         </div>
