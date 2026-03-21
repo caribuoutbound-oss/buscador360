@@ -1105,8 +1105,8 @@ function MainContent({ user }) {
       3. Formato recomendado: PNG con fondo transparente
       4. Tamaño sugerido: Logo (80x80px), Equipo (120x120px)
     */}
-    const MOVISTAR_LOGO_URL = "https://mir-s3-cdn-cf.behance.net/projects/404/42c0dc167731737.Y3JvcCw5NDMsNzM4LDAsMA.png";
-    const EQUIPO_IMAGE_URL = "https://s1.elespanol.com/2023/09/20/omicrono/analisis-prueba-productos/795931230_236200755_1706x1280.jpg";
+    const MOVISTAR_LOGO_URL = "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/Movistar_2021.svg/320px-Movistar_2021.svg.png";
+    const EQUIPO_IMAGE_URL = "https://cdn-icons-png.flaticon.com/512/644/644458.png";
     {/* ═══════════════════════════════════════════════════════════ */}
 
     {/* Animación de fondo */}
