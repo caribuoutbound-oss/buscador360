@@ -1090,69 +1090,60 @@ function MainContent({ user }) {
       </header>
 
 {/* ═══════════════════════════════════════════════════════════════ */}
-{/* 🎉 BANNER CYBER DAYS - CON LOGO Y EQUIPO */}
+{/* 🎉 BANNER CYBER DAYS */}
 {/* ═══════════════════════════════════════════════════════════════ */}
 <div className="pt-16">
   <div className="bg-gradient-to-r from-purple-600 via-pink-600 to-red-600 text-white py-4 px-6 shadow-2xl overflow-hidden relative">
     
-    {/* ═══════════════════════════════════════════════════════════ */}
-    {/* 🔗 ENLACES DE IMÁGENES - EDITAR AQUÍ */}
-    {/* ═══════════════════════════════════════════════════════════ */}
-    {/* 
-      📌 INSTRUCCIONES:
-      1. Reemplaza los URLs entre comillas con tus propios enlaces
-      2. Puedes usar URLs de Supabase Storage, CDN, o cualquier hosting
-      3. Formato recomendado: PNG con fondo transparente
-      4. Tamaño sugerido: Logo (80x80px), Equipo (120x120px)
-    */}
-    const MOVISTAR_LOGO_URL = "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/Movistar_2021.svg/320px-Movistar_2021.svg.png";
-    const EQUIPO_IMAGE_URL = "https://cdn-icons-png.flaticon.com/512/644/644458.png";
-    {/* ═══════════════════════════════════════════════════════════ */}
-
     {/* Animación de fondo */}
     <div className="absolute inset-0 opacity-20">
       <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9IiNmZmYiLz48L3N2Zz4=')] animate-pulse" />
     </div>
 
-    {/* Contenido del banner */}
-    <div className="max-w-7xl mx-auto relative z-10">
-      <div className="flex items-center justify-between gap-4 flex-wrap">
-        
-        {/* 📱 IZQUIERDA: Logo Movistar */}
-        <div className="flex-shrink-0 flex items-center justify-center">
-          <img 
-            src={MOVISTAR_LOGO_URL} 
-            alt="Movistar Logo" 
-            className="h-12 md:h-14 w-auto object-contain drop-shadow-lg animate-pulse"
-            style={{ filter: 'brightness(0) invert(1)' }}
-          />
-        </div>
+    {/* CONTENIDO */}
+    <div className="max-w-7xl mx-auto relative z-10 flex items-center justify-between">
 
-        {/* 🎊 CENTRO: Texto MOVISTAR DAYS */}
-        <div className="flex-1 text-center">
-          <h2 className="text-xl md:text-2xl font-black uppercase tracking-wider drop-shadow-lg">
-            🎊 MOVISTAR DAYS 🎊
-          </h2>
-          <p className="text-sm md:text-base font-bold text-white/95 mt-1">
-            ⚡ Equipos con descuentos increíbles • Stock limitado • ¡Aprovecha ahora!
-          </p>
-        </div>
-
-        {/* 📦 DERECHA: Imagen de Equipo */}
-        <div className="flex-shrink-0 flex items-center justify-center">
-          <img 
-            src={EQUIPO_IMAGE_URL} 
-            alt="Equipo Destacado" 
-            className="h-16 md:h-20 w-auto object-contain drop-shadow-lg animate-bounce"
-          />
-        </div>
-
+      {/* 🟦 LOGO IZQUIERDA */}
+      <div className="flex items-center">
+        <img 
+          src="https://mir-s3-cdn-cf.behance.net/projects/404/42c0dc167731737.Y3JvcCw5NDMsNzM4LDAsMA.png"
+          alt="Movistar"
+          className="h-10 md:h-12 object-contain"
+        />
       </div>
+
+      {/* 🔥 TEXTO CENTRADO */}
+      <div className="text-center flex-1">
+        <div className="flex items-center justify-center gap-3 flex-wrap">
+          <span className="text-3xl animate-bounce">🔥</span>
+
+          <div>
+            <h2 className="text-xl md:text-2xl font-black uppercase tracking-wider drop-shadow-lg">
+              🎊 MOVISTAR DAYS 🎊
+            </h2>
+            <p className="text-sm md:text-base font-bold text-white/95 mt-1">
+              ⚡ Equipos con descuentos increíbles • Stock limitado • ¡Aprovecha ahora!
+            </p>
+          </div>
+
+          <span className="text-3xl animate-bounce">🎁</span>
+        </div>
+      </div>
+
+      {/* 📱 IMAGEN DERECHA */}
+      <div className="flex items-center">
+        <img 
+          src="https://s1.elespanol.com/2023/09/20/omicrono/analisis-prueba-productos/795931230_236200755_1706x1280.jpg"
+          alt="Equipo"
+          className="h-12 md:h-16 object-contain"
+        />
+      </div>
+
     </div>
 
-    {/* Efecto de brillo */}
+    {/* Efecto shimmer */}
     <div 
-      className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full"
+      className="absolute top-0 left-0 w-full h-full -translate-x-full"
       style={{
         animation: 'shimmer 2s infinite',
         background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)'
