@@ -1156,7 +1156,7 @@ function MainContent({ user }) {
 
 
       
-      <div className="pt-16 px-6">
+      <div className="pt-8 px-6">
         <div className="max-w-7xl mx-auto py-6">
           {/* Filtros */}
           <div className="bg-white rounded-xl shadow-lg border border-slate-200 p-4 mb-6">
