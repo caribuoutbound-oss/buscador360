@@ -1133,7 +1133,7 @@ function MainContent({ user }) {
       {/* 📱 IMAGEN DERECHA */}
       <div className="flex items-center">
         <img 
-          src="https://s1.elespanol.com/2023/09/20/omicrono/analisis-prueba-productos/795931230_236200755_1706x1280.jpg"
+          src="https://i0.wp.com/intercompras.com/blog/wp-content/uploads/2026/01/Mejores-Celulares-Apple-2026-Guia-Completa-de-Compra-iPhone-17-ProMax-Air-17-16-16e-y-15-Pro.webp?fit=1472%2C832&ssl=1"
           alt="Equipo"
           className="h-12 md:h-16 object-contain"
         />
