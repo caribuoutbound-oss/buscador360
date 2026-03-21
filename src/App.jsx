@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import debounce from "lodash.debounce";
 import { supabase } from "./supabase";
 
@@ -37,8 +37,8 @@ function BannerPrecios({ onClose }) {
   
   const marcas = ['TODAS', ...new Set(EQUIPOS_DATA.map(e => e.marca))];
   
-  const equiposFiltrados = filtroMarca === 'TODAS' 
-    ? EQUIPOS_DATA 
+  const equiposFiltrados = filtroMarca === 'TODAS'
+    ? EQUIPOS_DATA
     : EQUIPOS_DATA.filter(e => e.marca === filtroMarca);
 
   const formatPrice = (price) => {
@@ -167,6 +167,123 @@ function BannerPrecios({ onClose }) {
             </div>
           </div>
         </div>
+      </div>
+    </div>
+  );
+}
+
+// ──────────────────────────────────────────────────────────────────────────────
+// 🎊 COMPONENTE MOVISTAR DAYS BANNER
+// ──────────────────────────────────────────────────────────────────────────────
+function MovistarDaysBanner() {
+  const canvasRef = useRef(null);
+  const [shimmerPos, setShimmerPos] = useState(-200);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    let raf;
+
+    const resize = () => {
+      canvas.width = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
+    };
+    resize();
+    window.addEventListener("resize", resize);
+
+    const particles = Array.from({ length: 55 }, () => ({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      r: Math.random() * 1.4 + 0.3,
+      vx: (Math.random() - 0.5) * 0.25,
+      vy: (Math.random() - 0.5) * 0.25,
+      alpha: Math.random() * 0.5 + 0.1,
+    }));
+
+    const draw = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach((p) => {
+        p.x += p.vx;
+        p.y += p.vy;
+        if (p.x < 0) p.x = canvas.width;
+        if (p.x > canvas.width) p.x = 0;
+        if (p.y < 0) p.y = canvas.height;
+        if (p.y > canvas.height) p.y = 0;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(0,212,255,${p.alpha})`;
+        ctx.fill();
+      });
+      raf = requestAnimationFrame(draw);
+    };
+    draw();
+
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("resize", resize);
+    };
+  }, []);
+
+  useEffect(() => {
+    let pos = -300;
+    const step = () => {
+      pos += 3.5;
+      if (pos > 1400) pos = -300;
+      setShimmerPos(pos);
+      requestAnimationFrame(step);
+    };
+    const raf = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(raf);
+  }, []);
+
+  return (
+    <div className="pt-16">
+      <div className="bg-gradient-to-r from-purple-600 via-pink-600 to-red-600 text-white py-4 px-6 shadow-2xl overflow-hidden relative">
+        <div className="absolute inset-0 opacity-20">
+          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9IiNmZmYiLz48L3N2Zz4=')] animate-pulse" />
+        </div>
+        
+        <div className="max-w-7xl mx-auto relative z-10 flex items-center justify-between">
+          <div className="flex items-center">
+            <img 
+              src="https://mir-s3-cdn-cf.behance.net/projects/404/42c0dc167731737.Y3JvcCw5NDMsNzM4LDAsMA.png"
+              alt="Movistar"
+              className="h-10 md:h-12 object-contain"
+            />
+          </div>
+
+          <div className="text-center flex-1">
+            <div className="flex items-center justify-center gap-3 flex-wrap">
+              <span className="text-3xl animate-bounce">🔥</span>
+              <div>
+                <h2 className="text-xl md:text-2xl font-black uppercase tracking-wider drop-shadow-lg">
+                  🎊 MOVISTAR DAYS 🎊
+                </h2>
+                <p className="text-sm md:text-base font-bold text-white/95 mt-1">
+                  ⚡ Equipos con descuentos increíbles • Stock limitado • ¡Aprovecha ahora!
+                </p>
+              </div>
+              <span className="text-3xl animate-bounce">🎁</span>
+            </div>
+          </div>
+
+          <div className="flex items-center">
+            <img 
+              src="https://i0.wp.com/intercompras.com/blog/wp-content/uploads/2026/01/Mejores-Celulares-Apple-2026-Guia-Completa-de-Compra-iPhone-17-ProMax-Air-17-16-16e-y-15-Pro.webp?fit=1472%2C832&ssl=1"
+              alt="Equipo"
+              className="h-12 md:h-16 object-contain"
+            />
+          </div>
+        </div>
+
+        <div 
+          className="absolute top-0 left-0 w-full h-full -translate-x-full"
+          style={{
+            animation: 'shimmer 2s infinite',
+            background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)'
+          }} 
+        />
       </div>
     </div>
   );
@@ -395,17 +512,16 @@ function MainContent({ user }) {
 
   // Estados para paginación
   const [paginaActual, setPaginaActual] = useState(1);
-  const [resultadosPorPagina] = useState(50); // ✅ Aumentado para 2k+ registros
+  const [resultadosPorPagina] = useState(50);
 
-  // ✅ NUEVO: Cargar todos los equipos desde la VIEW
+  // Cargar todos los equipos al inicio
   useEffect(() => {
     const cargarTodosLosEquipos = async () => {
       setLoading(true);
       try {
-        // ✅ Usar la VIEW en lugar de la tabla directa
         const { data: equiposData, error: equiposError } = await supabase
-          .from("v_equipos_marcas")
-          .select("id, hoja, codigo_sap, modelo, stock_final, status_equipo, marca")
+          .from("equipos")
+          .select("id, hoja, codigo_sap, modelo, stock_final, status_equipo")
           .order('modelo', { ascending: true });
 
         if (equiposError) throw equiposError;
@@ -440,7 +556,6 @@ function MainContent({ user }) {
         });
 
         setResultados(combinados);
-        console.log(`✅ Cargados ${combinados.length} equipos desde v_equipos_marcas`);
       } catch (err) {
         setError(err.message);
         setResultados([]);
@@ -497,10 +612,9 @@ function MainContent({ user }) {
   const buscarTiempoReal = useCallback(
     debounce(async (texto) => {
       if (!texto.trim()) {
-        // ✅ Si el campo está vacío, recargar desde la VIEW
         const { data: equiposData, error: equiposError } = await supabase
-          .from("v_equipos_marcas")
-          .select("id, hoja, codigo_sap, modelo, stock_final, status_equipo, marca")
+          .from("equipos")
+          .select("id, hoja, codigo_sap, modelo, stock_final, status_equipo")
           .order('modelo', { ascending: true });
 
         if (equiposError) throw equiposError;
@@ -541,18 +655,11 @@ function MainContent({ user }) {
       setLoading(true);
       setError(null);
       try {
-        // ✅ Buscar en la VIEW con filtro de marca si está seleccionado
-        let query = supabase
-          .from("v_equipos_marcas")
-          .select("id, hoja, codigo_sap, modelo, stock_final, status_equipo, marca")
+        const { data: equiposData, error: equiposError } = await supabase
+          .from("equipos")
+          .select("id, hoja, codigo_sap, modelo, stock_final, status_equipo")
           .or(`modelo.ilike.%${texto}%,codigo_sap.ilike.%${texto}%`)
-          .limit(100); // ✅ Aumentado límite
-
-        if (marcaFiltro) {
-          query = query.eq("marca", marcaFiltro);
-        }
-
-        const { data: equiposData, error: equiposError } = await query;
+          .limit(50);
 
         if (equiposError) throw equiposError;
 
@@ -560,7 +667,7 @@ function MainContent({ user }) {
           .from("accesorios")
           .select("id, codigo_sap, modelo, accesorio")
           .or(`modelo.ilike.%${texto}%,codigo_sap.ilike.%${texto}%`)
-          .limit(100);
+          .limit(50);
 
         if (accesoriosError) throw accesoriosError;
 
@@ -595,20 +702,19 @@ function MainContent({ user }) {
         setLoading(false);
       }
     }, 300),
-    [marcaFiltro]
+    []
   );
 
   useEffect(() => {
     buscarTiempoReal(modelo);
     return () => buscarTiempoReal.cancel();
-  }, [modelo, marcaFiltro]);
+  }, [modelo]);
 
   useEffect(() => {
     const sedes = Array.from(new Set(resultados.map(r => r.hoja).filter(Boolean)));
     setSedesDisponibles(sedes);
     if (sedeFiltro && !sedes.includes(sedeFiltro)) setSedeFiltro("");
 
-    // Obtener marcas disponibles
     const marcas = Array.from(new Set(
       resultados
         .map(r => {
@@ -621,10 +727,14 @@ function MainContent({ user }) {
     if (marcaFiltro && !marcas.includes(marcaFiltro)) setMarcaFiltro("");
   }, [resultados]);
 
-  // ✅ Filtrar y ordenar resultados (CON FILTRO DE MARCA)
+  // Filtrar y ordenar resultados
   const resultadosFiltrados = resultados
     .filter(r => (sedeFiltro ? r.hoja === sedeFiltro : true))
-    .filter(r => (marcaFiltro ? r.marca === marcaFiltro : true))
+    .filter(r => {
+      if (!marcaFiltro) return true;
+      const marcaDelModelo = r.modelo?.split(' ')[0];
+      return marcaDelModelo === marcaFiltro;
+    })
     .sort((a, b) => (sortStockDesc ? (b.stock_final || 0) - (a.stock_final || 0) : (a.stock_final || 0) - (b.stock_final || 0)));
 
   // Paginación
@@ -635,7 +745,7 @@ function MainContent({ user }) {
     paginaActual * resultadosPorPagina
   );
 
-  const totalStock = resultadosFiltrados.reduce((sum, r) => sum + (parseInt(r.stock_final) || 0), 0);
+  const totalStock = resultadosFiltrados.reduce((sum, r) => sum + (r.stock_final || 0), 0);
   const itemsActivos = resultadosFiltrados.filter(
     r => r.status_equipo && (
       r.status_equipo.toLowerCase().includes("activo") ||
@@ -770,7 +880,7 @@ function MainContent({ user }) {
                   <li className="flex items-start gap-2"><span className="text-amber-500 mt-0.5">•</span> Manzana, lote, urbanización, distrito y referencias</li>
                 </ul>
               </div>
-              {/* ✅ PLANES: FILA COMPACTA DE 9 BOTONES PEQUEÑOS */}
+              {/* PLANES */}
               <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl p-6 border border-blue-200 shadow-lg animate-slide-in-right" style={{ animationDelay: '0.4s' }}>
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center shadow-lg">
@@ -1052,7 +1162,7 @@ function MainContent({ user }) {
               </div>
             )}
             <div className="flex items-center gap-2">
-              {/* ✅ NUEVO: Botón Banner de Precios */}
+              {/* Botón Banner de Precios */}
               <button
                 onClick={() => setMostrarBannerPrecios(true)}
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-white bg-gradient-to-r from-purple-500 to-pink-600 rounded-lg shadow-md hover:from-purple-600 hover:to-pink-700 transition-all border border-purple-400/30"
@@ -1089,74 +1199,10 @@ function MainContent({ user }) {
         </div>
       </header>
 
-{/* ═══════════════════════════════════════════════════════════════ */}
-{/* 🎉 BANNER CYBER DAYS */}
-{/* ═══════════════════════════════════════════════════════════════ */}
-<div className="pt-16">
-  <div className="bg-gradient-to-r from-purple-600 via-pink-600 to-red-600 text-white py-4 px-6 shadow-2xl overflow-hidden relative">
-    
-    {/* Animación de fondo */}
-    <div className="absolute inset-0 opacity-20">
-      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9IiNmZmYiLz48L3N2Zz4=')] animate-pulse" />
-    </div>
+      {/* Banner Movistar Days */}
+      <MovistarDaysBanner />
 
-    {/* CONTENIDO */}
-    <div className="max-w-7xl mx-auto relative z-10 flex items-center justify-between">
-
-      {/* 🟦 LOGO IZQUIERDA */}
-      <div className="flex items-center">
-        <img 
-          src="https://mir-s3-cdn-cf.behance.net/projects/404/42c0dc167731737.Y3JvcCw5NDMsNzM4LDAsMA.png"
-          alt="Movistar"
-          className="h-10 md:h-12 object-contain"
-        />
-      </div>
-
-      {/* 🔥 TEXTO CENTRADO */}
-      <div className="text-center flex-1">
-        <div className="flex items-center justify-center gap-3 flex-wrap">
-          <span className="text-3xl animate-bounce">🔥</span>
-
-          <div>
-            <h2 className="text-xl md:text-2xl font-black uppercase tracking-wider drop-shadow-lg">
-              🎊 MOVISTAR DAYS 🎊
-            </h2>
-            <p className="text-sm md:text-base font-bold text-white/95 mt-1">
-              ⚡ Equipos con descuentos increíbles • Stock limitado • ¡Aprovecha ahora!
-            </p>
-          </div>
-
-          <span className="text-3xl animate-bounce">🎁</span>
-        </div>
-      </div>
-
-      {/* 📱 IMAGEN DERECHA */}
-      <div className="flex items-center">
-        <img 
-          src="https://i0.wp.com/intercompras.com/blog/wp-content/uploads/2026/01/Mejores-Celulares-Apple-2026-Guia-Completa-de-Compra-iPhone-17-ProMax-Air-17-16-16e-y-15-Pro.webp?fit=1472%2C832&ssl=1"
-          alt="Equipo"
-          className="h-12 md:h-16 object-contain"
-        />
-      </div>
-
-    </div>
-
-    {/* Efecto shimmer */}
-    <div 
-      className="absolute top-0 left-0 w-full h-full -translate-x-full"
-      style={{
-        animation: 'shimmer 2s infinite',
-        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)'
-      }} 
-    />
-  </div>
-</div>
-
-      
-
-
-      
-      <div className="pt-8 px-6">
+      <div className="pt-4 px-6">
         <div className="max-w-7xl mx-auto py-6">
           {/* Filtros */}
           <div className="bg-white rounded-xl shadow-lg border border-slate-200 p-4 mb-6">
