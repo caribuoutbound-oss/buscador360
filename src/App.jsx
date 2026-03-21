@@ -1089,41 +1089,70 @@ function MainContent({ user }) {
         </div>
       </header>
 
-  {/* ═══════════════════════════════════════════════════════════════ */}
-  {/* 🎉 BANNER CYBER DAYS - AGREGAR AQUÍ */}
-  {/* ═══════════════════════════════════════════════════════════════ */}
-  <div className="pt-16">
-    <div className="bg-gradient-to-r from-purple-600 via-pink-600 to-red-600 text-white py-4 px-6 shadow-2xl overflow-hidden relative">
-      {/* Animación de fondo */}
-      <div className="absolute inset-0 opacity-20">
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9IiNmZmYiLz48L3N2Zz4=')] animate-pulse" />
+{/* ═══════════════════════════════════════════════════════════════ */}
+{/* 🎉 BANNER CYBER DAYS */}
+{/* ═══════════════════════════════════════════════════════════════ */}
+<div className="pt-16">
+  <div className="bg-gradient-to-r from-purple-600 via-pink-600 to-red-600 text-white py-4 px-6 shadow-2xl overflow-hidden relative">
+    
+    {/* Animación de fondo */}
+    <div className="absolute inset-0 opacity-20">
+      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9IiNmZmYiLz48L3N2Zz4=')] animate-pulse" />
+    </div>
+
+    {/* CONTENIDO */}
+    <div className="max-w-7xl mx-auto relative z-10 flex items-center justify-between">
+
+      {/* 🟦 LOGO IZQUIERDA */}
+      <div className="flex items-center">
+        <img 
+          src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR7bdDLD-yu_oOVUSGRJHq0TEHBCpHktkXFXg&s"
+          alt="Movistar"
+          className="h-10 md:h-12 object-contain"
+        />
       </div>
-      
-      {/* Contenido del banner */}
-      <div className="max-w-7xl mx-auto relative z-10">
+
+      {/* 🔥 TEXTO CENTRADO */}
+      <div className="text-center flex-1">
         <div className="flex items-center justify-center gap-3 flex-wrap">
           <span className="text-3xl animate-bounce">🔥</span>
-          <div className="text-center">
+
+          <div>
             <h2 className="text-xl md:text-2xl font-black uppercase tracking-wider drop-shadow-lg">
-              🎊 CYBER DAYS MOVISTAR 🎊
+              🎊 MOVISTAR DAYS 🎊
             </h2>
             <p className="text-sm md:text-base font-bold text-white/95 mt-1">
               ⚡ Equipos con descuentos increíbles • Stock limitado • ¡Aprovecha ahora!
             </p>
           </div>
+
           <span className="text-3xl animate-bounce">🎁</span>
         </div>
       </div>
 
-      {/* Efecto de brillo */}
-      <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full animate-[shimmer_2s_infinite]" 
-           style={{
-             animation: 'shimmer 2s infinite',
-             background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)'
-           }} 
-      />
+      {/* 📱 IMAGEN DERECHA */}
+      <div className="flex items-center">
+        <img 
+          src="https://www.movistar.com.pe/iphone-16"
+          alt="Equipo"
+          className="h-12 md:h-16 object-contain"
+        />
+      </div>
+
     </div>
+
+    {/* Efecto shimmer */}
+    <div 
+      className="absolute top-0 left-0 w-full h-full -translate-x-full"
+      style={{
+        animation: 'shimmer 2s infinite',
+        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)'
+      }} 
+    />
   </div>
+</div>
+
+      
 
 
       
