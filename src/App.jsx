@@ -1105,7 +1105,7 @@ function MainContent({ user }) {
           <span className="text-3xl animate-bounce">🔥</span>
           <div className="text-center">
             <h2 className="text-xl md:text-2xl font-black uppercase tracking-wider drop-shadow-lg">
-              🎊 CYBER DAYS 2025 🎊
+              🎊 CYBER DAYS MOVISTAR 🎊
             </h2>
             <p className="text-sm md:text-base font-bold text-white/95 mt-1">
               ⚡ Equipos con descuentos increíbles • Stock limitado • ¡Aprovecha ahora!
