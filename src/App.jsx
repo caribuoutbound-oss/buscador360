@@ -2,293 +2,6 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import debounce from "lodash.debounce";
 import { supabase } from "./supabase";
 
-// ──────────────────────────────────────────────────────────────────────────────
-// 📱 DATOS DE EQUIPOS Y PRECIOS DIGITALES
-// ──────────────────────────────────────────────────────────────────────────────
-const EQUIPOS_DATA = [
-  { equipo: 'IPHONE 16 PRO MAX 256GB', precio: 4899, marca: 'IPHONE' },
-  { equipo: 'IPHONE 16 PRO 128GB', precio: 4199, marca: 'IPHONE' },
-  { equipo: 'IPHONE 17 256GB', precio: 3569, marca: 'IPHONE' },
-  { equipo: 'IPHONE 16 128GB', precio: 2939, marca: 'IPHONE' },
-  { equipo: 'XIAOMI 15T PRO 512GB 5G', precio: 2659, marca: 'XIAOMI' },
-  { equipo: 'SAMSUNG GXY S25 FE SM-S731B 256GB 5G', precio: 2599, marca: 'SAMSUNG' },
-  { equipo: 'XIAOMI 15T 512GB 5G', precio: 2039, marca: 'XIAOMI' },
-  { equipo: 'IPHONE 13 128GB', precio: 1809, marca: 'IPHONE' },
-  { equipo: 'XIAOMI REDMI NOTE 15 PRO+ 512GB 5G', precio: 1729, marca: 'XIAOMI' },
-  { equipo: 'OPPO A6 PRO 256GB 5G', precio: 1299, marca: 'OPPO' },
-  { equipo: 'XIAOMI REDMI NOTE 15 PRO 512GB 5G', precio: 1259, marca: 'XIAOMI' },
-  { equipo: 'HONOR X8C 256GB 5G', precio: 999, marca: 'HONOR' },
-  { equipo: 'MOTOROLA EDGE 60 FUSION 256GB 5G', precio: 999, marca: 'MOTOROLA' },
-  { equipo: 'ZTE NUBIA AIR 256GB 5G', precio: 899, marca: 'ZTE' },
-  { equipo: 'XIAOMI REDMI NOTE 15 256GB LTE', precio: 849, marca: 'XIAOMI' },
-  { equipo: 'SAMSUNG GXY A26 SM-A266M 128GB 5G', precio: 819, marca: 'SAMSUNG' },
-  { equipo: 'MOTOROLA G56 XT2527 256GB 5G', precio: 739, marca: 'MOTOROLA' },
-  { equipo: 'HONOR X6C NIC-LX3 256GB LTE', precio: 549, marca: 'HONOR' },
-  { equipo: 'SAMSUNG GXY A16 SM-A165M 128GB LTE', precio: 529, marca: 'SAMSUNG' },
-  { equipo: 'SAMSUNG GXY A07 SM-A075M 128GB LTE', precio: 429, marca: 'SAMSUNG' },
-  { equipo: 'ZTE BLADE A56 PRO 128GB LTE', precio: 329, marca: 'ZTE' },
-];
-
-// ──────────────────────────────────────────────────────────────────────────────
-// 🎨 COMPONENTE BANNER DE PRECIOS
-// ──────────────────────────────────────────────────────────────────────────────
-function BannerPrecios({ onClose }) {
-  const [filtroMarca, setFiltroMarca] = useState('TODAS');
-  
-  const marcas = ['TODAS', ...new Set(EQUIPOS_DATA.map(e => e.marca))];
-  
-  const equiposFiltrados = filtroMarca === 'TODAS'
-    ? EQUIPOS_DATA
-    : EQUIPOS_DATA.filter(e => e.marca === filtroMarca);
-
-  const formatPrice = (price) => {
-    return new Intl.NumberFormat('es-PE', {
-      style: 'currency',
-      currency: 'PEN',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(price);
-  };
-
-  const getMarcaColor = (marca) => {
-    const colors = {
-      'IPHONE': 'bg-gray-800',
-      'SAMSUNG': 'bg-blue-600',
-      'XIAOMI': 'bg-orange-500',
-      'HONOR': 'bg-cyan-600',
-      'MOTOROLA': 'bg-red-600',
-      'OPPO': 'bg-green-600',
-      'ZTE': 'bg-purple-600',
-    };
-    return colors[marca] || 'bg-gray-600';
-  };
-
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-      <div className="bg-white rounded-2xl shadow-2xl max-w-6xl w-full max-h-[90vh] overflow-hidden flex flex-col">
-        {/* Header */}
-        <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 p-6 text-white flex items-center justify-between flex-shrink-0">
-          <div>
-            <h2 className="text-3xl font-bold mb-2">📱 Equipos Digitales</h2>
-            <p className="text-indigo-100">Precios especiales en equipos tecnológicos</p>
-          </div>
-          <div className="flex items-center gap-4">
-            <div className="text-right">
-              <div className="text-4xl font-bold">{EQUIPOS_DATA.length}</div>
-              <div className="text-indigo-200 text-sm">Equipos disponibles</div>
-            </div>
-            <button
-              onClick={onClose}
-              className="text-white/80 hover:text-white p-2 rounded-full hover:bg-white/20 transition-all"
-            >
-              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-          </div>
-        </div>
-
-        {/* Filtros */}
-        <div className="bg-white border-b border-gray-200 p-4 flex-shrink-0">
-          <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-sm font-semibold text-gray-700 mr-2">Filtrar por marca:</span>
-            {marcas.map(marca => (
-              <button
-                key={marca}
-                onClick={() => setFiltroMarca(marca)}
-                className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
-                  filtroMarca === marca
-                    ? 'bg-indigo-600 text-white shadow-lg scale-105'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
-              >
-                {marca}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Tabla de Precios */}
-        <div className="flex-1 overflow-auto">
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gray-50 sticky top-0 z-10">
-                <tr>
-                  <th className="px-4 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider w-16">#</th>
-                  <th className="px-4 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Equipo</th>
-                  <th className="px-4 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider w-32">Marca</th>
-                  <th className="px-4 py-3 text-right text-xs font-bold text-gray-600 uppercase tracking-wider w-40">Precio Digital</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-200">
-                {equiposFiltrados.map((item, index) => (
-                  <tr
-                    key={index}
-                    className={`transition-all hover:scale-[1.01] ${
-                      item.marca === 'SAMSUNG'
-                        ? 'bg-yellow-100 hover:bg-yellow-200'
-                        : 'hover:bg-indigo-50'
-                    }`}
-                  >
-                    <td className="px-4 py-3 text-sm font-bold text-gray-500">{index + 1}</td>
-                    <td className="px-4 py-3">
-                      <div className="text-sm font-semibold text-gray-900">{item.equipo}</div>
-                    </td>
-                    <td className="px-4 py-3 text-center">
-                      <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold text-white ${getMarcaColor(item.marca)}`}>
-                        {item.marca}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 text-right">
-                      <div className="text-lg font-bold text-indigo-600">{formatPrice(item.precio)}</div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        {/* Footer */}
-        <div className="bg-gray-50 border-t border-gray-200 p-4 flex-shrink-0">
-          <div className="flex items-center justify-between flex-wrap gap-4">
-            <div className="text-sm text-gray-600">
-              Mostrando <span className="font-bold text-gray-900">{equiposFiltrados.length}</span> de <span className="font-bold text-gray-900">{EQUIPOS_DATA.length}</span> equipos
-            </div>
-            <div className="flex items-center gap-4 text-sm">
-              <div className="flex items-center gap-2">
-                <div className="w-4 h-4 bg-yellow-400 rounded"></div>
-                <span className="text-gray-600">Samsung</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-4 h-4 bg-indigo-100 rounded"></div>
-                <span className="text-gray-600">Otros</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// ──────────────────────────────────────────────────────────────────────────────
-// 🎊 COMPONENTE MOVISTAR DAYS BANNER
-// ──────────────────────────────────────────────────────────────────────────────
-function MovistarDaysBanner() {
-  const canvasRef = useRef(null);
-  const [shimmerPos, setShimmerPos] = useState(-200);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    let raf;
-
-    const resize = () => {
-      canvas.width = canvas.offsetWidth;
-      canvas.height = canvas.offsetHeight;
-    };
-    resize();
-    window.addEventListener("resize", resize);
-
-    const particles = Array.from({ length: 55 }, () => ({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
-      r: Math.random() * 1.4 + 0.3,
-      vx: (Math.random() - 0.5) * 0.25,
-      vy: (Math.random() - 0.5) * 0.25,
-      alpha: Math.random() * 0.5 + 0.1,
-    }));
-
-    const draw = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      particles.forEach((p) => {
-        p.x += p.vx;
-        p.y += p.vy;
-        if (p.x < 0) p.x = canvas.width;
-        if (p.x > canvas.width) p.x = 0;
-        if (p.y < 0) p.y = canvas.height;
-        if (p.y > canvas.height) p.y = 0;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(0,212,255,${p.alpha})`;
-        ctx.fill();
-      });
-      raf = requestAnimationFrame(draw);
-    };
-    draw();
-
-    return () => {
-      cancelAnimationFrame(raf);
-      window.removeEventListener("resize", resize);
-    };
-  }, []);
-
-  useEffect(() => {
-    let pos = -300;
-    const step = () => {
-      pos += 3.5;
-      if (pos > 1400) pos = -300;
-      setShimmerPos(pos);
-      requestAnimationFrame(step);
-    };
-    const raf = requestAnimationFrame(step);
-    return () => cancelAnimationFrame(raf);
-  }, []);
-
-  return (
-    <div className="pt-16">
-      <div className="bg-gradient-to-r from-purple-600 via-pink-600 to-red-600 text-white py-4 px-6 shadow-2xl overflow-hidden relative">
-        <div className="absolute inset-0 opacity-20">
-          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9IiNmZmYiLz48L3N2Zz4=')] animate-pulse" />
-        </div>
-        
-        <div className="max-w-7xl mx-auto relative z-10 flex items-center justify-between">
-          <div className="flex items-center">
-            <img 
-              src="https://mir-s3-cdn-cf.behance.net/projects/404/42c0dc167731737.Y3JvcCw5NDMsNzM4LDAsMA.png"
-              alt="Movistar"
-              className="h-10 md:h-12 object-contain"
-            />
-          </div>
-
-          <div className="text-center flex-1">
-            <div className="flex items-center justify-center gap-3 flex-wrap">
-              <span className="text-3xl animate-bounce">🔥</span>
-              <div>
-                <h2 className="text-xl md:text-2xl font-black uppercase tracking-wider drop-shadow-lg">
-                  🎊 MOVISTAR DAYS 🎊
-                </h2>
-                <p className="text-sm md:text-base font-bold text-white/95 mt-1">
-                  ⚡ Equipos con descuentos increíbles • Stock limitado • ¡Aprovecha ahora!
-                </p>
-              </div>
-              <span className="text-3xl animate-bounce">🎁</span>
-            </div>
-          </div>
-
-          <div className="flex items-center">
-            <img 
-              src="https://i0.wp.com/intercompras.com/blog/wp-content/uploads/2026/01/Mejores-Celulares-Apple-2026-Guia-Completa-de-Compra-iPhone-17-ProMax-Air-17-16-16e-y-15-Pro.webp?fit=1472%2C832&ssl=1"
-              alt="Equipo"
-              className="h-12 md:h-16 object-contain"
-            />
-          </div>
-        </div>
-
-        <div 
-          className="absolute top-0 left-0 w-full h-full -translate-x-full"
-          style={{
-            animation: 'shimmer 2s infinite',
-            background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)'
-          }} 
-        />
-      </div>
-    </div>
-  );
-}
-
 // ─── Componente de Login ───────────────────────────────
 function LoginForm({ onLogin }) {
   const [usuario, setUsuario] = useState("");
@@ -504,7 +217,6 @@ function MainContent({ user }) {
   const [loadingSpecs, setLoadingSpecs] = useState(false);
   const [mostrarContrato, setMostrarContrato] = useState(false);
   const [planModalAbierto, setPlanModalAbierto] = useState(null);
-  const [mostrarBannerPrecios, setMostrarBannerPrecios] = useState(false);
 
   // Estados para comparación de equipos
   const [equiposSeleccionados, setEquiposSeleccionados] = useState([]);
@@ -782,7 +494,6 @@ function MainContent({ user }) {
         setPlanModalAbierto(null);
         setMostrarContrato(false);
         setModalComparacionAbierto(false);
-        setMostrarBannerPrecios(false);
       }
     };
     window.addEventListener("keydown", handleEsc);
@@ -1105,11 +816,6 @@ function MainContent({ user }) {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
-      {/* Banner de Precios Modal */}
-      {mostrarBannerPrecios && (
-        <BannerPrecios onClose={() => setMostrarBannerPrecios(false)} />
-      )}
-
       <header className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-slate-800 to-slate-900 text-white shadow-xl">
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex items-center justify-between h-16">
@@ -1162,16 +868,6 @@ function MainContent({ user }) {
               </div>
             )}
             <div className="flex items-center gap-2">
-              {/* Botón Banner de Precios */}
-              <button
-                onClick={() => setMostrarBannerPrecios(true)}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-white bg-gradient-to-r from-purple-500 to-pink-600 rounded-lg shadow-md hover:from-purple-600 hover:to-pink-700 transition-all border border-purple-400/30"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                Precios
-              </button>
               <button
                 onClick={() => setMostrarContrato(true)}
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-white bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-lg shadow-md hover:from-emerald-600 hover:to-emerald-700 transition-all border border-emerald-400/30"
@@ -1198,9 +894,6 @@ function MainContent({ user }) {
           </div>
         </div>
       </header>
-
-      {/* Banner Movistar Days */}
-      <MovistarDaysBanner />
 
       <div className="pt-4 px-6">
         <div className="max-w-7xl mx-auto py-6">
